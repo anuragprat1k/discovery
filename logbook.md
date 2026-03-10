@@ -179,6 +179,16 @@ Verified: `import vllm, trl, bitsandbytes, datasets` → OK
 - `GRPOTrainer`: removed `ref_model` arg (no longer accepted in TRL >= 0.13)
 - Reward wrapper: extract `.content` from conversational completions (TRL passes `[{"role":"assistant","content":"..."}]`)
 
+### 2026-03-10 — vllm Fix: Option B (Build from Source) — SUCCESS
+
+**[ERROR]** vllm 0.17.0 prebuilt wheel compiled with CUDA 12.9 PTX; runtime only supports CUDA 12.8 → `cudaErrorUnsupportedPtxVersion` on RTX 5090 (sm_120).
+
+**Attempted Options A (VLLM_USE_V1=0) and VLLM_ATTENTION_BACKEND variants**: All failed — vllm 0.17.0 dropped the `VLLM_ATTENTION_BACKEND` env var and always selects FLASH_ATTN via internal priority.
+
+**Remediation**: Built vllm from source (v0.17.0 tag) with `TORCH_CUDA_ARCH_LIST="12.0" MAX_JOBS=8 pip install -e . --no-build-isolation` using nvcc 12.8 on host. Build confirmed compiling `_vllm_fa2_C` for `arch=compute_120a,code=sm_120a`. Build took ~75 minutes.
+
+**Outcome**: vllm smoke test passed (generated text, no PTX error). `Successfully installed vllm-0.17.0+cu128`. vllm now usable for all evals.
+
 - [ ] **Step 1** — Run `data/prepare_math.py`; verify split sizes and prompt format on 3 random examples. Record any normalization edge cases.
 - [ ] **Step 2** — Smoke test `rewards/reward_fns.py` on 5 hand-crafted examples with known answers; log partial credit scores.
 - [ ] **Step 3** — Launch binary reward training run (`--reward binary`). Record wall-clock time per step.

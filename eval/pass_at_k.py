@@ -255,6 +255,8 @@ def _evaluate_vllm(args, df) -> dict:
         dtype="bfloat16",
         gpu_memory_utilization=0.90,
         trust_remote_code=True,
+        enforce_eager=True,
+        max_model_len=4096,
     )
     tokenizer = AutoTokenizer.from_pretrained(
         args.checkpoint_dir, trust_remote_code=True
