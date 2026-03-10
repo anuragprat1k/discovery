@@ -199,3 +199,14 @@ Verified: `import vllm, trl, bitsandbytes, datasets` → OK
 - [ ] **Step 8** — Run `analysis/plot_trajectories.py`; record gap at step 200 and first step where curves visually separate (or note non-separation).
 - [ ] **Step 9** — Apply Go/No-Go criteria. Record decision and reasoning here.
 - [ ] **Step 10** — If No-Go, document what would need to change (scale, dataset, reward formula) before retrying.
+
+---
+
+### 2026-03-10 — Phase 3: Step-0 Baseline Eval
+
+- Wall clock: ~57 min (200 problems × 64 samples, vllm, Qwen3-4B-Instruct-2507)
+- pass@1: 0.5680 | pass@4: 0.6462 | pass@16: 0.7101 | pass@64: 0.7450
+- By level (pass@1): L1=0.810, L2=0.758, L3=0.747, L4=0.498, L5=0.274
+- By level (pass@64): L1=0.882, L2=0.861, L3=0.911, L4=0.714, L5=0.509
+- answer_entropy: 0.248 | mean_correct_per_problem: 36.35/64
+- Result file: results/binary/step_0000.json
