@@ -10,8 +10,13 @@ for training and sampling. This enables:
 Target model: Qwen/Qwen3-8B (hosted by Tinker)
 Reward functions: reuses rewards/reward_fns.py (binary or dense)
 
+Supports PRIME (Process Reinforcement through Implicit Rewards) via
+--reward_type prime, which computes token-level implicit rewards from the
+divergence between the policy and a frozen reference model.
+
 Usage:
     python train_tinker.py --reward {binary,dense} [options]
+    python train_tinker.py --reward binary --reward_type prime [options]
 """
 
 import argparse
@@ -92,6 +97,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--loss_fn", type=str, default="importance_sampling",
                         choices=["importance_sampling", "ppo", "cispo"],
                         help="Tinker loss function for policy gradient.")
+    parser.add_argument("--reward_type", type=str, default="standard",
+                        choices=["standard", "prime"],
+                        help="Advantage type: 'standard' for uniform per-completion, "
+                             "'prime' for token-level implicit process rewards.")
+    parser.add_argument("--prime_beta", type=float, default=0.04,
+                        help="Scaling coefficient for PRIME implicit rewards.")
     parser.add_argument("--no_wandb", action="store_true",
                         help="Disable Weights & Biases logging.")
     parser.add_argument("--wandb_project", type=str, default="discovery",
@@ -104,7 +115,11 @@ def parse_args() -> argparse.Namespace:
 # ---------------------------------------------------------------------------
 
 def init_tinker_clients(args):
-    """Initialize Tinker ServiceClient, TrainingClient, and SamplingClient."""
+    """Initialize Tinker ServiceClient, TrainingClient, and SamplingClient.
+
+    When reward_type='prime', also creates a frozen reference sampling client
+    for computing base-model logprobs (used for implicit process rewards).
+    """
     print(f"[tinker] Connecting to Tinker API ...")
     service = ServiceClient()
 
@@ -119,10 +134,18 @@ def init_tinker_clients(args):
         name="init"
     )
 
+    ref_sampling_client = None
+    if args.reward_type == "prime":
+        print(f"[tinker] PRIME mode: creating frozen reference sampling client ...")
+        ref_sampling_client = service.create_sampling_client(
+            base_model=args.model,
+        )
+        print(f"[tinker] Reference sampling client ready.")
+
     tokenizer = training_client.get_tokenizer()
 
     print(f"[tinker] Clients initialized successfully.")
-    return training_client, sampling_client, tokenizer
+    return training_client, sampling_client, ref_sampling_client, tokenizer
 
 
 # ---------------------------------------------------------------------------
@@ -173,6 +196,7 @@ def grpo_step(
     batch_df: pd.DataFrame,
     sampling_client,
     training_client,
+    ref_sampling_client,
     tokenizer,
     reward_fn,
     args,
@@ -182,9 +206,10 @@ def grpo_step(
     1. Generate rollouts via sampling_client.sample()
     2. Compute rewards using reward_fn
     3. Compute advantages (mean-center per group, filter constant groups)
-    4. Build Datum objects with logprobs + advantages
-    5. Call forward_backward() with importance_sampling loss
-    6. Call optim_step()
+    4. (PRIME) Compute token-level implicit rewards from policy/reference divergence
+    5. Build Datum objects with logprobs + advantages
+    6. Call forward_backward() with importance_sampling loss
+    7. Call optim_step()
 
     Returns dict of metrics.
     """
@@ -277,18 +302,27 @@ def grpo_step(
     # we need to compute them separately. But sample() returns logprobs
     # in SampledSequence when available.
 
+    use_prime = args.reward_type == "prime" and ref_sampling_client is not None
+
     # For samples missing logprobs, compute them in batch
     logprob_futures = {}
+    ref_logprob_futures = {}
     for idx, comp in enumerate(all_completions):
         if abs(advantages[idx]) < 1e-8:
             continue
+        full_tokens = comp["prompt_tokens"] + list(comp["completion_tokens"])
         if comp["sample_logprobs"] is None:
-            full_tokens = comp["prompt_tokens"] + list(comp["completion_tokens"])
             logprob_futures[idx] = sampling_client.compute_logprobs(
+                tinker.ModelInput.from_ints(full_tokens)
+            )
+        # PRIME: compute reference model logprobs for all non-skipped samples
+        if use_prime:
+            ref_logprob_futures[idx] = ref_sampling_client.compute_logprobs(
                 tinker.ModelInput.from_ints(full_tokens)
             )
 
     data = []
+    prime_implicit_reward_means = []
     for idx, comp in enumerate(all_completions):
         if abs(advantages[idx]) < 1e-8:
             continue  # Skip zero-advantage samples
@@ -312,25 +346,55 @@ def grpo_step(
             dtype="int64",
         )
 
-        # advantages: 0 for prompt positions, actual value for completion
-        adv_value = float(advantages[idx])
-        token_advantages = tinker.TensorData(
-            data=[0.0] * n_prompt + [adv_value] * n_completion,
-            dtype="float32",
-        )
-
         # logprobs: need full-sequence logprobs from the sampling policy
         sample_logprobs = comp["sample_logprobs"]
         if sample_logprobs is not None:
             # sample() returns logprobs only for completion tokens;
             # pad with 0.0 for prompt positions
-            lp_list = [0.0] * n_prompt + [
+            policy_lp_completion = [
                 lp if lp is not None else 0.0 for lp in sample_logprobs
             ]
+            lp_list = [0.0] * n_prompt + policy_lp_completion
         else:
             # Use compute_logprobs result (covers full sequence)
             all_lp = logprob_futures[idx].result()
             lp_list = [lp if lp is not None else 0.0 for lp in all_lp]
+            policy_lp_completion = lp_list[n_prompt:]
+
+        # Compute per-token advantages
+        adv_value = float(advantages[idx])
+        if use_prime:
+            # PRIME: token-level implicit reward = β * (policy_logprob - ref_logprob)
+            # This measures how much the policy diverges from the reference at each token.
+            # Tokens where the policy is more confident than reference get higher implicit reward.
+            ref_lp_full = ref_logprob_futures[idx].result()
+            ref_lp_completion = [
+                lp if lp is not None else 0.0 for lp in ref_lp_full[n_prompt:]
+            ]
+            # Ensure lengths match (truncate to shorter if needed)
+            min_len = min(len(policy_lp_completion), len(ref_lp_completion))
+            implicit_rewards = [
+                args.prime_beta * (policy_lp_completion[t] - ref_lp_completion[t])
+                for t in range(min_len)
+            ]
+            # Pad if completion is longer than ref logprobs
+            implicit_rewards.extend([0.0] * (n_completion - min_len))
+
+            # Token advantage = outcome advantage + implicit process reward
+            token_adv_list = [0.0] * n_prompt + [
+                adv_value + implicit_rewards[t] for t in range(n_completion)
+            ]
+            prime_implicit_reward_means.append(
+                np.mean(implicit_rewards) if implicit_rewards else 0.0
+            )
+        else:
+            # Standard: uniform advantage across all completion tokens
+            token_adv_list = [0.0] * n_prompt + [adv_value] * n_completion
+
+        token_advantages = tinker.TensorData(
+            data=token_adv_list,
+            dtype="float32",
+        )
 
         logprobs_tensor = tinker.TensorData(
             data=lp_list,
@@ -348,7 +412,7 @@ def grpo_step(
         data.append(datum)
 
     if not data:
-        return {
+        metrics = {
             "step": step,
             "mean_reward": float(rewards.mean()),
             "loss": 0.0,
@@ -357,6 +421,9 @@ def grpo_step(
             "time_gen": round(t_gen, 2),
             "time_total": round(time.time() - t0, 2),
         }
+        if use_prime:
+            metrics["mean_implicit_reward"] = 0.0
+        return metrics
 
     # --- 5. Forward-backward + optimizer step ---
     t_train_start = time.time()
@@ -399,6 +466,8 @@ def grpo_step(
         "time_train": round(t_train, 2),
         "time_total": round(time.time() - t0, 2),
     }
+    if use_prime and prime_implicit_reward_means:
+        metrics["mean_implicit_reward"] = float(np.mean(prime_implicit_reward_means))
     return metrics
 
 
@@ -408,17 +477,21 @@ def grpo_step(
 
 def main() -> None:
     args = parse_args()
-    output_dir = args.output_dir or f"checkpoints/tinker_{args.reward}"
+    suffix = f"_{args.reward_type}" if args.reward_type != "standard" else ""
+    output_dir = args.output_dir or f"checkpoints/tinker_{args.reward}{suffix}"
     os.makedirs(output_dir, exist_ok=True)
 
     log_file = args.log_file or os.path.join(output_dir, "training_log.jsonl")
 
     print(f"[tinker] === GRPO Training with Tinker API ===")
     print(f"[tinker] Reward       : {args.reward}")
+    print(f"[tinker] Reward type  : {args.reward_type}")
     print(f"[tinker] Model        : {args.model}")
     print(f"[tinker] LoRA rank    : {args.lora_rank}")
     print(f"[tinker] LR           : {args.lr}")
     print(f"[tinker] Beta (KL)    : {args.beta}")
+    if args.reward_type == "prime":
+        print(f"[tinker] PRIME beta   : {args.prime_beta}")
     print(f"[tinker] Loss fn      : {args.loss_fn}")
     print(f"[tinker] Batch size   : {args.batch_size} problems x {args.group_size} completions")
     print(f"[tinker] Max steps    : {args.max_steps}")
@@ -427,22 +500,27 @@ def main() -> None:
     print(f"[tinker] Log file     : {log_file}")
 
     # Initialize
-    training_client, sampling_client, tokenizer = init_tinker_clients(args)
+    training_client, sampling_client, ref_sampling_client, tokenizer = init_tinker_clients(args)
     dataset = load_dataset(args.data_path)
     reward_fn = make_reward_fn(args.reward)
 
     # W&B logging
     use_wandb = _WANDB_AVAILABLE and not args.no_wandb
     if use_wandb:
+        run_name = f"tinker_grpo_{args.reward}"
+        if args.reward_type == "prime":
+            run_name += "_prime"
         wandb.init(
             project=args.wandb_project,
-            name=f"tinker_grpo_{args.reward}",
+            name=run_name,
             config={
                 "reward": args.reward,
+                "reward_type": args.reward_type,
                 "model": args.model,
                 "lora_rank": args.lora_rank,
                 "lr": args.lr,
                 "beta": args.beta,
+                "prime_beta": args.prime_beta,
                 "loss_fn": args.loss_fn,
                 "batch_size": args.batch_size,
                 "group_size": args.group_size,
@@ -471,6 +549,7 @@ def main() -> None:
             batch_df=batch_df,
             sampling_client=sampling_client,
             training_client=training_client,
+            ref_sampling_client=ref_sampling_client,
             tokenizer=tokenizer,
             reward_fn=reward_fn,
             args=args,
