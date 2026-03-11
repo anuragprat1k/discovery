@@ -486,11 +486,24 @@ def _evaluate_tinker(args, df) -> dict:
         token_counts = [len(seq.tokens) for seq in result.sequences]
 
         scores = _score_problem(completions, gt, token_counts=token_counts)
+
+        # Save a few sample traces for inspection (first 3 completions)
+        traces = []
+        extracted = [extract_boxed_answer(c) for c in completions]
+        for i in range(min(3, len(completions))):
+            traces.append({
+                "completion": completions[i][:2000],  # truncate for storage
+                "extracted_answer": extracted[i],
+                "correct": extracted[i] is not None and answers_match(extracted[i], gt),
+            })
+
         record = {
             "idx": idx,
             "level": level,
+            "ground_truth": gt,
             "prompt_tokens": len(prompt_token_ids),
             **scores,
+            "traces": traces,
         }
         _append_result(sidecar, record)
         partial[idx] = record
