@@ -500,12 +500,19 @@ def main() -> None:
         if step % args.save_steps == 0:
             ckpt_name = f"step_{step:04d}"
             print(f"[tinker] Saving checkpoint: {ckpt_name} ...")
-            training_client.save_state(ckpt_name).result()
+            save_result = training_client.save_state(ckpt_name).result()
+            ckpt_path = getattr(save_result, "path", None)
+            print(f"[tinker] Checkpoint saved: {ckpt_path}")
+
+            # Log checkpoint path to a manifest file for eval
+            manifest_path = os.path.join(output_dir, "checkpoints.jsonl")
+            with open(manifest_path, "a") as f:
+                f.write(json.dumps({"step": step, "name": ckpt_name, "path": ckpt_path}) + "\n")
 
             sampling_client = training_client.save_weights_and_get_sampling_client(
                 name=ckpt_name
             )
-            print(f"[tinker] Checkpoint saved, sampling client refreshed.")
+            print(f"[tinker] Sampling client refreshed.")
 
     # Final summary
     elapsed = time.time() - t_start
@@ -518,7 +525,13 @@ def main() -> None:
 
     # Save final checkpoint
     print(f"[tinker] Saving final model ...")
-    training_client.save_state("final").result()
+    save_result = training_client.save_state("final").result()
+    ckpt_path = getattr(save_result, "path", None)
+    print(f"[tinker] Final checkpoint saved: {ckpt_path}")
+
+    manifest_path = os.path.join(output_dir, "checkpoints.jsonl")
+    with open(manifest_path, "a") as f:
+        f.write(json.dumps({"step": args.max_steps, "name": "final", "path": ckpt_path}) + "\n")
 
     if use_wandb:
         wandb.finish()

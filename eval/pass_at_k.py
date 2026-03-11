@@ -19,7 +19,7 @@ Usage (local checkpoint):
 Usage (Tinker server-side checkpoint):
     python eval/pass_at_k.py \
         --use_tinker \
-        --tinker_checkpoint step_0050 \
+        --tinker_path "tinker://run-id/weights/step_0050" \
         --eval_parquet data/eval_200.parquet \
         --output_dir results/tinker \
         --n_samples 64
@@ -359,13 +359,11 @@ def _evaluate_tinker(args, df) -> dict:
     print(f"[tinker] Connecting to Tinker API ...", flush=True)
     service = ServiceClient()
 
-    print(f"[tinker] Restoring checkpoint: {args.tinker_checkpoint}", flush=True)
+    print(f"[tinker] Restoring checkpoint: {args.tinker_path}", flush=True)
     training_client = service.create_training_client_from_state(
-        name=args.tinker_checkpoint
+        path=args.tinker_path
     )
-    sampling_client = training_client.save_weights_and_get_sampling_client(
-        name=f"eval_{args.tinker_checkpoint}"
-    )
+    sampling_client = training_client.save_weights_and_get_sampling_client()
     tokenizer = training_client.get_tokenizer()
     print(f"[tinker] Sampling client ready.", flush=True)
 
@@ -440,7 +438,7 @@ def _evaluate_tinker(args, df) -> dict:
         "n_problems": n_problems,
         "n_samples": n,
         "eval_method": "tinker",
-        "tinker_checkpoint": args.tinker_checkpoint,
+        "tinker_path": args.tinker_path,
         "pass_at_k": {str(k): pass_at_k_overall[k] for k in ks},
         "pass_at_k_by_level": pass_at_k_by_level,
         "unique_correct_answers": mean_unique_correct,
@@ -692,17 +690,17 @@ def parse_args() -> argparse.Namespace:
         help="Use Tinker API for evaluation (server-side checkpoints).",
     )
     parser.add_argument(
-        "--tinker_checkpoint",
+        "--tinker_path",
         type=str,
         default=None,
-        help="Tinker checkpoint name to restore (e.g. 'step_0050'). Required with --use_tinker.",
+        help="Tinker path to saved weights (e.g. 'tinker://run-id/weights/step_0050'). Required with --use_tinker.",
     )
     args = parser.parse_args()
 
     # Validate tinker args
     if args.use_tinker:
-        if args.tinker_checkpoint is None:
-            parser.error("--tinker_checkpoint is required when using --use_tinker")
+        if args.tinker_path is None:
+            parser.error("--tinker_path is required when using --use_tinker")
     elif args.checkpoint_dir is None:
         parser.error("--checkpoint_dir is required (unless using --use_tinker)")
 
@@ -714,12 +712,13 @@ def parse_args() -> argparse.Namespace:
             args.run_name = _infer_run_name(args.checkpoint_dir)
 
     if args.step is None:
-        if args.use_tinker and args.tinker_checkpoint is not None:
-            # Try to parse step from checkpoint name like "step_0050"
-            ckpt = args.tinker_checkpoint
-            if ckpt.startswith("step_"):
+        if args.use_tinker and args.tinker_path is not None:
+            # Try to parse step from last segment of tinker path
+            # e.g. "tinker://run-id/weights/step_0050" -> 50
+            last_segment = args.tinker_path.rstrip("/").rsplit("/", 1)[-1]
+            if last_segment.startswith("step_"):
                 try:
-                    args.step = int(ckpt[len("step_"):])
+                    args.step = int(last_segment[len("step_"):])
                 except ValueError:
                     args.step = 0
             else:
