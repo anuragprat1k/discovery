@@ -463,6 +463,10 @@ def _evaluate_tinker(args, df) -> dict:
 
     remaining = [i for i in range(n_problems) if i not in partial]
 
+    # Track how many problems we've seen per correctness bucket
+    # so we only save traces for every 10th problem in each bucket
+    bucket_counts: dict[int, int] = {}
+
     pbar = progress(remaining, total=n_problems, desc="Problems", initial=n_done)
     for idx in pbar:
         problem = problems[idx]
@@ -486,16 +490,20 @@ def _evaluate_tinker(args, df) -> dict:
         token_counts = [len(seq.tokens) for seq in result.sequences]
 
         scores = _score_problem(completions, gt, token_counts=token_counts)
+        c = scores["correct_count"]
 
-        # Save a few sample traces for inspection (first 3 completions)
-        traces = []
-        extracted = [extract_boxed_answer(c) for c in completions]
-        for i in range(min(3, len(completions))):
-            traces.append({
-                "completion": completions[i][:2000],  # truncate for storage
-                "extracted_answer": extracted[i],
-                "correct": extracted[i] is not None and answers_match(extracted[i], gt),
-            })
+        # Save traces for every 10th problem per correctness bucket
+        bucket_counts[c] = bucket_counts.get(c, 0) + 1
+        traces = None
+        if bucket_counts[c] % 10 == 1:  # 1st, 11th, 21st, ... in each bucket
+            extracted = [extract_boxed_answer(comp) for comp in completions]
+            traces = []
+            for i in range(min(3, len(completions))):
+                traces.append({
+                    "completion": completions[i][:2000],
+                    "extracted_answer": extracted[i],
+                    "correct": extracted[i] is not None and answers_match(extracted[i], gt),
+                })
 
         record = {
             "idx": idx,
@@ -503,8 +511,9 @@ def _evaluate_tinker(args, df) -> dict:
             "ground_truth": gt,
             "prompt_tokens": len(prompt_token_ids),
             **scores,
-            "traces": traces,
         }
+        if traces is not None:
+            record["traces"] = traces
         _append_result(sidecar, record)
         partial[idx] = record
 
