@@ -136,9 +136,13 @@ def init_tinker_clients(args):
 
     ref_sampling_client = None
     if args.reward_type == "prime":
-        print(f"[tinker] PRIME mode: creating frozen reference sampling client ...")
-        ref_sampling_client = service.create_sampling_client(
-            base_model=args.model,
+        # Use the initial (untrained) weights as the frozen reference model.
+        # This avoids allocating a separate base model — the LoRA weights are
+        # zero-initialized, so at step 0 the policy equals the base model.
+        print(f"[tinker] PRIME mode: creating frozen reference sampling client "
+              f"(from initial weights) ...")
+        ref_sampling_client = training_client.save_weights_and_get_sampling_client(
+            name="ref_frozen"
         )
         print(f"[tinker] Reference sampling client ready.")
 
