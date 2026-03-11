@@ -210,3 +210,38 @@ Verified: `import vllm, trl, bitsandbytes, datasets` → OK
 - By level (pass@64): L1=0.882, L2=0.861, L3=0.911, L4=0.714, L5=0.509
 - answer_entropy: 0.248 | mean_correct_per_problem: 36.35/64
 - Result file: results/binary/step_0000.json
+
+---
+
+### 2026-03-11 — E4: PRIME Implicit PRM Training & Eval
+
+**Branch**: `exp/E4-prime-implicit-prm`
+**Training run ID**: `e6a23bd2-11fe-5404-ba73-24528a9bfa26:train:0`
+
+**Implementation**: Added `--reward_type prime` to `train_tinker.py`. For each token in a completion, computes implicit reward as `β * (log π_policy(token) - log π_ref(token))`. The reference model is the frozen initial weights (LoRA weights zero-initialized at step 0). These token-level implicit rewards are added to the group-normalized advantages, giving dense credit assignment without any auxiliary model.
+
+**Key design decisions**:
+- Reference sampling client created via `training_client.save_weights_and_get_sampling_client(name="ref_frozen")` at step 0 (LoRA weights are zero → equals base model)
+- Implicit rewards *added to* completion-level advantages (not replacing them), so binary outcome signal is preserved
+- `prime_beta=0.1` (default)
+
+**Training** (150 steps, Qwen/Qwen3-8B, Tinker API):
+- Mean reward (steps 1-50): 0.474
+- Mean reward (steps 51-100): 0.530
+- Mean reward (steps 101-150): 0.497
+- Mean implicit reward (steps 1-50): 2.4e-5
+- Mean implicit reward (steps 101-150): 3.5e-3 (150× growth — policy diverging from reference)
+- Mean skip rate: 65.8% (groups where all rollouts agree)
+- Stopped at step 150 (user decision to save time)
+
+**Eval** (step 50 only — steps 100/150 run by separate agent):
+- 100 problems, 24 samples, unbiased pass@k estimator
+- pass@1: 0.438 | pass@4: 0.561 | pass@16: 0.635
+- By level (pass@1): L1=0.661, L2=0.625, L3=0.497, L4=0.426, L5=0.177
+- By level (pass@16): L1=0.875, L2=0.778, L3=0.693, L4=0.572, L5=0.457
+- unique_correct_answers: 0.65 | answer_entropy: 0.330
+
+**Observations**:
+- Implicit rewards grew 150× over training, confirming the policy is learning to diverge from the reference at the token level
+- The 65.8% skip rate is high (similar to E1 binary), suggesting PRIME's token-level signal doesn't reduce the fraction of all-agree groups
+- Full comparison with E1 binary baselines deferred to E5 (eval & plot all runs)
