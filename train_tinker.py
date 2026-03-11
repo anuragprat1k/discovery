@@ -76,7 +76,7 @@ def parse_args() -> argparse.Namespace:
         help="Reward function: 'binary' for sparse 0/1, 'dense' for partial-credit, 'rubric' for LLM judge.",
     )
     parser.add_argument("--model", type=str, default="Qwen/Qwen3-8B")
-    parser.add_argument("--judge_model", type=str, default="Qwen/Qwen3-32B",
+    parser.add_argument("--judge_model", type=str, default="Qwen/Qwen3-30B-A3B-Instruct-2507",
                         help="Model to use as LLM judge (only with --reward rubric).")
     parser.add_argument("--max_steps", type=int, default=200)
     parser.add_argument("--group_size", type=int, default=8,
