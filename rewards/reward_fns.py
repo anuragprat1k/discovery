@@ -1,9 +1,10 @@
 """
 TRL-compatible reward functions for GRPO training on MATH problems.
 
-Two reward functions:
+Three reward functions:
   - compute_score_binary: 1.0 if final boxed answer matches ground_truth, else 0.0
   - compute_score_partial_credit: blends binary correctness with intermediate step matching
+  - compute_score_rubric_sync: LLM-as-judge rubric scoring via Tinker SamplingClient
 """
 
 import re
@@ -248,6 +249,129 @@ def compute_score_partial_credit(
 
 
 # ---------------------------------------------------------------------------
+# LLM Rubric reward
+# ---------------------------------------------------------------------------
+
+RUBRIC_PROMPT_TEMPLATE = """\
+You are a math grading assistant. Score the following student solution on a scale from 0.0 to 1.0.
+
+## Problem
+{problem}
+
+## Reference Solution
+{reference_solution}
+
+## Student Solution
+{student_solution}
+
+## Rubric
+Score based on these criteria (each worth 0.25):
+1. **Correct setup**: The student correctly identifies what the problem is asking and sets up the right approach.
+2. **Valid reasoning steps**: Each step logically follows from the previous one, with no invalid leaps.
+3. **Correct intermediate values**: Numerical computations and algebraic manipulations are accurate.
+4. **Correct final answer**: The final boxed answer matches the reference answer.
+
+## Instructions
+Output ONLY a single number between 0.0 and 1.0 (in increments of 0.25). Do not explain.
+
+Score: """
+
+
+def build_rubric_prompt(problem: str, reference_solution: str, student_solution: str) -> str:
+    """Build the rubric evaluation prompt for the LLM judge."""
+    return RUBRIC_PROMPT_TEMPLATE.format(
+        problem=problem,
+        reference_solution=reference_solution,
+        student_solution=student_solution,
+    )
+
+
+def parse_rubric_score(judge_output: str) -> float:
+    """Parse a 0-1 score from the judge's output text.
+
+    Looks for the first number in [0, 1] (float or fraction). Falls back to 0.0.
+    """
+    text = judge_output.strip()
+
+    # Try to find a decimal like 0.75, 1.0, 0.0, etc.
+    match = re.search(r'\b([01](?:\.\d+)?)\b', text)
+    if match:
+        val = float(match.group(1))
+        if 0.0 <= val <= 1.0:
+            return val
+
+    # Try fraction like 3/4
+    frac_match = re.search(r'\b(\d+)\s*/\s*(\d+)\b', text)
+    if frac_match:
+        num, den = int(frac_match.group(1)), int(frac_match.group(2))
+        if den > 0:
+            val = num / den
+            if 0.0 <= val <= 1.0:
+                return val
+
+    return 0.0
+
+
+def compute_score_rubric_sync(
+    completions: list[str],
+    ground_truth: list[str],
+    solution: list[str],
+    problem: list[str],
+    judge_client,
+    tokenizer,
+) -> list[float]:
+    """Score completions using an LLM judge via Tinker SamplingClient.
+
+    Launches all judge calls as async futures, then collects results.
+    Falls back to binary scoring if judge fails for a sample.
+
+    Args:
+        completions: model completions to score
+        ground_truth: reference answers (for binary fallback)
+        solution: reference solutions (for rubric context)
+        problem: original problem text (for rubric context)
+        judge_client: Tinker SamplingClient for the judge model
+        tokenizer: tokenizer for the judge model
+    """
+    import tinker
+
+    # Launch all judge calls as futures
+    futures = []
+    for comp, sol, prob in zip(completions, solution, problem):
+        rubric_prompt = build_rubric_prompt(
+            problem=prob,
+            reference_solution=sol,
+            student_solution=comp[:3000],  # truncate to avoid exceeding context
+        )
+        prompt_tokens = tokenizer.encode(rubric_prompt, add_special_tokens=False)
+        prompt_input = tinker.ModelInput.from_ints(prompt_tokens)
+        future = judge_client.sample(
+            prompt=prompt_input,
+            num_samples=1,
+            sampling_params=tinker.SamplingParams(
+                max_tokens=32,  # only need a single number
+                temperature=0.0,
+            ),
+        )
+        futures.append(future)
+
+    # Collect results
+    binary_scores = compute_score_binary(completions, ground_truth)
+    scores = []
+    for i, future in enumerate(futures):
+        try:
+            result = future.result()
+            judge_text = tokenizer.decode(result.sequences[0].tokens, skip_special_tokens=True)
+            score = parse_rubric_score(judge_text)
+        except Exception:
+            # Fallback to binary on any judge failure
+            score = binary_scores[i]
+        scores.append(score)
+
+    return scores
+
+
+# ---------------------------------------------------------------------------
 # Unit tests
 # ---------------------------------------------------------------------------
 
@@ -332,5 +456,31 @@ if __name__ == '__main__':
     assert 3.5 in nums, f"Expected 3.5 in {nums}"
     assert 3.14 in nums, f"Expected 3.14 in {nums}"
     print("extract_numbers: OK")
+
+    # --- Rubric prompt construction tests ---
+    print("\n=== Rubric reward tests ===")
+
+    rubric_prompt = build_rubric_prompt(
+        problem="What is 6 * 7?",
+        reference_solution="6 * 7 = 42",
+        student_solution="The answer is 42.",
+    )
+    assert "What is 6 * 7?" in rubric_prompt
+    assert "6 * 7 = 42" in rubric_prompt
+    assert "The answer is 42." in rubric_prompt
+    assert "Score: " in rubric_prompt
+    print("build_rubric_prompt: OK")
+
+    # parse_rubric_score
+    assert parse_rubric_score("0.75") == 0.75
+    assert parse_rubric_score("1.0") == 1.0
+    assert parse_rubric_score("0.0") == 0.0
+    assert parse_rubric_score("Score: 0.5") == 0.5
+    assert parse_rubric_score("0.25\n") == 0.25
+    assert parse_rubric_score("3/4") == 0.75
+    assert parse_rubric_score("The score is 0.5 out of 1.") == 0.5
+    assert parse_rubric_score("garbage text") == 0.0
+    assert parse_rubric_score("2.5") == 0.0  # out of range
+    print("parse_rubric_score: OK")
 
     print("\nAll tests passed.")
