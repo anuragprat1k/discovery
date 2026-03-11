@@ -51,6 +51,30 @@ Find an experiment or task with status `TODO`. Check it's not claimed (no branch
 - PR body: summary of findings, key metrics, issues encountered, go/no-go assessment if applicable
 - Do NOT merge — leave for human review
 
+### Step 6: Post to Discussions
+- After the PR is created, post a summary to GitHub Discussions so all repo watchers are notified
+- Use the "Announcements" category (`DIC_kwDORjlqgs4C4K3W`)
+- Command:
+  ```
+  /Users/aragun/bin/gh api graphql -f query='mutation($repoId:ID!,$catId:ID!,$title:String!,$body:String!){createDiscussion(input:{repositoryId:$repoId,categoryId:$catId,title:$title,body:$body}){discussion{url}}}' -f repoId='R_kgDORjlqgg' -f catId='DIC_kwDORjlqgs4C4K3W' -f title='<title>' -f body='<body>'
+  ```
+- Title: `[<ID>] <Experiment Name> — completed`
+- Body format:
+  ```
+  ## What was done
+  <1-2 sentence summary of the experiment and method used>
+
+  ## Key results
+  <Bullet list of metrics: pass@1, pass@64, wall-clock time, notable observations>
+
+  ## What it means
+  <1-2 sentences interpreting results in context of the discovery vs sharpening hypothesis>
+
+  ## Links
+  - PR: <pr_url>
+  - Logbook entry: link to logbook.md on the branch
+  ```
+
 ## Coordination Protocol
 
 - Branch existence on remote = distributed lock
