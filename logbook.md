@@ -202,6 +202,17 @@ Verified: `import vllm, trl, bitsandbytes, datasets` → OK
 
 ---
 
+### 2026-03-11 — Phase 4: Training (200 steps, binary reward)
+
+- Wall clock: 3h 02m (10,940s) | ~55s/step avg
+- wandb run: https://wandb.ai/anuragprateek/grpo-math/runs/gbsrvap8
+- Checkpoints saved: checkpoint-50, checkpoint-100, checkpoint-150, checkpoint-200, final
+- reward/mean at checkpoint steps (single-step sample — binary oscillates by problem difficulty):
+  - step 50: 0.1250 | step 100: 0.0000 | step 150: 0.0000 | step 200: 1.0000
+- KL stayed low throughout (0.01–0.57), no policy collapse
+- completions/clipped_ratio mostly 0 (model finishing thoughts within 1024 tokens)
+- train_loss (cumulative): 54,436,152 — large number reflects cumulative token count scaling
+
 ### 2026-03-10 — Phase 3: Step-0 Baseline Eval
 
 - Wall clock: ~57 min (200 problems × 64 samples, vllm, Qwen3-4B-Instruct-2507)

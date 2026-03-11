@@ -6,3 +6,5 @@ checkpoints/
 *.pt
 *.safetensors
 .env
+wandb/
+results/sanity/

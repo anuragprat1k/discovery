@@ -1,0 +1,39 @@
+Run: binary  |  Step: 100
+Device: cpu
+Loading eval parquet: data/eval_200.parquet
+/usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+INFO 03-11 04:09:31 [importing.py:44] Triton is installed but 0 active driver(s) found (expected 1). Disabling Triton to prevent runtime errors.
+INFO 03-11 04:09:31 [importing.py:68] Triton not installed or not compatible; certain GPU-related functions will not be available.
+/usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+W0311 04:09:31.713000 117830 torch/utils/cpp_extension.py:118] No CUDA runtime is found, using CUDA_HOME='/usr/local/cuda'
+Loading vllm engine for: checkpoints/binary/checkpoint-100
+INFO 03-11 04:09:33 [utils.py:238] non-default args: {'trust_remote_code': True, 'dtype': 'bfloat16', 'max_model_len': 4096, 'disable_log_stats': True, 'enforce_eager': True, 'model': 'checkpoints/binary/checkpoint-100'}
+Traceback (most recent call last):
+  File "/workspace/discovery/eval/pass_at_k.py", line 619, in <module>
+    main()
+  File "/workspace/discovery/eval/pass_at_k.py", line 597, in main
+    result = evaluate(args)
+             ^^^^^^^^^^^^^^
+  File "/workspace/discovery/eval/pass_at_k.py", line 357, in evaluate
+    return _evaluate_vllm(args, df)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/discovery/eval/pass_at_k.py", line 253, in _evaluate_vllm
+    llm = LLM(
+          ^^^^
+  File "/tmp/vllm_src/vllm/entrypoints/llm.py", line 379, in __init__
+    self.llm_engine = LLMEngine.from_engine_args(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/vllm_src/vllm/v1/engine/llm_engine.py", line 169, in from_engine_args
+    vllm_config = engine_args.create_engine_config(usage_context)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/vllm_src/vllm/engine/arg_utils.py", line 1457, in create_engine_config
+    device_config = DeviceConfig(device=cast(Device, current_platform.device_type))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_dataclasses.py", line 121, in __init__
+    s.__pydantic_validator__.validate_python(ArgsKwargs(args, kwargs), self_instance=s)
+  File "/tmp/vllm_src/vllm/config/device.py", line 73, in __post_init__
+    self.device = torch.device(self.device_type)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Device string must not be empty
