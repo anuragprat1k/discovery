@@ -253,19 +253,21 @@ def compute_score_partial_credit(
 # ---------------------------------------------------------------------------
 
 RUBRIC_PROMPT_TEMPLATE = """\
-You are a math grading assistant. Score the student solution.
+You are a strict math grading assistant. Score the student solution harshly.
 
 Problem: {problem}
-Reference answer: {reference_solution}
-Student solution: {student_solution}
+Correct answer: {reference_solution}
+Student attempt: {student_solution}
 
-Criteria (0.25 each):
-1. Correct setup (right approach)
-2. Valid reasoning (logical steps)
-3. Correct intermediates (accurate computations)
-4. Correct final answer (matches reference)
+Grade strictly on these criteria (0.25 each). Give 0 for a criterion unless it is FULLY met:
+1. Correct approach — identified the right method, not just any method
+2. Logically valid steps — every step follows rigorously, no hand-waving
+3. Accurate computations — all arithmetic and algebra is correct
+4. Correct final answer — the boxed answer exactly matches the reference
 
-Reply with ONLY a number: 0.0, 0.25, 0.5, 0.75, or 1.0
+Common mistakes that MUST reduce the score: wrong intermediate values, skipped steps, incorrect final answer, circular reasoning, or lucky guesses.
+
+Reply with ONLY one number: 0.0, 0.25, 0.5, 0.75, or 1.0
 
 """
 
@@ -348,18 +350,24 @@ def compute_score_rubric_sync(
         )
         futures.append(future)
 
-    # Collect results
+    # Collect results — blend rubric with binary for discrimination
+    # Final score = 0.5 * binary + 0.5 * rubric
+    # This ensures wrong-answer completions are penalized even if the judge
+    # gives partial credit, and creates variance within groups.
     binary_scores = compute_score_binary(completions, ground_truth)
     scores = []
     for i, future in enumerate(futures):
         try:
             result = future.result()
             judge_text = tokenizer.decode(result.sequences[0].tokens, skip_special_tokens=True)
-            score = parse_rubric_score(judge_text)
+            rubric_score = parse_rubric_score(judge_text)
         except Exception:
             # Fallback to binary on any judge failure
-            score = binary_scores[i]
-        scores.append(score)
+            rubric_score = binary_scores[i]
+        # Blend: binary component ensures correct/incorrect separation,
+        # rubric component adds process-level gradient
+        blended = 0.5 * binary_scores[i] + 0.5 * rubric_score
+        scores.append(blended)
 
     return scores
 
