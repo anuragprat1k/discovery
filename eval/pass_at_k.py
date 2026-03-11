@@ -14,7 +14,7 @@ Usage (local checkpoint):
         --step 50 \
         --n_samples 64 \
         --temperature 1.0 \
-        --max_new_tokens 1024
+        --max_new_tokens 3072
 
 Usage (Tinker server-side checkpoint):
     python eval/pass_at_k.py \
@@ -665,8 +665,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--max_new_tokens",
         type=int,
-        default=1024,
-        help="Maximum new tokens per generation (default: 1024).",
+        default=3072,
+        help="Maximum new tokens per generation (default: 3072).",
     )
     parser.add_argument(
         "--batch_size",

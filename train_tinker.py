@@ -81,7 +81,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--lr", type=float, default=1e-4)
     parser.add_argument("--beta", type=float, default=0.04,
                         help="KL penalty coefficient.")
-    parser.add_argument("--max_completion_tokens", type=int, default=1024)
+    parser.add_argument("--max_completion_tokens", type=int, default=3072)
     parser.add_argument("--temperature", type=float, default=1.0)
     parser.add_argument("--save_steps", type=int, default=50,
                         help="Save checkpoint every N steps.")
