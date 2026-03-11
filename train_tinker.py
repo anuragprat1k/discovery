@@ -76,7 +76,7 @@ def parse_args() -> argparse.Namespace:
         help="Reward function: 'binary' for sparse 0/1, 'dense' for partial-credit, 'rubric' for LLM judge.",
     )
     parser.add_argument("--model", type=str, default="Qwen/Qwen3-8B")
-    parser.add_argument("--judge_model", type=str, default="Qwen/Qwen3-8B",
+    parser.add_argument("--judge_model", type=str, default="Qwen/Qwen3-32B",
                         help="Model to use as LLM judge (only with --reward rubric).")
     parser.add_argument("--max_steps", type=int, default=200)
     parser.add_argument("--group_size", type=int, default=8,
@@ -278,7 +278,7 @@ def grpo_step(
             prompt_messages = row["prompt"]
             if isinstance(prompt_messages, str):
                 prompt_messages = json.loads(prompt_messages)
-            problem_text = prompt_messages[-1]["content"] if prompt_messages else ""
+            problem_text = prompt_messages[-1]["content"] if len(prompt_messages) > 0 else ""
             problems.extend([problem_text] * args.group_size)
         rewards = compute_score_rubric_sync(
             completion_texts,

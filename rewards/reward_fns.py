@@ -253,28 +253,21 @@ def compute_score_partial_credit(
 # ---------------------------------------------------------------------------
 
 RUBRIC_PROMPT_TEMPLATE = """\
-You are a math grading assistant. Score the following student solution on a scale from 0.0 to 1.0.
+You are a math grading assistant. Score the student solution.
 
-## Problem
-{problem}
+Problem: {problem}
+Reference answer: {reference_solution}
+Student solution: {student_solution}
 
-## Reference Solution
-{reference_solution}
+Criteria (0.25 each):
+1. Correct setup (right approach)
+2. Valid reasoning (logical steps)
+3. Correct intermediates (accurate computations)
+4. Correct final answer (matches reference)
 
-## Student Solution
-{student_solution}
+Reply with ONLY a number: 0.0, 0.25, 0.5, 0.75, or 1.0
 
-## Rubric
-Score based on these criteria (each worth 0.25):
-1. **Correct setup**: The student correctly identifies what the problem is asking and sets up the right approach.
-2. **Valid reasoning steps**: Each step logically follows from the previous one, with no invalid leaps.
-3. **Correct intermediate values**: Numerical computations and algebraic manipulations are accurate.
-4. **Correct final answer**: The final boxed answer matches the reference answer.
-
-## Instructions
-Output ONLY a single number between 0.0 and 1.0 (in increments of 0.25). Do not explain.
-
-Score: """
+"""
 
 
 def build_rubric_prompt(problem: str, reference_solution: str, student_solution: str) -> str:
@@ -468,7 +461,7 @@ if __name__ == '__main__':
     assert "What is 6 * 7?" in rubric_prompt
     assert "6 * 7 = 42" in rubric_prompt
     assert "The answer is 42." in rubric_prompt
-    assert "Score: " in rubric_prompt
+    assert "0.0, 0.25, 0.5, 0.75, or 1.0" in rubric_prompt
     print("build_rubric_prompt: OK")
 
     # parse_rubric_score
