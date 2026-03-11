@@ -46,6 +46,9 @@ def _normalize_answer(s: str) -> str:
     # Strip surrounding $ signs
     s = s.strip('$').strip()
 
+    # Normalize \dfrac, \tfrac -> \frac before conversion
+    s = re.sub(r'\\[dt]frac', r'\\frac', s)
+
     # Convert \frac{a}{b} -> a/b  (handle simple one-level fracs)
     frac_pattern = re.compile(r'\\frac\{([^{}]+)\}\{([^{}]+)\}')
     s = frac_pattern.sub(lambda m: f"{m.group(1).strip()}/{m.group(2).strip()}", s)
