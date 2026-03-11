@@ -6,7 +6,7 @@ unbiased pass@k estimator from the Codex paper:
 
 where n = total samples per problem, c = correct samples, k = target k.
 
-Usage:
+Usage (local checkpoint):
     python eval/pass_at_k.py \
         --checkpoint_dir checkpoints/binary/step_0050 \
         --eval_parquet data/eval_200.parquet \
@@ -15,6 +15,14 @@ Usage:
         --n_samples 64 \
         --temperature 1.0 \
         --max_new_tokens 1024
+
+Usage (Tinker server-side checkpoint):
+    python eval/pass_at_k.py \
+        --use_tinker \
+        --tinker_checkpoint step_0050 \
+        --eval_parquet data/eval_200.parquet \
+        --output_dir results/tinker \
+        --n_samples 64
 """
 
 import argparse
@@ -334,6 +342,113 @@ def _evaluate_vllm(args, df) -> dict:
     }
 
 
+def _evaluate_tinker(args, df) -> dict:
+    """Evaluation path using Tinker SamplingClient for server-side checkpoints."""
+    from dotenv import load_dotenv
+
+    load_dotenv()
+
+    import tinker
+    from tinker import ServiceClient
+
+    problems = df["problem"].tolist()
+    ground_truths = df["ground_truth"].tolist()
+    levels = df["level"].tolist()
+    n_problems = len(problems)
+
+    print(f"[tinker] Connecting to Tinker API ...", flush=True)
+    service = ServiceClient()
+
+    print(f"[tinker] Restoring checkpoint: {args.tinker_checkpoint}", flush=True)
+    training_client = service.create_training_client_from_state(
+        name=args.tinker_checkpoint
+    )
+    sampling_client = training_client.save_weights_and_get_sampling_client(
+        name=f"eval_{args.tinker_checkpoint}"
+    )
+    tokenizer = training_client.get_tokenizer()
+    print(f"[tinker] Sampling client ready.", flush=True)
+
+    sampling_params = tinker.SamplingParams(
+        max_tokens=args.max_new_tokens,
+        temperature=args.temperature,
+    )
+
+    ks = [1, 4, 16, 64]
+    correct_counts: list[int] = []
+    unique_correct_per_problem: list[float] = []
+    entropy_per_problem: list[float] = []
+    level_correct: dict[str, list[int]] = {}
+
+    pbar = progress(range(n_problems), total=n_problems, desc="Problems")
+    for idx in pbar:
+        problem = problems[idx]
+        gt = ground_truths[idx]
+        level = str(levels[idx])
+
+        prompt = _build_prompt(problem, tokenizer)
+        prompt_tokens = tokenizer.encode(prompt, add_special_tokens=False)
+        prompt_input = tinker.ModelInput.from_ints(prompt_tokens)
+
+        result = sampling_client.sample(
+            prompt=prompt_input,
+            num_samples=args.n_samples,
+            sampling_params=sampling_params,
+        ).result()
+
+        completions = [
+            tokenizer.decode(seq.tokens, skip_special_tokens=True)
+            for seq in result.sequences
+        ]
+
+        extracted: list = [extract_boxed_answer(c) for c in completions]
+        is_correct: list[bool] = [
+            pred is not None and answers_match(pred, gt) for pred in extracted
+        ]
+        c = sum(is_correct)
+        correct_counts.append(c)
+
+        correct_answers = [
+            pred for pred, ok in zip(extracted, is_correct) if ok and pred is not None
+        ]
+        unique_correct_per_problem.append(float(len(set(correct_answers))))
+
+        all_answers = [pred if pred is not None else "__NO_ANSWER__" for pred in extracted]
+        entropy_per_problem.append(_entropy(all_answers))
+
+        if level not in level_correct:
+            level_correct[level] = []
+        level_correct[level].append(c)
+
+    n = args.n_samples
+    pass_at_k_overall = compute_pass_at_k_stats(correct_counts, n, ks)
+
+    pass_at_k_by_level: dict[str, dict[str, float | None]] = {}
+    for k in ks:
+        pass_at_k_by_level[str(k)] = {}
+        for lvl, counts in sorted(level_correct.items()):
+            val = compute_pass_at_k_stats(counts, n, [k])[k]
+            pass_at_k_by_level[str(k)][lvl] = val
+
+    mean_correct = sum(correct_counts) / n_problems
+    mean_unique_correct = sum(unique_correct_per_problem) / n_problems
+    mean_entropy = sum(entropy_per_problem) / n_problems
+
+    return {
+        "step": args.step,
+        "run": args.run_name,
+        "n_problems": n_problems,
+        "n_samples": n,
+        "eval_method": "tinker",
+        "tinker_checkpoint": args.tinker_checkpoint,
+        "pass_at_k": {str(k): pass_at_k_overall[k] for k in ks},
+        "pass_at_k_by_level": pass_at_k_by_level,
+        "unique_correct_answers": mean_unique_correct,
+        "answer_entropy": mean_entropy,
+        "mean_correct_per_problem": mean_correct,
+    }
+
+
 def evaluate(args) -> dict:
     import pandas as pd
     import torch
@@ -352,7 +467,9 @@ def evaluate(args) -> dict:
     if "level" not in df.columns:
         df["level"] = -1
 
-    # --- Dispatch to vllm path if requested ---
+    # --- Dispatch to tinker or vllm path if requested ---
+    if getattr(args, "use_tinker", False):
+        return _evaluate_tinker(args, df)
     if getattr(args, "use_vllm", False):
         return _evaluate_vllm(args, df)
 
@@ -508,8 +625,8 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--checkpoint_dir",
-        required=True,
-        help="Path to the HuggingFace checkpoint directory.",
+        default=None,
+        help="Path to the HuggingFace checkpoint directory (not required with --use_tinker).",
     )
     parser.add_argument(
         "--eval_parquet",
@@ -569,14 +686,46 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Use vllm for fast batched generation (requires vllm installed).",
     )
+    parser.add_argument(
+        "--use_tinker",
+        action="store_true",
+        help="Use Tinker API for evaluation (server-side checkpoints).",
+    )
+    parser.add_argument(
+        "--tinker_checkpoint",
+        type=str,
+        default=None,
+        help="Tinker checkpoint name to restore (e.g. 'step_0050'). Required with --use_tinker.",
+    )
     args = parser.parse_args()
+
+    # Validate tinker args
+    if args.use_tinker:
+        if args.tinker_checkpoint is None:
+            parser.error("--tinker_checkpoint is required when using --use_tinker")
+    elif args.checkpoint_dir is None:
+        parser.error("--checkpoint_dir is required (unless using --use_tinker)")
 
     # Fill in inferred defaults
     if args.run_name is None:
-        args.run_name = _infer_run_name(args.checkpoint_dir)
+        if args.use_tinker:
+            args.run_name = "tinker"
+        else:
+            args.run_name = _infer_run_name(args.checkpoint_dir)
 
     if args.step is None:
-        args.step = _infer_step(args.checkpoint_dir)
+        if args.use_tinker and args.tinker_checkpoint is not None:
+            # Try to parse step from checkpoint name like "step_0050"
+            ckpt = args.tinker_checkpoint
+            if ckpt.startswith("step_"):
+                try:
+                    args.step = int(ckpt[len("step_"):])
+                except ValueError:
+                    args.step = 0
+            else:
+                args.step = 0
+        else:
+            args.step = _infer_step(args.checkpoint_dir)
 
     if args.device is None:
         try:
