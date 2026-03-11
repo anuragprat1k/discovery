@@ -164,7 +164,7 @@ def _append_result(sidecar: Path, record: dict):
         f.write(json.dumps(record) + "\n")
 
 
-def _score_problem(completions: list[str], gt: str) -> dict:
+def _score_problem(completions: list[str], gt: str, token_counts: list[int] | None = None) -> dict:
     """Score a list of completions against ground truth. Returns metrics dict."""
     extracted = [extract_boxed_answer(c) for c in completions]
     is_correct = [
@@ -178,11 +178,14 @@ def _score_problem(completions: list[str], gt: str) -> dict:
 
     all_answers = [pred if pred is not None else "__NO_ANSWER__" for pred in extracted]
 
-    return {
+    result = {
         "correct_count": c,
         "unique_correct": len(set(correct_answers)),
         "entropy": _entropy(all_answers),
     }
+    if token_counts is not None:
+        result["completion_tokens"] = sum(token_counts)
+    return result
 
 
 def _aggregate_results(
@@ -215,6 +218,21 @@ def _aggregate_results(
             val = compute_pass_at_k_stats(counts, n_samples, [k])[k]
             pass_at_k_by_level[str(k)][lvl] = val
 
+    # Token usage stats (if available)
+    token_stats = {}
+    prompt_tokens_list = [r.get("prompt_tokens", 0) for r in records]
+    completion_tokens_list = [r.get("completion_tokens", 0) for r in records]
+    total_prompt = sum(prompt_tokens_list)
+    total_completion = sum(completion_tokens_list)
+    if total_prompt > 0 or total_completion > 0:
+        token_stats = {
+            "total_prompt_tokens": total_prompt,
+            "total_completion_tokens": total_completion,
+            "total_tokens": total_prompt + total_completion,
+            "mean_prompt_tokens_per_problem": total_prompt / n_problems,
+            "mean_completion_tokens_per_sample": total_completion / (n_problems * n_samples) if n_problems * n_samples > 0 else 0,
+        }
+
     return {
         "n_problems": n_problems,
         "n_samples": n_samples,
@@ -223,6 +241,7 @@ def _aggregate_results(
         "unique_correct_answers": sum(unique_correct) / n_problems,
         "answer_entropy": sum(entropies) / n_problems,
         "mean_correct_per_problem": sum(correct_counts) / n_problems,
+        **token_stats,
     }
 
 
@@ -451,8 +470,8 @@ def _evaluate_tinker(args, df) -> dict:
         level = str(levels[idx])
 
         prompt = _build_prompt(problem, tokenizer)
-        prompt_tokens = tokenizer.encode(prompt, add_special_tokens=False)
-        prompt_input = tinker.types.ModelInput.from_ints(prompt_tokens)
+        prompt_token_ids = tokenizer.encode(prompt, add_special_tokens=False)
+        prompt_input = tinker.types.ModelInput.from_ints(prompt_token_ids)
 
         result = sampling_client.sample(
             prompt=prompt_input,
@@ -464,9 +483,15 @@ def _evaluate_tinker(args, df) -> dict:
             tokenizer.decode(seq.tokens, skip_special_tokens=True)
             for seq in result.sequences
         ]
+        token_counts = [len(seq.tokens) for seq in result.sequences]
 
-        scores = _score_problem(completions, gt)
-        record = {"idx": idx, "level": level, **scores}
+        scores = _score_problem(completions, gt, token_counts=token_counts)
+        record = {
+            "idx": idx,
+            "level": level,
+            "prompt_tokens": len(prompt_token_ids),
+            **scores,
+        }
         _append_result(sidecar, record)
         partial[idx] = record
 
