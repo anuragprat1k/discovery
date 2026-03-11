@@ -6,23 +6,23 @@ unbiased pass@k estimator from the Codex paper:
 
 where n = total samples per problem, c = correct samples, k = target k.
 
+Supports incremental evaluation: per-problem results are saved to a JSONL
+sidecar file after each problem. If interrupted, re-running the same command
+resumes from where it left off.
+
 Usage (local checkpoint):
     python eval/pass_at_k.py \
         --checkpoint_dir checkpoints/binary/step_0050 \
         --eval_parquet data/eval_200.parquet \
         --output_dir results/binary \
-        --step 50 \
-        --n_samples 64 \
-        --temperature 1.0 \
-        --max_new_tokens 3072
+        --step 50
 
 Usage (Tinker server-side checkpoint):
     python eval/pass_at_k.py \
         --use_tinker \
         --tinker_path "tinker://run-id/weights/step_0050" \
         --eval_parquet data/eval_200.parquet \
-        --output_dir results/tinker \
-        --n_samples 64
+        --output_dir results/tinker
 """
 
 import argparse
@@ -47,8 +47,8 @@ from rewards.reward_fns import extract_boxed_answer, answers_match  # noqa: E402
 try:
     from tqdm import tqdm as _tqdm
 
-    def progress(iterable, total=None, desc=""):
-        return _tqdm(iterable, total=total, desc=desc)
+    def progress(iterable, total=None, desc="", initial=0):
+        return _tqdm(iterable, total=total, desc=desc, initial=initial)
 
 except ImportError:
     _tqdm = None
@@ -56,11 +56,11 @@ except ImportError:
     class _SimplePrinter:
         """Minimal iterator wrapper that prints progress every 10 items."""
 
-        def __init__(self, iterable, total=None, desc=""):
+        def __init__(self, iterable, total=None, desc="", initial=0):
             self._it = iter(iterable)
             self._total = total
             self._desc = desc
-            self._n = 0
+            self._n = initial
 
         def __iter__(self):
             return self
@@ -73,8 +73,8 @@ except ImportError:
                 print(f"  {self._desc}: {self._n}{suffix}", flush=True)
             return val
 
-    def progress(iterable, total=None, desc=""):
-        return _SimplePrinter(iterable, total=total, desc=desc)
+    def progress(iterable, total=None, desc="", initial=0):
+        return _SimplePrinter(iterable, total=total, desc=desc, initial=initial)
 
 
 # ---------------------------------------------------------------------------
@@ -132,6 +132,98 @@ def _entropy(answers: list[str]) -> float:
         if p > 0:
             h -= p * math.log2(p)
     return h
+
+
+# ---------------------------------------------------------------------------
+# Incremental results (JSONL sidecar)
+# ---------------------------------------------------------------------------
+
+def _sidecar_path(out_dir: Path, step: int) -> Path:
+    """Path to the per-problem JSONL sidecar file."""
+    return out_dir / f"step_{step:04d}.partial.jsonl"
+
+
+def _load_partial(sidecar: Path) -> dict[int, dict]:
+    """Load already-evaluated problem results from JSONL. Returns {idx: record}."""
+    results = {}
+    if not sidecar.exists():
+        return results
+    with open(sidecar) as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            rec = json.loads(line)
+            results[rec["idx"]] = rec
+    return results
+
+
+def _append_result(sidecar: Path, record: dict):
+    """Append one problem result to the JSONL sidecar."""
+    with open(sidecar, "a") as f:
+        f.write(json.dumps(record) + "\n")
+
+
+def _score_problem(completions: list[str], gt: str) -> dict:
+    """Score a list of completions against ground truth. Returns metrics dict."""
+    extracted = [extract_boxed_answer(c) for c in completions]
+    is_correct = [
+        pred is not None and answers_match(pred, gt) for pred in extracted
+    ]
+    c = sum(is_correct)
+
+    correct_answers = [
+        pred for pred, ok in zip(extracted, is_correct) if ok and pred is not None
+    ]
+
+    all_answers = [pred if pred is not None else "__NO_ANSWER__" for pred in extracted]
+
+    return {
+        "correct_count": c,
+        "unique_correct": len(set(correct_answers)),
+        "entropy": _entropy(all_answers),
+    }
+
+
+def _aggregate_results(
+    partial: dict[int, dict],
+    n_samples: int,
+    ks: list[int],
+) -> dict:
+    """Aggregate per-problem partial results into final summary."""
+    records = [partial[idx] for idx in sorted(partial.keys())]
+
+    correct_counts = [r["correct_count"] for r in records]
+    unique_correct = [r["unique_correct"] for r in records]
+    entropies = [r["entropy"] for r in records]
+
+    n_problems = len(records)
+    pass_at_k_overall = compute_pass_at_k_stats(correct_counts, n_samples, ks)
+
+    # Per-level
+    level_correct: dict[str, list[int]] = {}
+    for r in records:
+        lvl = str(r["level"])
+        if lvl not in level_correct:
+            level_correct[lvl] = []
+        level_correct[lvl].append(r["correct_count"])
+
+    pass_at_k_by_level: dict[str, dict[str, float | None]] = {}
+    for k in ks:
+        pass_at_k_by_level[str(k)] = {}
+        for lvl, counts in sorted(level_correct.items()):
+            val = compute_pass_at_k_stats(counts, n_samples, [k])[k]
+            pass_at_k_by_level[str(k)][lvl] = val
+
+    return {
+        "n_problems": n_problems,
+        "n_samples": n_samples,
+        "pass_at_k": {str(k): pass_at_k_overall[k] for k in ks},
+        "pass_at_k_by_level": pass_at_k_by_level,
+        "unique_correct_answers": sum(unique_correct) / n_problems,
+        "answer_entropy": sum(entropies) / n_problems,
+        "mean_correct_per_problem": sum(correct_counts) / n_problems,
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -257,6 +349,15 @@ def _evaluate_vllm(args, df) -> dict:
     levels = df["level"].tolist()
     n_problems = len(problems)
 
+    # Resume support
+    out_dir = Path(args.output_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    sidecar = _sidecar_path(out_dir, args.step)
+    partial = _load_partial(sidecar)
+    n_done = len(partial)
+    if n_done > 0:
+        print(f"Resuming: {n_done}/{n_problems} problems already evaluated.", flush=True)
+
     print(f"Loading vllm engine for: {args.checkpoint_dir}", flush=True)
     llm = LLM(
         model=args.checkpoint_dir,
@@ -279,13 +380,10 @@ def _evaluate_vllm(args, df) -> dict:
         top_p=0.95,
     )
 
-    ks = [1, 4, 16, 64]
-    correct_counts: list[int] = []
-    unique_correct_per_problem: list[float] = []
-    entropy_per_problem: list[float] = []
-    level_correct: dict[str, list[int]] = {}
+    ks = args.ks
+    remaining = [i for i in range(n_problems) if i not in partial]
 
-    pbar = progress(range(n_problems), total=n_problems, desc="Problems")
+    pbar = progress(remaining, total=n_problems, desc="Problems", initial=n_done)
     for idx in pbar:
         problem = problems[idx]
         gt = ground_truths[idx]
@@ -295,51 +393,12 @@ def _evaluate_vllm(args, df) -> dict:
         outputs = llm.generate([prompt], sampling_params)
         completions = [o.text for o in outputs[0].outputs]
 
-        extracted: list = [extract_boxed_answer(c) for c in completions]
-        is_correct: list[bool] = [
-            pred is not None and answers_match(pred, gt) for pred in extracted
-        ]
-        c = sum(is_correct)
-        correct_counts.append(c)
+        scores = _score_problem(completions, gt)
+        record = {"idx": idx, "level": level, **scores}
+        _append_result(sidecar, record)
+        partial[idx] = record
 
-        correct_answers = [
-            pred for pred, ok in zip(extracted, is_correct) if ok and pred is not None
-        ]
-        unique_correct_per_problem.append(float(len(set(correct_answers))))
-
-        all_answers = [pred if pred is not None else "__NO_ANSWER__" for pred in extracted]
-        entropy_per_problem.append(_entropy(all_answers))
-
-        if level not in level_correct:
-            level_correct[level] = []
-        level_correct[level].append(c)
-
-    n = args.n_samples
-    pass_at_k_overall = compute_pass_at_k_stats(correct_counts, n, ks)
-
-    pass_at_k_by_level: dict[str, dict[str, float | None]] = {}
-    for k in ks:
-        pass_at_k_by_level[str(k)] = {}
-        for lvl, counts in sorted(level_correct.items()):
-            val = compute_pass_at_k_stats(counts, n, [k])[k]
-            pass_at_k_by_level[str(k)][lvl] = val
-
-    mean_correct = sum(correct_counts) / n_problems
-    mean_unique_correct = sum(unique_correct_per_problem) / n_problems
-    mean_entropy = sum(entropy_per_problem) / n_problems
-
-    return {
-        "step": args.step,
-        "run": args.run_name,
-        "n_problems": n_problems,
-        "n_samples": n,
-        "eval_method": "vllm",
-        "pass_at_k": {str(k): pass_at_k_overall[k] for k in ks},
-        "pass_at_k_by_level": pass_at_k_by_level,
-        "unique_correct_answers": mean_unique_correct,
-        "answer_entropy": mean_entropy,
-        "mean_correct_per_problem": mean_correct,
-    }
+    return _finalize(args, partial, "vllm")
 
 
 def _evaluate_tinker(args, df) -> dict:
@@ -356,6 +415,15 @@ def _evaluate_tinker(args, df) -> dict:
     levels = df["level"].tolist()
     n_problems = len(problems)
 
+    # Resume support
+    out_dir = Path(args.output_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    sidecar = _sidecar_path(out_dir, args.step)
+    partial = _load_partial(sidecar)
+    n_done = len(partial)
+    if n_done > 0:
+        print(f"Resuming: {n_done}/{n_problems} problems already evaluated.", flush=True)
+
     print(f"[tinker] Connecting to Tinker API ...", flush=True)
     service = ServiceClient()
 
@@ -363,8 +431,10 @@ def _evaluate_tinker(args, df) -> dict:
     training_client = service.create_training_client_from_state(
         path=args.tinker_path
     )
-    sampling_client = training_client.save_weights_and_get_sampling_client()
     tokenizer = training_client.get_tokenizer()
+
+    print(f"[tinker] Creating sampling client ...", flush=True)
+    sampling_client = training_client.save_weights_and_get_sampling_client()
     print(f"[tinker] Sampling client ready.", flush=True)
 
     sampling_params = tinker.SamplingParams(
@@ -372,13 +442,9 @@ def _evaluate_tinker(args, df) -> dict:
         temperature=args.temperature,
     )
 
-    ks = [1, 4, 16, 64]
-    correct_counts: list[int] = []
-    unique_correct_per_problem: list[float] = []
-    entropy_per_problem: list[float] = []
-    level_correct: dict[str, list[int]] = {}
+    remaining = [i for i in range(n_problems) if i not in partial]
 
-    pbar = progress(range(n_problems), total=n_problems, desc="Problems")
+    pbar = progress(remaining, total=n_problems, desc="Problems", initial=n_done)
     for idx in pbar:
         problem = problems[idx]
         gt = ground_truths[idx]
@@ -386,7 +452,7 @@ def _evaluate_tinker(args, df) -> dict:
 
         prompt = _build_prompt(problem, tokenizer)
         prompt_tokens = tokenizer.encode(prompt, add_special_tokens=False)
-        prompt_input = tinker.ModelInput.from_ints(prompt_tokens)
+        prompt_input = tinker.types.ModelInput.from_ints(prompt_tokens)
 
         result = sampling_client.sample(
             prompt=prompt_input,
@@ -399,58 +465,30 @@ def _evaluate_tinker(args, df) -> dict:
             for seq in result.sequences
         ]
 
-        extracted: list = [extract_boxed_answer(c) for c in completions]
-        is_correct: list[bool] = [
-            pred is not None and answers_match(pred, gt) for pred in extracted
-        ]
-        c = sum(is_correct)
-        correct_counts.append(c)
+        scores = _score_problem(completions, gt)
+        record = {"idx": idx, "level": level, **scores}
+        _append_result(sidecar, record)
+        partial[idx] = record
 
-        correct_answers = [
-            pred for pred, ok in zip(extracted, is_correct) if ok and pred is not None
-        ]
-        unique_correct_per_problem.append(float(len(set(correct_answers))))
+    return _finalize(args, partial, "tinker", tinker_path=args.tinker_path)
 
-        all_answers = [pred if pred is not None else "__NO_ANSWER__" for pred in extracted]
-        entropy_per_problem.append(_entropy(all_answers))
 
-        if level not in level_correct:
-            level_correct[level] = []
-        level_correct[level].append(c)
-
-    n = args.n_samples
-    pass_at_k_overall = compute_pass_at_k_stats(correct_counts, n, ks)
-
-    pass_at_k_by_level: dict[str, dict[str, float | None]] = {}
-    for k in ks:
-        pass_at_k_by_level[str(k)] = {}
-        for lvl, counts in sorted(level_correct.items()):
-            val = compute_pass_at_k_stats(counts, n, [k])[k]
-            pass_at_k_by_level[str(k)][lvl] = val
-
-    mean_correct = sum(correct_counts) / n_problems
-    mean_unique_correct = sum(unique_correct_per_problem) / n_problems
-    mean_entropy = sum(entropy_per_problem) / n_problems
-
-    return {
+def _finalize(args, partial, eval_method, tinker_path=None) -> dict:
+    """Build final result dict from partial results."""
+    agg = _aggregate_results(partial, args.n_samples, args.ks)
+    result = {
         "step": args.step,
         "run": args.run_name,
-        "n_problems": n_problems,
-        "n_samples": n,
-        "eval_method": "tinker",
-        "tinker_path": args.tinker_path,
-        "pass_at_k": {str(k): pass_at_k_overall[k] for k in ks},
-        "pass_at_k_by_level": pass_at_k_by_level,
-        "unique_correct_answers": mean_unique_correct,
-        "answer_entropy": mean_entropy,
-        "mean_correct_per_problem": mean_correct,
+        "eval_method": eval_method,
+        **agg,
     }
+    if tinker_path:
+        result["tinker_path"] = tinker_path
+    return result
 
 
 def evaluate(args) -> dict:
     import pandas as pd
-    import torch
-    from transformers import AutoModelForCausalLM, AutoTokenizer
 
     # --- Load eval data ---
     print(f"Loading eval parquet: {args.eval_parquet}", flush=True)
@@ -471,11 +509,24 @@ def evaluate(args) -> dict:
     if getattr(args, "use_vllm", False):
         return _evaluate_vllm(args, df)
 
+    # --- HF Transformers path ---
+    import torch
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+
     problems = df["problem"].tolist()
     ground_truths = df["ground_truth"].tolist()
     levels = df["level"].tolist()
     n_problems = len(problems)
     print(f"  {n_problems} problems loaded.", flush=True)
+
+    # Resume support
+    out_dir = Path(args.output_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    sidecar = _sidecar_path(out_dir, args.step)
+    partial = _load_partial(sidecar)
+    n_done = len(partial)
+    if n_done > 0:
+        print(f"Resuming: {n_done}/{n_problems} problems already evaluated.", flush=True)
 
     # --- Load model ---
     print(f"Loading checkpoint: {args.checkpoint_dir}", flush=True)
@@ -496,15 +547,9 @@ def evaluate(args) -> dict:
     print(f"  Model loaded on {args.device}.", flush=True)
 
     # --- Generate samples and score ---
-    ks = [1, 4, 16, 64]
-    correct_counts: list[int] = []
-    unique_correct_per_problem: list[float] = []
-    entropy_per_problem: list[float] = []
+    remaining = [i for i in range(n_problems) if i not in partial]
 
-    # Per-level tracking: level -> list of correct counts
-    level_correct: dict[str, list[int]] = {}
-
-    pbar = progress(range(n_problems), total=n_problems, desc="Problems")
+    pbar = progress(remaining, total=n_problems, desc="Problems", initial=n_done)
     for idx in pbar:
         problem = problems[idx]
         gt = ground_truths[idx]
@@ -523,62 +568,12 @@ def evaluate(args) -> dict:
             batch_size=args.batch_size,
         )
 
-        # Score each completion
-        extracted: list[str | None] = [extract_boxed_answer(c) for c in completions]
-        is_correct: list[bool] = [
-            pred is not None and answers_match(pred, gt)
-            for pred in extracted
-        ]
-        c = sum(is_correct)
-        correct_counts.append(c)
+        scores = _score_problem(completions, gt)
+        record = {"idx": idx, "level": level, **scores}
+        _append_result(sidecar, record)
+        partial[idx] = record
 
-        # Unique correct answers
-        correct_answers = [
-            pred for pred, ok in zip(extracted, is_correct) if ok and pred is not None
-        ]
-        unique_correct_per_problem.append(float(len(set(correct_answers))))
-
-        # Entropy over all answers (treat None as the string "NONE")
-        all_answers = [pred if pred is not None else "__NO_ANSWER__" for pred in extracted]
-        entropy_per_problem.append(_entropy(all_answers))
-
-        # Per-level accumulation
-        if level not in level_correct:
-            level_correct[level] = []
-        level_correct[level].append(c)
-
-    # --- Compute pass@k metrics ---
-    n = args.n_samples
-    pass_at_k_overall = compute_pass_at_k_stats(correct_counts, n, ks)
-
-    pass_at_k_by_level: dict[str, dict[str, float | None]] = {}
-    for k in ks:
-        pass_at_k_by_level[str(k)] = {}
-        for lvl, counts in sorted(level_correct.items()):
-            val = compute_pass_at_k_stats(counts, n, [k])[k]
-            pass_at_k_by_level[str(k)][lvl] = val
-
-    # Aggregate summary metrics
-    mean_correct = sum(correct_counts) / n_problems
-    mean_unique_correct = sum(unique_correct_per_problem) / n_problems
-    mean_entropy = sum(entropy_per_problem) / n_problems
-
-    result = {
-        "step": args.step,
-        "run": args.run_name,
-        "n_problems": n_problems,
-        "n_samples": n,
-        "eval_method": "hf_transformers",
-        "pass_at_k": {
-            str(k): pass_at_k_overall[k] for k in ks
-        },
-        "pass_at_k_by_level": pass_at_k_by_level,
-        "unique_correct_answers": mean_unique_correct,
-        "answer_entropy": mean_entropy,
-        "mean_correct_per_problem": mean_correct,
-    }
-
-    return result
+    return _finalize(args, partial, "hf_transformers")
 
 
 # ---------------------------------------------------------------------------
@@ -653,8 +648,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--n_samples",
         type=int,
-        default=64,
-        help="Number of samples to generate per problem (default: 64).",
+        default=16,
+        help="Number of samples to generate per problem (default: 16).",
     )
     parser.add_argument(
         "--temperature",
@@ -695,7 +690,16 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Tinker path to saved weights (e.g. 'tinker://run-id/weights/step_0050'). Required with --use_tinker.",
     )
+    parser.add_argument(
+        "--ks",
+        type=str,
+        default="1,4,16",
+        help="Comma-separated k values for pass@k (default: 1,4,16).",
+    )
     args = parser.parse_args()
+
+    # Parse ks
+    args.ks = [int(k) for k in args.ks.split(",")]
 
     # Validate tinker args
     if args.use_tinker:
@@ -740,7 +744,7 @@ def main():
     args = parse_args()
 
     print(f"Run: {args.run_name}  |  Step: {args.step}", flush=True)
-    print(f"Device: {args.device}", flush=True)
+    print(f"n_samples: {args.n_samples}  |  ks: {args.ks}", flush=True)
 
     result = evaluate(args)
 
@@ -751,6 +755,12 @@ def main():
 
     with open(out_path, "w") as f:
         json.dump(result, f, indent=2)
+
+    # Clean up sidecar now that final results are written
+    sidecar = _sidecar_path(out_dir, args.step)
+    if sidecar.exists():
+        sidecar.unlink()
+        print(f"Cleaned up partial results: {sidecar}", flush=True)
 
     print(f"\nResults written to: {out_path}", flush=True)
     print(
