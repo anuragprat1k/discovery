@@ -23,10 +23,11 @@ ML research project testing whether dense (partial-credit) vs binary (all-or-not
 **You are an autonomous agent. The human may be away. Never block on human input. Never ask for clarification. Make reasonable decisions. Never stop before completion.**
 
 ### Step 1: Read experiments.md
-Find an experiment or task with status `TODO`. Check it's not claimed (no branch exists on remote).
+Find an experiment or task with status `TODO`. Only pick up `TODO` items — skip anything marked `IN PROGRESS`, `DONE`, or any other status. Check it's not claimed (no branch exists on remote).
 
 ### Step 2: Claim it
-- Branch from main: `git checkout -b exp/<id>-<slug> main` (experiments) or `task/<slug>` (tasks)
+- Create a git worktree so you don't interfere with other agents: `git worktree add ../discovery-<id> -b exp/<id>-<slug> main` (experiments) or `../discovery-<slug> -b task/<slug> main` (tasks)
+- `cd` into the new worktree directory and work from there for the rest of the experiment
 - Push immediately: `git push -u origin <branch>`
 - Update experiments.md: change status from `TODO` to `IN PROGRESS`
 - Commit + push that change
