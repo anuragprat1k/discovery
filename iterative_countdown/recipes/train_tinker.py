@@ -12,6 +12,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import concurrent.futures
 import importlib
 import json
 import os
@@ -47,7 +48,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--reward", required=True, choices=["binary", "dense", "prime"])
     parser.add_argument("--model", type=str, default="Qwen/Qwen3-4B-Instruct-2507")
     parser.add_argument("--max_steps", type=int, default=200)
-    parser.add_argument("--group_size", type=int, default=8)
+    parser.add_argument("--group_size", type=int, default=16)
     parser.add_argument("--batch_size", type=int, default=8)
     parser.add_argument("--lora_rank", type=int, default=32)
     parser.add_argument("--lr", type=float, default=3e-5)
@@ -58,6 +59,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--train_data", type=str, default="iterative_countdown/data/train_problems.json")
     parser.add_argument("--output_dir", type=str, default=None)
     parser.add_argument("--loss_fn", type=str, default="importance_sampling")
+    parser.add_argument("--eval_steps", type=int, default=50, help="Run eval every N steps (0 to disable)")
+    parser.add_argument("--eval_problems", type=str, default="iterative_countdown/data/eval_problems.json")
+    parser.add_argument("--eval_n_problems", type=int, default=20, help="Number of eval problems to sample (for speed)")
     parser.add_argument("--no_wandb", action="store_true")
     parser.add_argument("--wandb_project", type=str, default="discovery-countdown")
     parser.add_argument("--wandb_name", type=str, default=None)
@@ -72,6 +76,112 @@ def get_reward_module(reward_type: str):
     """Import the appropriate reward module."""
     mod = importlib.import_module(f"iterative_countdown.rewards.{reward_type}_reward")
     return mod
+
+
+# ---------------------------------------------------------------------------
+# Periodic eval during training
+# ---------------------------------------------------------------------------
+
+def run_periodic_eval(
+    step: int,
+    sampling_client,
+    tokenizer,
+    eval_problems: list[dict],
+    n_problems: int,
+    max_turns: int,
+    max_tokens: int,
+    temperature: float,
+    output_dir: str,
+) -> dict:
+    """Run a quick eval on a subset of problems and save results + traces.
+
+    Uses the eval module's _run_episode and scoring, but drives it with the
+    training loop's sampling client (no need to create a new one).
+    """
+    import asyncio
+    from ..evaluation.eval_pass_at_k import (
+        _run_episode,
+        _make_sample_fn,
+        score_problem,
+        _sidecar_path,
+        _append_result,
+    )
+    from pathlib import Path
+
+    rng = np.random.default_rng(seed=step)
+    subset_idx = rng.choice(len(eval_problems), size=min(n_problems, len(eval_problems)), replace=False)
+    subset = [eval_problems[i] for i in subset_idx]
+
+    # Build sample_fn from the existing sampling client
+    sampling_params = tinker.SamplingParams(max_tokens=max_tokens, temperature=temperature)
+
+    async def sample_fn(messages):
+        prompt_text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+        prompt_tokens = tokenizer.encode(prompt_text, add_special_tokens=False)
+        prompt_input = tinker.ModelInput.from_ints(prompt_tokens)
+        result = sampling_client.sample(
+            prompt=prompt_input, num_samples=1, sampling_params=sampling_params,
+        ).result()
+        return tokenizer.decode(result.sequences[0].tokens, skip_special_tokens=True)
+
+    loop = asyncio.new_event_loop()
+    out_dir = Path(output_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    sidecar = _sidecar_path(out_dir, step)
+
+    t0 = time.time()
+    all_results = []
+    for i, problem in enumerate(subset):
+        env = CountdownMessageEnv(
+            target=problem["target"],
+            numbers=list(problem["numbers"]),
+            max_turns=max_turns,
+        )
+        episode = loop.run_until_complete(_run_episode(
+            env=env, sample_fn=sample_fn,
+            max_turns=max_turns, max_tokens=max_tokens, temperature=temperature,
+        ))
+
+        scores = score_problem([episode], k_values=[1])
+        record = {
+            "idx": int(subset_idx[i]),
+            "target": problem["target"],
+            "numbers": problem["numbers"],
+            "difficulty": problem.get("difficulty", "unknown"),
+            **scores,
+        }
+        # Save traces selectively (every 5th problem)
+        if i % 5 == 0:
+            record["traces"] = [{
+                "model_outputs": [o[:2000] for o in episode.get("model_outputs", [])],
+                "target_reached": episode["target_reached"],
+                "best_distance": episode["best_distance"],
+                "turns_used": episode["turns_used"],
+            }]
+        _append_result(sidecar, record)
+        all_results.append(record)
+
+    loop.close()
+    elapsed = time.time() - t0
+
+    # Aggregate
+    n_correct = sum(1 for r in all_results if r.get("n_correct", 0) > 0)
+    mean_dist = float(np.mean([r["mean_best_distance"] for r in all_results]))
+    pass_1 = n_correct / len(all_results) if all_results else 0.0
+
+    summary = {
+        "step": step,
+        "eval_n_problems": len(all_results),
+        "eval_pass@1": pass_1,
+        "eval_mean_best_distance": mean_dist,
+        "eval_time": round(elapsed, 1),
+    }
+    print(
+        f"  [eval step {step}] pass@1={pass_1:.2f}  dist={mean_dist:.1f}  "
+        f"({len(all_results)} problems, {elapsed:.1f}s)",
+        flush=True,
+    )
+    return summary
 
 
 # ---------------------------------------------------------------------------
@@ -483,6 +593,15 @@ def main() -> None:
         all_problems = json.load(f)
     print(f"[countdown] Loaded {len(all_problems)} training problems")
 
+    # Load eval data (for periodic eval)
+    eval_problems = []
+    if args.eval_steps > 0 and os.path.exists(args.eval_problems):
+        with open(args.eval_problems) as f:
+            eval_problems = json.load(f)
+        print(f"[countdown] Loaded {len(eval_problems)} eval problems (sampling {args.eval_n_problems} per eval, every {args.eval_steps} steps)")
+    elif args.eval_steps > 0:
+        print(f"[countdown] WARNING: eval_problems not found at {args.eval_problems}, skipping periodic eval")
+
     # Initialize Tinker
     print(f"[countdown] Connecting to Tinker API ...")
     service = ServiceClient()
@@ -505,7 +624,17 @@ def main() -> None:
             name=wandb_name,
             config=vars(args),
         )
+        # Allow eval metrics to arrive out-of-order (async eval)
+        wandb.define_metric("eval_pass@1", step_metric="step", step_sync=False)
+        wandb.define_metric("eval_mean_best_distance", step_metric="step", step_sync=False)
+        wandb.define_metric("eval_n_problems", step_metric="step", step_sync=False)
+        wandb.define_metric("eval_time", step_metric="step", step_sync=False)
         print(f"[countdown] W&B run: {wandb.run.url}")
+
+    # Background eval executor (single thread — evals queue up)
+    eval_executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
+    eval_future = None
+    eval_sampling_client = None
 
     # Training loop
     rng = np.random.default_rng(seed=42)
@@ -542,7 +671,7 @@ def main() -> None:
         if use_wandb:
             wandb.log(metrics, step=step)
 
-        # Save checkpoint
+        # Save checkpoint (less frequent, costs Tinker storage)
         if step % args.save_steps == 0:
             ckpt_name = f"step_{step:04d}"
             print(f"[countdown] Saving checkpoint: {ckpt_name}")
@@ -557,6 +686,48 @@ def main() -> None:
             sampling_client = training_client.save_weights_and_get_sampling_client(
                 name=ckpt_name
             )
+
+        # Periodic eval (more frequent, lightweight — no persistent checkpoint)
+        if eval_problems and args.eval_steps > 0 and step % args.eval_steps == 0:
+            # Wait for previous eval to finish before starting next
+            if eval_future is not None:
+                try:
+                    prev_eval_metrics = eval_future.result()
+                    if use_wandb:
+                        wandb.log(prev_eval_metrics)
+                    print(f"  [eval step {prev_eval_metrics['step']}] logged to wandb", flush=True)
+                except Exception as e:
+                    print(f"  [eval] previous eval failed: {e}", flush=True)
+
+            # Snapshot current weights for eval
+            eval_sampling_client = training_client.save_weights_and_get_sampling_client(
+                name="eval"
+            )
+
+            eval_dir = os.path.join(output_dir, "eval")
+            eval_future = eval_executor.submit(
+                run_periodic_eval,
+                step=step,
+                sampling_client=eval_sampling_client,
+                tokenizer=tokenizer,
+                eval_problems=eval_problems,
+                n_problems=args.eval_n_problems,
+                max_turns=args.max_turns,
+                max_tokens=args.max_tokens,
+                temperature=args.temperature,
+                output_dir=eval_dir,
+            )
+
+    # Collect any remaining background eval
+    if eval_future is not None:
+        try:
+            last_eval = eval_future.result(timeout=300)
+            if use_wandb:
+                wandb.log(last_eval)
+            print(f"  [eval step {last_eval['step']}] final eval logged", flush=True)
+        except Exception as e:
+            print(f"  [eval] final eval failed: {e}", flush=True)
+    eval_executor.shutdown(wait=False)
 
     # Final
     elapsed = time.time() - t_start
