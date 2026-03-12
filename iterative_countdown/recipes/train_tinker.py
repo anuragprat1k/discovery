@@ -152,8 +152,13 @@ def run_episode(
 
 
 def compute_episode_reward(episode: dict, reward_module, max_turns: int = 5) -> float:
-    """Compute total episode reward using the reward module."""
+    """Compute total episode reward = sum(turn_rewards) + episode_bonus."""
     import inspect
+
+    # Sum of per-turn rewards (the dense signal)
+    turn_total = sum(episode.get("turn_rewards", []))
+
+    # Episode-level bonus
     sig = inspect.signature(reward_module.compute_episode_reward)
     kwargs: dict = {
         "target_reached": episode["target_reached"],
@@ -162,10 +167,11 @@ def compute_episode_reward(episode: dict, reward_module, max_turns: int = 5) -> 
         "total_turns": episode["turns_used"],
         "max_turns": max_turns,
     }
-    # PRIME reward module accepts trajectory_texts
     if "trajectory_texts" in sig.parameters:
         kwargs["trajectory_texts"] = episode["model_outputs"]
-    return reward_module.compute_episode_reward(**kwargs)[0]
+    episode_bonus, _ = reward_module.compute_episode_reward(**kwargs)
+
+    return turn_total + episode_bonus
 
 
 # ---------------------------------------------------------------------------
@@ -209,6 +215,9 @@ def grpo_step(
                 "messages": messages,
                 "target": target,
                 "numbers": numbers,
+                "initial_distance": abs(target),
+                "prev_distance": float(abs(target)),
+                "turn_rewards": [],  # accumulate per-turn rewards
                 "model_outputs": [],
                 "all_prompt_tokens": [],
                 "all_completion_tokens": [],
@@ -257,6 +266,45 @@ def grpo_step(
             step_result = loop.run_until_complete(
                 ep["env"].step({"role": "assistant", "content": completion_text})
             )
+
+            # Compute turn reward from our reward module
+            env = ep["env"]
+            metrics = step_result.metrics
+            expr_valid = metrics.get("invalid_expression", 0.0) == 0.0
+            turn_num = int(metrics.get("turn", len(ep["turn_rewards"]) + 1))
+            current_distance = metrics.get("distance_to_target", ep["prev_distance"])
+
+            # Build kwargs for compute_turn_reward (signature varies by module)
+            turn_kwargs: dict = {
+                "expression_valid": expr_valid,
+                "result": int(current_distance) if expr_valid else None,  # approximate
+                "target": ep["target"],
+                "available_numbers": list(env.available_numbers),
+                "turn": turn_num,
+                "max_turns": args.max_turns,
+                "best_distance": env.best_distance,
+                "initial_distance": ep["initial_distance"],
+            }
+            # Dense and prime modules need extra kwargs
+            import inspect
+            sig = inspect.signature(reward_module.compute_turn_reward)
+            if "numbers_used" in sig.parameters:
+                turn_kwargs["numbers_used"] = []  # env already consumed them
+            if "prev_distance" in sig.parameters:
+                turn_kwargs["prev_distance"] = ep["prev_distance"]
+            if "model_text" in sig.parameters:
+                turn_kwargs["model_text"] = completion_text
+            if "weights" in sig.parameters:
+                turn_kwargs["weights"] = None
+            # Fix result: use actual result from env history if available
+            if env.history:
+                _, last_result, _ = env.history[-1]
+                turn_kwargs["result"] = last_result
+
+            turn_reward, _ = reward_module.compute_turn_reward(**turn_kwargs)
+            ep["turn_rewards"].append(turn_reward)
+            ep["prev_distance"] = float(metrics.get("best_distance", ep["prev_distance"]))
+
             if step_result.episode_done:
                 ep["done"] = True
             else:
@@ -275,6 +323,7 @@ def grpo_step(
             "best_distance": ep["env"].best_distance,
             "target_reached": ep["env"].best_distance == 0,
             "turns_used": len(ep["model_outputs"]),
+            "turn_rewards": ep["turn_rewards"],
             "model_outputs": ep["model_outputs"],
             "all_prompt_tokens": ep["all_prompt_tokens"],
             "all_completion_tokens": ep["all_completion_tokens"],
@@ -386,7 +435,7 @@ def grpo_step(
 
     t_train = time.time() - t_train_start
 
-    loss = fwdbwd_result.metrics.get("loss", 0.0)
+    loss = fwdbwd_result.metrics.get("loss:sum", fwdbwd_result.metrics.get("loss", 0.0))
 
     metrics = {
         "step": step,
