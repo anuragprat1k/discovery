@@ -1,0 +1,10 @@
+{
+  "n_train": 500,
+  "n_eval": 200,
+  "seed": 42,
+  "difficulty_tiers": {
+    "easy": 0.3,
+    "medium": 0.4,
+    "hard": 0.3
+  }
+}
