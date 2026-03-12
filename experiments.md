@@ -12,6 +12,14 @@ Status: `TODO` | `IN PROGRESS` | `DONE` | `BLOCKED`
 | E4 | PRIME implicit PRM | TODO | — | — | **Build**: Implement PRIME (Process Reinforcement through Implicit Rewards) in `train_tinker.py`. For each token in a completion, compute implicit reward as `β * log(π_policy(token) / π_ref(token))`. This turns the reference model (already used for KL) into a free process reward model — tokens where the policy diverges from the reference get stronger signal. Modify the per-token advantage array in `grpo_step()` to use these token-level rewards instead of uniform completion-level advantages. Add `--reward_type prime` flag. No extra model needed. **Run**: `python train_tinker.py --reward binary --reward_type prime --max_steps 200 --batch_size 8 --group_size 8`. Compare trajectory to E1 (same binary outcome reward, but with dense token-level credit assignment). Paper: arxiv 2502.01456. |
 | E5 | Eval & plot all dense runs | TODO | — | E2, E3, E4 | Eval any remaining checkpoints. Run `python analysis/plot_trajectories.py --results_dir results` across all completed runs. Record Δpass@1 vs Δpass@64 gap at step 200 for each reward type. Apply go/no-go criteria. |
 
+## Countdown Experiments
+
+| ID | Name | Status | Branch | Depends On | Description |
+|----|------|--------|--------|------------|-------------|
+| C1 | Countdown binary reward | IN PROGRESS | exp/full-countdown-runs | — | Full 200-step GRPO training with binary reward on Countdown, group_size=16, batch_size=8. Eval at every 25 steps. |
+| C2 | Countdown dense reward | IN PROGRESS | exp/full-countdown-runs | — | Full 200-step GRPO training with dense reward on Countdown, group_size=16, batch_size=8. Eval at every 25 steps. |
+| C3 | Countdown PRIME reward | TODO | — | C1, C2 | Deferred. Full 200-step GRPO training with PRIME reward on Countdown. |
+
 ## Tasks
 
 | ID | Name | Status | Branch | Description |
