@@ -1,0 +1,463 @@
+[
+  {
+    "problem": {
+      "target": 6,
+      "numbers": [
+        4,
+        2
+      ],
+      "difficulty": "easy"
+    },
+    "turns": [
+      {
+        "turn": 1,
+        "model_response": "Let me try combining numbers.\nExpression: 4 + 2",
+        "reward": 1.0,
+        "episode_done": true,
+        "metrics": {
+          "target_reached": 1.0,
+          "turns_to_solve": 1.0,
+          "distance_to_target": 0.0,
+          "best_distance": 0.0,
+          "turn": 1.0
+        },
+        "next_messages": [
+          {
+            "role": "system",
+            "content": "You are playing the Countdown numbers game. Your goal is to reach a target number by combining available numbers using arithmetic operations: +, -, *, /.\n\nRules:\n- Each turn, write an arithmetic expression using some of the available numbers.\n- Write your expression as: Expression: <your expression>\n- The result of your expression becomes a new available number.\n- Each number can only be used once per expression.\n- Division must produce an exact integer (no fractions).\n- You may use parentheses for grouping.\n- Try to reach the target exactly in as few turns as possible."
+          },
+          {
+            "role": "user",
+            "content": "Target: 6\nAvailable numbers: [4, 2]\n\nMake an arithmetic expression using some of these numbers. Write your expression as: Expression: <expr>"
+          },
+          {
+            "role": "assistant",
+            "content": "Expression: 4 + 2"
+          },
+          {
+            "role": "user",
+            "content": "Result: 6. That's the target! Well done!\nYou solved it in 1 turn(s)."
+          }
+        ]
+      }
+    ],
+    "initial_messages": [
+      {
+        "role": "system",
+        "content": "You are playing the Countdown numbers game. Your goal is to reach a target number by combining available numbers using arithmetic operations: +, -, *, /.\n\nRules:\n- Each turn, write an arithmetic expression using some of the available numbers.\n- Write your expression as: Expression: <your expression>\n- The result of your expression becomes a new available number.\n- Each number can only be used once per expression.\n- Division must produce an exact integer (no fractions).\n- You may use parentheses for grouping.\n- Try to reach the target exactly in as few turns as possible."
+      },
+      {
+        "role": "user",
+        "content": "Target: 6\nAvailable numbers: [4, 2]\n\nMake an arithmetic expression using some of these numbers. Write your expression as: Expression: <expr>"
+      }
+    ],
+    "final_state": {
+      "available_numbers": [
+        6
+      ],
+      "best_distance": 0,
+      "turns_used": 1
+    }
+  },
+  {
+    "problem": {
+      "target": 177,
+      "numbers": [
+        100,
+        2,
+        7,
+        25
+      ],
+      "difficulty": "medium"
+    },
+    "turns": [
+      {
+        "turn": 1,
+        "model_response": "Let me try combining numbers.\nExpression: 100 + 2",
+        "reward": 0.35,
+        "episode_done": false,
+        "metrics": {
+          "distance_to_target": 75.0,
+          "best_distance": 75.0,
+          "turn": 1.0
+        },
+        "next_messages": [
+          {
+            "role": "system",
+            "content": "You are playing the Countdown numbers game. Your goal is to reach a target number by combining available numbers using arithmetic operations: +, -, *, /.\n\nRules:\n- Each turn, write an arithmetic expression using some of the available numbers.\n- Write your expression as: Expression: <your expression>\n- The result of your expression becomes a new available number.\n- Each number can only be used once per expression.\n- Division must produce an exact integer (no fractions).\n- You may use parentheses for grouping.\n- Try to reach the target exactly in as few turns as possible."
+          },
+          {
+            "role": "user",
+            "content": "Target: 177\nAvailable numbers: [100, 2, 7, 25]\n\nMake an arithmetic expression using some of these numbers. Write your expression as: Expression: <expr>"
+          },
+          {
+            "role": "assistant",
+            "content": "Expression: 100 + 2"
+          },
+          {
+            "role": "user",
+            "content": "Result: 102. Distance to target: 75.\nAvailable numbers: [7, 25, 102]\nTurns remaining: 4\n\nMake another expression. Write: Expression: <expr>"
+          }
+        ]
+      },
+      {
+        "turn": 2,
+        "model_response": "Let me try combining numbers.\nExpression: 7 + 25",
+        "reward": 0.05,
+        "episode_done": false,
+        "metrics": {
+          "distance_to_target": 145.0,
+          "best_distance": 75.0,
+          "turn": 2.0
+        },
+        "next_messages": [
+          {
+            "role": "system",
+            "content": "You are playing the Countdown numbers game. Your goal is to reach a target number by combining available numbers using arithmetic operations: +, -, *, /.\n\nRules:\n- Each turn, write an arithmetic expression using some of the available numbers.\n- Write your expression as: Expression: <your expression>\n- The result of your expression becomes a new available number.\n- Each number can only be used once per expression.\n- Division must produce an exact integer (no fractions).\n- You may use parentheses for grouping.\n- Try to reach the target exactly in as few turns as possible."
+          },
+          {
+            "role": "user",
+            "content": "Target: 177\nAvailable numbers: [100, 2, 7, 25]\n\nMake an arithmetic expression using some of these numbers. Write your expression as: Expression: <expr>"
+          },
+          {
+            "role": "assistant",
+            "content": "Expression: 100 + 2"
+          },
+          {
+            "role": "user",
+            "content": "Result: 102. Continue."
+          },
+          {
+            "role": "assistant",
+            "content": "Expression: 7 + 25"
+          },
+          {
+            "role": "user",
+            "content": "Result: 32. Distance to target: 145.\nAvailable numbers: [102, 32]\nTurns remaining: 3\n\nMake another expression. Write: Expression: <expr>"
+          }
+        ]
+      },
+      {
+        "turn": 3,
+        "model_response": "Let me try combining numbers.\nExpression: 102 + 32",
+        "reward": 0.2307909604519774,
+        "episode_done": false,
+        "metrics": {
+          "distance_to_target": 43.0,
+          "best_distance": 43.0,
+          "turn": 3.0
+        },
+        "next_messages": [
+          {
+            "role": "system",
+            "content": "You are playing the Countdown numbers game. Your goal is to reach a target number by combining available numbers using arithmetic operations: +, -, *, /.\n\nRules:\n- Each turn, write an arithmetic expression using some of the available numbers.\n- Write your expression as: Expression: <your expression>\n- The result of your expression becomes a new available number.\n- Each number can only be used once per expression.\n- Division must produce an exact integer (no fractions).\n- You may use parentheses for grouping.\n- Try to reach the target exactly in as few turns as possible."
+          },
+          {
+            "role": "user",
+            "content": "Target: 177\nAvailable numbers: [100, 2, 7, 25]\n\nMake an arithmetic expression using some of these numbers. Write your expression as: Expression: <expr>"
+          },
+          {
+            "role": "assistant",
+            "content": "Expression: 100 + 2"
+          },
+          {
+            "role": "user",
+            "content": "Result: 102. Continue."
+          },
+          {
+            "role": "assistant",
+            "content": "Expression: 7 + 25"
+          },
+          {
+            "role": "user",
+            "content": "Result: 32. Continue."
+          },
+          {
+            "role": "assistant",
+            "content": "Expression: 102 + 32"
+          },
+          {
+            "role": "user",
+            "content": "Result: 134. Distance to target: 43.\nAvailable numbers: [134]\nTurns remaining: 2\n\nMake another expression. Write: Expression: <expr>"
+          }
+        ]
+      }
+    ],
+    "initial_messages": [
+      {
+        "role": "system",
+        "content": "You are playing the Countdown numbers game. Your goal is to reach a target number by combining available numbers using arithmetic operations: +, -, *, /.\n\nRules:\n- Each turn, write an arithmetic expression using some of the available numbers.\n- Write your expression as: Expression: <your expression>\n- The result of your expression becomes a new available number.\n- Each number can only be used once per expression.\n- Division must produce an exact integer (no fractions).\n- You may use parentheses for grouping.\n- Try to reach the target exactly in as few turns as possible."
+      },
+      {
+        "role": "user",
+        "content": "Target: 177\nAvailable numbers: [100, 2, 7, 25]\n\nMake an arithmetic expression using some of these numbers. Write your expression as: Expression: <expr>"
+      }
+    ],
+    "final_state": {
+      "available_numbers": [
+        134
+      ],
+      "best_distance": 43,
+      "turns_used": 3
+    }
+  },
+  {
+    "problem": {
+      "target": 715,
+      "numbers": [
+        4,
+        50,
+        1,
+        25,
+        6,
+        7
+      ],
+      "difficulty": "hard"
+    },
+    "turns": [
+      {
+        "turn": 1,
+        "model_response": "Let me try combining numbers.\nExpression: 4 + 50",
+        "reward": 0.12552447552447554,
+        "episode_done": false,
+        "metrics": {
+          "distance_to_target": 661.0,
+          "best_distance": 661.0,
+          "turn": 1.0
+        },
+        "next_messages": [
+          {
+            "role": "system",
+            "content": "You are playing the Countdown numbers game. Your goal is to reach a target number by combining available numbers using arithmetic operations: +, -, *, /.\n\nRules:\n- Each turn, write an arithmetic expression using some of the available numbers.\n- Write your expression as: Expression: <your expression>\n- The result of your expression becomes a new available number.\n- Each number can only be used once per expression.\n- Division must produce an exact integer (no fractions).\n- You may use parentheses for grouping.\n- Try to reach the target exactly in as few turns as possible."
+          },
+          {
+            "role": "user",
+            "content": "Target: 715\nAvailable numbers: [4, 50, 1, 25, 6, 7]\n\nMake an arithmetic expression using some of these numbers. Write your expression as: Expression: <expr>"
+          },
+          {
+            "role": "assistant",
+            "content": "Expression: 4 + 50"
+          },
+          {
+            "role": "user",
+            "content": "Result: 54. Distance to target: 661.\nAvailable numbers: [1, 25, 6, 7, 54]\nTurns remaining: 4\n\nMake another expression. Write: Expression: <expr>"
+          }
+        ]
+      },
+      {
+        "turn": 2,
+        "model_response": "Let me try combining numbers.\nExpression: 1 + 25",
+        "reward": 0.05,
+        "episode_done": false,
+        "metrics": {
+          "distance_to_target": 689.0,
+          "best_distance": 661.0,
+          "turn": 2.0
+        },
+        "next_messages": [
+          {
+            "role": "system",
+            "content": "You are playing the Countdown numbers game. Your goal is to reach a target number by combining available numbers using arithmetic operations: +, -, *, /.\n\nRules:\n- Each turn, write an arithmetic expression using some of the available numbers.\n- Write your expression as: Expression: <your expression>\n- The result of your expression becomes a new available number.\n- Each number can only be used once per expression.\n- Division must produce an exact integer (no fractions).\n- You may use parentheses for grouping.\n- Try to reach the target exactly in as few turns as possible."
+          },
+          {
+            "role": "user",
+            "content": "Target: 715\nAvailable numbers: [4, 50, 1, 25, 6, 7]\n\nMake an arithmetic expression using some of these numbers. Write your expression as: Expression: <expr>"
+          },
+          {
+            "role": "assistant",
+            "content": "Expression: 4 + 50"
+          },
+          {
+            "role": "user",
+            "content": "Result: 54. Continue."
+          },
+          {
+            "role": "assistant",
+            "content": "Expression: 1 + 25"
+          },
+          {
+            "role": "user",
+            "content": "Result: 26. Distance to target: 689.\nAvailable numbers: [6, 7, 54, 26]\nTurns remaining: 3\n\nMake another expression. Write: Expression: <expr>"
+          }
+        ]
+      },
+      {
+        "turn": 3,
+        "model_response": "Let me try combining numbers.\nExpression: 6 + 7",
+        "reward": 0.05,
+        "episode_done": false,
+        "metrics": {
+          "distance_to_target": 702.0,
+          "best_distance": 661.0,
+          "turn": 3.0
+        },
+        "next_messages": [
+          {
+            "role": "system",
+            "content": "You are playing the Countdown numbers game. Your goal is to reach a target number by combining available numbers using arithmetic operations: +, -, *, /.\n\nRules:\n- Each turn, write an arithmetic expression using some of the available numbers.\n- Write your expression as: Expression: <your expression>\n- The result of your expression becomes a new available number.\n- Each number can only be used once per expression.\n- Division must produce an exact integer (no fractions).\n- You may use parentheses for grouping.\n- Try to reach the target exactly in as few turns as possible."
+          },
+          {
+            "role": "user",
+            "content": "Target: 715\nAvailable numbers: [4, 50, 1, 25, 6, 7]\n\nMake an arithmetic expression using some of these numbers. Write your expression as: Expression: <expr>"
+          },
+          {
+            "role": "assistant",
+            "content": "Expression: 4 + 50"
+          },
+          {
+            "role": "user",
+            "content": "Result: 54. Continue."
+          },
+          {
+            "role": "assistant",
+            "content": "Expression: 1 + 25"
+          },
+          {
+            "role": "user",
+            "content": "Result: 26. Continue."
+          },
+          {
+            "role": "assistant",
+            "content": "Expression: 6 + 7"
+          },
+          {
+            "role": "user",
+            "content": "Result: 13. Distance to target: 702.\nAvailable numbers: [54, 26, 13]\nTurns remaining: 2\n\nMake another expression. Write: Expression: <expr>"
+          }
+        ]
+      },
+      {
+        "turn": 4,
+        "model_response": "Let me try combining numbers.\nExpression: 54 + 26",
+        "reward": 0.08636363636363636,
+        "episode_done": false,
+        "metrics": {
+          "distance_to_target": 635.0,
+          "best_distance": 635.0,
+          "turn": 4.0
+        },
+        "next_messages": [
+          {
+            "role": "system",
+            "content": "You are playing the Countdown numbers game. Your goal is to reach a target number by combining available numbers using arithmetic operations: +, -, *, /.\n\nRules:\n- Each turn, write an arithmetic expression using some of the available numbers.\n- Write your expression as: Expression: <your expression>\n- The result of your expression becomes a new available number.\n- Each number can only be used once per expression.\n- Division must produce an exact integer (no fractions).\n- You may use parentheses for grouping.\n- Try to reach the target exactly in as few turns as possible."
+          },
+          {
+            "role": "user",
+            "content": "Target: 715\nAvailable numbers: [4, 50, 1, 25, 6, 7]\n\nMake an arithmetic expression using some of these numbers. Write your expression as: Expression: <expr>"
+          },
+          {
+            "role": "assistant",
+            "content": "Expression: 4 + 50"
+          },
+          {
+            "role": "user",
+            "content": "Result: 54. Continue."
+          },
+          {
+            "role": "assistant",
+            "content": "Expression: 1 + 25"
+          },
+          {
+            "role": "user",
+            "content": "Result: 26. Continue."
+          },
+          {
+            "role": "assistant",
+            "content": "Expression: 6 + 7"
+          },
+          {
+            "role": "user",
+            "content": "Result: 13. Continue."
+          },
+          {
+            "role": "assistant",
+            "content": "Expression: 54 + 26"
+          },
+          {
+            "role": "user",
+            "content": "Result: 80. Distance to target: 635.\nAvailable numbers: [13, 80]\nTurns remaining: 1\n\nMake another expression. Write: Expression: <expr>"
+          }
+        ]
+      },
+      {
+        "turn": 5,
+        "model_response": "Let me try combining numbers.\nExpression: 13 + 80",
+        "reward": 0.06818181818181818,
+        "episode_done": true,
+        "metrics": {
+          "distance_to_target": 622.0,
+          "best_distance": 622.0,
+          "turn": 5.0,
+          "max_turns_exceeded": 1.0
+        },
+        "next_messages": [
+          {
+            "role": "system",
+            "content": "You are playing the Countdown numbers game. Your goal is to reach a target number by combining available numbers using arithmetic operations: +, -, *, /.\n\nRules:\n- Each turn, write an arithmetic expression using some of the available numbers.\n- Write your expression as: Expression: <your expression>\n- The result of your expression becomes a new available number.\n- Each number can only be used once per expression.\n- Division must produce an exact integer (no fractions).\n- You may use parentheses for grouping.\n- Try to reach the target exactly in as few turns as possible."
+          },
+          {
+            "role": "user",
+            "content": "Target: 715\nAvailable numbers: [4, 50, 1, 25, 6, 7]\n\nMake an arithmetic expression using some of these numbers. Write your expression as: Expression: <expr>"
+          },
+          {
+            "role": "assistant",
+            "content": "Expression: 4 + 50"
+          },
+          {
+            "role": "user",
+            "content": "Result: 54. Continue."
+          },
+          {
+            "role": "assistant",
+            "content": "Expression: 1 + 25"
+          },
+          {
+            "role": "user",
+            "content": "Result: 26. Continue."
+          },
+          {
+            "role": "assistant",
+            "content": "Expression: 6 + 7"
+          },
+          {
+            "role": "user",
+            "content": "Result: 13. Continue."
+          },
+          {
+            "role": "assistant",
+            "content": "Expression: 54 + 26"
+          },
+          {
+            "role": "user",
+            "content": "Result: 80. Continue."
+          },
+          {
+            "role": "assistant",
+            "content": "Expression: 13 + 80"
+          },
+          {
+            "role": "user",
+            "content": "Result: 93. Distance to target: 622.\nAvailable numbers: [93]\nTurns remaining: 0"
+          }
+        ]
+      }
+    ],
+    "initial_messages": [
+      {
+        "role": "system",
+        "content": "You are playing the Countdown numbers game. Your goal is to reach a target number by combining available numbers using arithmetic operations: +, -, *, /.\n\nRules:\n- Each turn, write an arithmetic expression using some of the available numbers.\n- Write your expression as: Expression: <your expression>\n- The result of your expression becomes a new available number.\n- Each number can only be used once per expression.\n- Division must produce an exact integer (no fractions).\n- You may use parentheses for grouping.\n- Try to reach the target exactly in as few turns as possible."
+      },
+      {
+        "role": "user",
+        "content": "Target: 715\nAvailable numbers: [4, 50, 1, 25, 6, 7]\n\nMake an arithmetic expression using some of these numbers. Write your expression as: Expression: <expr>"
+      }
+    ],
+    "final_state": {
+      "available_numbers": [
+        93
+      ],
+      "best_distance": 622,
+      "turns_used": 5
+    }
+  }
+]

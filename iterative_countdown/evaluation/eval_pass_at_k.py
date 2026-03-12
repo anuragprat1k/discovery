@@ -304,7 +304,7 @@ async def _run_episode(
 # Tinker sampling setup
 # ---------------------------------------------------------------------------
 
-def _create_tinker_sampling_client(model: str | None, tinker_path: str | None):
+async def _create_tinker_sampling_client(model: str | None, tinker_path: str | None):
     """Create a Tinker sampling client.
 
     Two modes:
@@ -312,7 +312,7 @@ def _create_tinker_sampling_client(model: str | None, tinker_path: str | None):
     2. Checkpoint: restore from tinker_path, then get sampling client
 
     Returns:
-        (sampling_client, tokenizer)
+        (sampling_client, tokenizer, tinker_module)
     """
     from dotenv import load_dotenv
     load_dotenv()
@@ -325,7 +325,7 @@ def _create_tinker_sampling_client(model: str | None, tinker_path: str | None):
 
     if tinker_path:
         print(f"[tinker] Restoring checkpoint: {tinker_path}", flush=True)
-        training_client = service.create_training_client_from_state(
+        training_client = await service.create_training_client_from_state_async(
             path=tinker_path
         )
         tokenizer = training_client.get_tokenizer()
@@ -334,7 +334,7 @@ def _create_tinker_sampling_client(model: str | None, tinker_path: str | None):
     else:
         assert model is not None, "Must provide --model for base model eval"
         print(f"[tinker] Creating LoRA training client for base model: {model}", flush=True)
-        training_client = service.create_lora_training_client(
+        training_client = await service.create_lora_training_client_async(
             base_model=model,
             rank=32,
         )
@@ -431,7 +431,7 @@ async def _run_eval(args) -> dict:
         print(f"Resuming: {n_done}/{n_problems} problems already evaluated.", flush=True)
 
     # Create tinker sampling client
-    sampling_client, tokenizer, tinker_module = _create_tinker_sampling_client(
+    sampling_client, tokenizer, tinker_module = await _create_tinker_sampling_client(
         model=args.model, tinker_path=args.tinker_path
     )
     sample_fn = _make_sample_fn(
