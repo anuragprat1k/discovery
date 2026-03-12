@@ -1,0 +1,6502 @@
+[
+  {
+    "target": 21,
+    "numbers": [
+      7,
+      3
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 21
+  },
+  {
+    "target": 155,
+    "numbers": [
+      5,
+      75,
+      25,
+      3
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 155
+  },
+  {
+    "target": 680,
+    "numbers": [
+      100,
+      5,
+      75,
+      3,
+      25,
+      50
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 680
+  },
+  {
+    "target": 3,
+    "numbers": [
+      6,
+      3
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 3
+  },
+  {
+    "target": 9,
+    "numbers": [
+      9,
+      1
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 9
+  },
+  {
+    "target": 305,
+    "numbers": [
+      6,
+      9,
+      50,
+      100
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 309
+  },
+  {
+    "target": 726,
+    "numbers": [
+      100,
+      50,
+      25,
+      9,
+      10,
+      75
+    ],
+    "difficulty": "hard",
+    "min_steps": 5,
+    "has_exact_solution": true,
+    "closest_possible": 726
+  },
+  {
+    "target": 892,
+    "numbers": [
+      25,
+      2,
+      50,
+      9,
+      7,
+      8
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 892
+  },
+  {
+    "target": 479,
+    "numbers": [
+      75,
+      5,
+      25,
+      3
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 485
+  },
+  {
+    "target": 14,
+    "numbers": [
+      10,
+      4
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 14
+  },
+  {
+    "target": 11,
+    "numbers": [
+      4,
+      7
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 11
+  },
+  {
+    "target": 434,
+    "numbers": [
+      75,
+      6,
+      25,
+      1,
+      2,
+      50
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": false,
+    "closest_possible": 432
+  },
+  {
+    "target": 467,
+    "numbers": [
+      10,
+      25,
+      9,
+      100
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 475
+  },
+  {
+    "target": 80,
+    "numbers": [
+      10,
+      8
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 80
+  },
+  {
+    "target": 3,
+    "numbers": [
+      2,
+      1
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 3
+  },
+  {
+    "target": 1,
+    "numbers": [
+      2,
+      1
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 1
+  },
+  {
+    "target": 141,
+    "numbers": [
+      9,
+      1,
+      50,
+      100
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 141
+  },
+  {
+    "target": 249,
+    "numbers": [
+      50,
+      6,
+      100,
+      3,
+      4,
+      7
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 249
+  },
+  {
+    "target": 271,
+    "numbers": [
+      10,
+      25,
+      75,
+      2,
+      9,
+      100
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 271
+  },
+  {
+    "target": 14,
+    "numbers": [
+      2,
+      7
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 14
+  },
+  {
+    "target": 631,
+    "numbers": [
+      2,
+      100,
+      8,
+      4,
+      25,
+      10
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 631
+  },
+  {
+    "target": 309,
+    "numbers": [
+      2,
+      25,
+      4,
+      75
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 308
+  },
+  {
+    "target": 277,
+    "numbers": [
+      50,
+      25,
+      10,
+      7
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 280
+  },
+  {
+    "target": 14,
+    "numbers": [
+      4,
+      10
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 14
+  },
+  {
+    "target": 146,
+    "numbers": [
+      100,
+      50,
+      4,
+      7,
+      6,
+      1
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 146
+  },
+  {
+    "target": 883,
+    "numbers": [
+      3,
+      75,
+      4,
+      10,
+      25,
+      50
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": false,
+    "closest_possible": 880
+  },
+  {
+    "target": 2,
+    "numbers": [
+      2,
+      1
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 2
+  },
+  {
+    "target": 385,
+    "numbers": [
+      8,
+      25,
+      7,
+      5,
+      4,
+      2
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 385
+  },
+  {
+    "target": 268,
+    "numbers": [
+      25,
+      8,
+      9,
+      100
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 272
+  },
+  {
+    "target": 489,
+    "numbers": [
+      50,
+      9,
+      8,
+      100
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 491
+  },
+  {
+    "target": 633,
+    "numbers": [
+      8,
+      75,
+      5,
+      3,
+      100,
+      50
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 633
+  },
+  {
+    "target": 292,
+    "numbers": [
+      50,
+      9,
+      100,
+      7,
+      25,
+      4
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 292
+  },
+  {
+    "target": 272,
+    "numbers": [
+      75,
+      9,
+      100,
+      8
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 272
+  },
+  {
+    "target": 122,
+    "numbers": [
+      75,
+      9,
+      6,
+      50
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 122
+  },
+  {
+    "target": 117,
+    "numbers": [
+      3,
+      4,
+      8,
+      10,
+      25,
+      75
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 117
+  },
+  {
+    "target": 254,
+    "numbers": [
+      9,
+      3,
+      25,
+      75
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 252
+  },
+  {
+    "target": 6,
+    "numbers": [
+      5,
+      1
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 6
+  },
+  {
+    "target": 184,
+    "numbers": [
+      7,
+      25,
+      100,
+      75,
+      6,
+      50
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 184
+  },
+  {
+    "target": 408,
+    "numbers": [
+      50,
+      75,
+      9,
+      1,
+      25,
+      10
+    ],
+    "difficulty": "hard",
+    "min_steps": 5,
+    "has_exact_solution": true,
+    "closest_possible": 408
+  },
+  {
+    "target": 164,
+    "numbers": [
+      1,
+      4,
+      100,
+      7,
+      5,
+      6
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 164
+  },
+  {
+    "target": 212,
+    "numbers": [
+      10,
+      100,
+      7,
+      25
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 205
+  },
+  {
+    "target": 120,
+    "numbers": [
+      100,
+      8,
+      75,
+      10
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 120
+  },
+  {
+    "target": 298,
+    "numbers": [
+      75,
+      25,
+      100,
+      2,
+      9,
+      1
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 298
+  },
+  {
+    "target": 709,
+    "numbers": [
+      50,
+      4,
+      75,
+      6,
+      100,
+      25
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": false,
+    "closest_possible": 706
+  },
+  {
+    "target": 17,
+    "numbers": [
+      9,
+      8
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 17
+  },
+  {
+    "target": 303,
+    "numbers": [
+      9,
+      75,
+      50,
+      4
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 300
+  },
+  {
+    "target": 40,
+    "numbers": [
+      10,
+      4
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 40
+  },
+  {
+    "target": 652,
+    "numbers": [
+      50,
+      9,
+      75,
+      1,
+      6,
+      3
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 652
+  },
+  {
+    "target": 332,
+    "numbers": [
+      75,
+      4,
+      9,
+      1,
+      2,
+      7
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 332
+  },
+  {
+    "target": 1,
+    "numbers": [
+      10,
+      9
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 1
+  },
+  {
+    "target": 11,
+    "numbers": [
+      9,
+      2
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 11
+  },
+  {
+    "target": 460,
+    "numbers": [
+      4,
+      7,
+      100,
+      50
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 457
+  },
+  {
+    "target": 355,
+    "numbers": [
+      50,
+      1,
+      25,
+      2
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 175
+  },
+  {
+    "target": 36,
+    "numbers": [
+      9,
+      4
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 36
+  },
+  {
+    "target": 615,
+    "numbers": [
+      75,
+      50,
+      25,
+      100,
+      7,
+      3
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 615
+  },
+  {
+    "target": 548,
+    "numbers": [
+      1,
+      8,
+      9,
+      5,
+      100,
+      50
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 548
+  },
+  {
+    "target": 425,
+    "numbers": [
+      100,
+      50,
+      3,
+      2
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 444
+  },
+  {
+    "target": 225,
+    "numbers": [
+      3,
+      50,
+      5,
+      25
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 225
+  },
+  {
+    "target": 139,
+    "numbers": [
+      50,
+      3,
+      8,
+      25
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 142
+  },
+  {
+    "target": 127,
+    "numbers": [
+      100,
+      10,
+      25,
+      2
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 127
+  },
+  {
+    "target": 500,
+    "numbers": [
+      1,
+      25,
+      6,
+      8,
+      100,
+      7
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 500
+  },
+  {
+    "target": 6,
+    "numbers": [
+      2,
+      4
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 6
+  },
+  {
+    "target": 13,
+    "numbers": [
+      7,
+      6
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 13
+  },
+  {
+    "target": 328,
+    "numbers": [
+      3,
+      75,
+      6,
+      50
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 318
+  },
+  {
+    "target": 63,
+    "numbers": [
+      9,
+      7
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 63
+  },
+  {
+    "target": 435,
+    "numbers": [
+      10,
+      50,
+      4,
+      6,
+      100,
+      2
+    ],
+    "difficulty": "hard",
+    "min_steps": 5,
+    "has_exact_solution": true,
+    "closest_possible": 435
+  },
+  {
+    "target": 209,
+    "numbers": [
+      9,
+      25,
+      75,
+      7
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 213
+  },
+  {
+    "target": 17,
+    "numbers": [
+      8,
+      9
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 17
+  },
+  {
+    "target": 167,
+    "numbers": [
+      7,
+      75,
+      5,
+      50
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 168
+  },
+  {
+    "target": 197,
+    "numbers": [
+      6,
+      25,
+      75,
+      4
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 199
+  },
+  {
+    "target": 312,
+    "numbers": [
+      100,
+      25,
+      3,
+      4
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 312
+  },
+  {
+    "target": 585,
+    "numbers": [
+      1,
+      5,
+      50,
+      25,
+      75,
+      2
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 585
+  },
+  {
+    "target": 6,
+    "numbers": [
+      4,
+      2
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 6
+  },
+  {
+    "target": 45,
+    "numbers": [
+      9,
+      5
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 45
+  },
+  {
+    "target": 216,
+    "numbers": [
+      9,
+      50,
+      25,
+      8
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 217
+  },
+  {
+    "target": 350,
+    "numbers": [
+      8,
+      6,
+      50,
+      25
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 350
+  },
+  {
+    "target": 160,
+    "numbers": [
+      100,
+      2,
+      75,
+      7
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 161
+  },
+  {
+    "target": 385,
+    "numbers": [
+      75,
+      9,
+      5,
+      100
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 384
+  },
+  {
+    "target": 237,
+    "numbers": [
+      75,
+      100,
+      1,
+      2
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 248
+  },
+  {
+    "target": 113,
+    "numbers": [
+      7,
+      1,
+      9,
+      75,
+      100,
+      5
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 113
+  },
+  {
+    "target": 846,
+    "numbers": [
+      25,
+      5,
+      75,
+      6,
+      1,
+      8
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 846
+  },
+  {
+    "target": 3,
+    "numbers": [
+      6,
+      3
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 3
+  },
+  {
+    "target": 20,
+    "numbers": [
+      2,
+      10
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 20
+  },
+  {
+    "target": 45,
+    "numbers": [
+      5,
+      9
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 45
+  },
+  {
+    "target": 317,
+    "numbers": [
+      75,
+      8,
+      100,
+      10
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 330
+  },
+  {
+    "target": 170,
+    "numbers": [
+      8,
+      50,
+      9,
+      75
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 153
+  },
+  {
+    "target": 198,
+    "numbers": [
+      50,
+      75,
+      9,
+      4
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 200
+  },
+  {
+    "target": 380,
+    "numbers": [
+      8,
+      25,
+      7,
+      9,
+      5,
+      2
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 380
+  },
+  {
+    "target": 20,
+    "numbers": [
+      2,
+      10
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 20
+  },
+  {
+    "target": 146,
+    "numbers": [
+      7,
+      50,
+      6,
+      100
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 144
+  },
+  {
+    "target": 274,
+    "numbers": [
+      5,
+      75,
+      100,
+      7
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 275
+  },
+  {
+    "target": 255,
+    "numbers": [
+      6,
+      25,
+      9,
+      75
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 250
+  },
+  {
+    "target": 197,
+    "numbers": [
+      8,
+      75,
+      100,
+      9,
+      50,
+      6
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 197
+  },
+  {
+    "target": 104,
+    "numbers": [
+      2,
+      75,
+      100,
+      6
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 104
+  },
+  {
+    "target": 581,
+    "numbers": [
+      8,
+      100,
+      5,
+      7,
+      9,
+      3
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 581
+  },
+  {
+    "target": 1,
+    "numbers": [
+      7,
+      6
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 1
+  },
+  {
+    "target": 143,
+    "numbers": [
+      7,
+      50,
+      25,
+      10
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 145
+  },
+  {
+    "target": 7,
+    "numbers": [
+      1,
+      6
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 7
+  },
+  {
+    "target": 405,
+    "numbers": [
+      2,
+      10,
+      6,
+      25,
+      3,
+      9
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 405
+  },
+  {
+    "target": 875,
+    "numbers": [
+      3,
+      100,
+      50,
+      75,
+      7,
+      25
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 875
+  },
+  {
+    "target": 126,
+    "numbers": [
+      50,
+      100,
+      4,
+      8
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 125
+  },
+  {
+    "target": 102,
+    "numbers": [
+      1,
+      100,
+      50,
+      3
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 102
+  },
+  {
+    "target": 399,
+    "numbers": [
+      75,
+      50,
+      1,
+      10
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 415
+  },
+  {
+    "target": 6,
+    "numbers": [
+      2,
+      4
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 6
+  },
+  {
+    "target": 574,
+    "numbers": [
+      4,
+      5,
+      100,
+      8,
+      2,
+      1
+    ],
+    "difficulty": "hard",
+    "min_steps": 5,
+    "has_exact_solution": true,
+    "closest_possible": 574
+  },
+  {
+    "target": 153,
+    "numbers": [
+      75,
+      25,
+      10,
+      9
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 150
+  },
+  {
+    "target": 226,
+    "numbers": [
+      8,
+      5,
+      75,
+      50
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 225
+  },
+  {
+    "target": 270,
+    "numbers": [
+      25,
+      9,
+      75,
+      100,
+      50,
+      5
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 270
+  },
+  {
+    "target": 15,
+    "numbers": [
+      5,
+      3
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 15
+  },
+  {
+    "target": 447,
+    "numbers": [
+      25,
+      1,
+      3,
+      75
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 325
+  },
+  {
+    "target": 185,
+    "numbers": [
+      5,
+      1,
+      75,
+      50
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 180
+  },
+  {
+    "target": 2,
+    "numbers": [
+      8,
+      6
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 2
+  },
+  {
+    "target": 10,
+    "numbers": [
+      1,
+      9
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 10
+  },
+  {
+    "target": 1,
+    "numbers": [
+      3,
+      2
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 1
+  },
+  {
+    "target": 474,
+    "numbers": [
+      9,
+      6,
+      8,
+      25,
+      10,
+      100
+    ],
+    "difficulty": "hard",
+    "min_steps": 5,
+    "has_exact_solution": true,
+    "closest_possible": 474
+  },
+  {
+    "target": 663,
+    "numbers": [
+      7,
+      100,
+      1,
+      3,
+      50,
+      8
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 663
+  },
+  {
+    "target": 3,
+    "numbers": [
+      2,
+      1
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 3
+  },
+  {
+    "target": 12,
+    "numbers": [
+      9,
+      3
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 12
+  },
+  {
+    "target": 392,
+    "numbers": [
+      7,
+      50,
+      100,
+      6
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 392
+  },
+  {
+    "target": 142,
+    "numbers": [
+      75,
+      8,
+      50,
+      1
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 134
+  },
+  {
+    "target": 917,
+    "numbers": [
+      3,
+      7,
+      6,
+      25,
+      5,
+      50
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 917
+  },
+  {
+    "target": 2,
+    "numbers": [
+      4,
+      2
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 2
+  },
+  {
+    "target": 199,
+    "numbers": [
+      75,
+      8,
+      50,
+      3
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 199
+  },
+  {
+    "target": 740,
+    "numbers": [
+      50,
+      75,
+      4,
+      25,
+      100,
+      3
+    ],
+    "difficulty": "hard",
+    "min_steps": 5,
+    "has_exact_solution": true,
+    "closest_possible": 740
+  },
+  {
+    "target": 322,
+    "numbers": [
+      50,
+      4,
+      7,
+      100
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 322
+  },
+  {
+    "target": 269,
+    "numbers": [
+      25,
+      50,
+      7,
+      4
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 272
+  },
+  {
+    "target": 258,
+    "numbers": [
+      2,
+      75,
+      25,
+      6
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 250
+  },
+  {
+    "target": 4,
+    "numbers": [
+      6,
+      2
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 4
+  },
+  {
+    "target": 119,
+    "numbers": [
+      10,
+      1,
+      75,
+      6,
+      50,
+      100
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 119
+  },
+  {
+    "target": 106,
+    "numbers": [
+      75,
+      7,
+      3,
+      2,
+      4,
+      9
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 106
+  },
+  {
+    "target": 380,
+    "numbers": [
+      25,
+      5,
+      4,
+      100
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 380
+  },
+  {
+    "target": 288,
+    "numbers": [
+      1,
+      4,
+      100,
+      75
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 296
+  },
+  {
+    "target": 138,
+    "numbers": [
+      5,
+      9,
+      8,
+      50,
+      1,
+      10
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 138
+  },
+  {
+    "target": 749,
+    "numbers": [
+      100,
+      7,
+      1,
+      5,
+      2,
+      9
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 749
+  },
+  {
+    "target": 1,
+    "numbers": [
+      2,
+      1
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 1
+  },
+  {
+    "target": 141,
+    "numbers": [
+      75,
+      9,
+      5,
+      50
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 139
+  },
+  {
+    "target": 775,
+    "numbers": [
+      9,
+      10,
+      50,
+      3,
+      1,
+      7
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": false,
+    "closest_possible": 770
+  },
+  {
+    "target": 56,
+    "numbers": [
+      7,
+      8
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 56
+  },
+  {
+    "target": 170,
+    "numbers": [
+      50,
+      3,
+      8,
+      75
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 167
+  },
+  {
+    "target": 247,
+    "numbers": [
+      50,
+      9,
+      5,
+      100
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 250
+  },
+  {
+    "target": 379,
+    "numbers": [
+      75,
+      9,
+      5,
+      25
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 375
+  },
+  {
+    "target": 24,
+    "numbers": [
+      6,
+      4
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 24
+  },
+  {
+    "target": 448,
+    "numbers": [
+      5,
+      50,
+      10,
+      25
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 450
+  },
+  {
+    "target": 27,
+    "numbers": [
+      3,
+      9
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 27
+  },
+  {
+    "target": 595,
+    "numbers": [
+      3,
+      8,
+      100,
+      6,
+      7,
+      4
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 595
+  },
+  {
+    "target": 16,
+    "numbers": [
+      7,
+      9
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 16
+  },
+  {
+    "target": 564,
+    "numbers": [
+      75,
+      100,
+      25,
+      3,
+      50,
+      10
+    ],
+    "difficulty": "hard",
+    "min_steps": 5,
+    "has_exact_solution": true,
+    "closest_possible": 564
+  },
+  {
+    "target": 144,
+    "numbers": [
+      25,
+      8,
+      5,
+      50
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 145
+  },
+  {
+    "target": 564,
+    "numbers": [
+      5,
+      1,
+      100,
+      10,
+      75,
+      50
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 564
+  },
+  {
+    "target": 2,
+    "numbers": [
+      7,
+      5
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 2
+  },
+  {
+    "target": 484,
+    "numbers": [
+      50,
+      25,
+      8,
+      3
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 450
+  },
+  {
+    "target": 370,
+    "numbers": [
+      100,
+      7,
+      25,
+      3
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 368
+  },
+  {
+    "target": 154,
+    "numbers": [
+      3,
+      8,
+      2,
+      75,
+      5,
+      9
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 154
+  },
+  {
+    "target": 70,
+    "numbers": [
+      10,
+      7
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 70
+  },
+  {
+    "target": 24,
+    "numbers": [
+      6,
+      4
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 24
+  },
+  {
+    "target": 405,
+    "numbers": [
+      5,
+      50,
+      8,
+      100
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 405
+  },
+  {
+    "target": 134,
+    "numbers": [
+      25,
+      9,
+      100,
+      2
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 134
+  },
+  {
+    "target": 319,
+    "numbers": [
+      100,
+      10,
+      8,
+      9,
+      50,
+      25
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 319
+  },
+  {
+    "target": 1,
+    "numbers": [
+      4,
+      3
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 1
+  },
+  {
+    "target": 462,
+    "numbers": [
+      3,
+      50,
+      5,
+      25
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 425
+  },
+  {
+    "target": 27,
+    "numbers": [
+      3,
+      9
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 27
+  },
+  {
+    "target": 493,
+    "numbers": [
+      2,
+      8,
+      100,
+      50
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 498
+  },
+  {
+    "target": 7,
+    "numbers": [
+      5,
+      2
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 7
+  },
+  {
+    "target": 196,
+    "numbers": [
+      1,
+      4,
+      75,
+      50
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 196
+  },
+  {
+    "target": 348,
+    "numbers": [
+      5,
+      75,
+      1,
+      6,
+      50,
+      25
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 348
+  },
+  {
+    "target": 107,
+    "numbers": [
+      6,
+      3,
+      25,
+      50
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 107
+  },
+  {
+    "target": 14,
+    "numbers": [
+      7,
+      2
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 14
+  },
+  {
+    "target": 202,
+    "numbers": [
+      6,
+      8,
+      10,
+      5,
+      1,
+      50
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 202
+  },
+  {
+    "target": 835,
+    "numbers": [
+      25,
+      10,
+      75,
+      50,
+      1,
+      100
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 835
+  },
+  {
+    "target": 190,
+    "numbers": [
+      8,
+      25,
+      100,
+      6,
+      10,
+      75
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 190
+  },
+  {
+    "target": 6,
+    "numbers": [
+      9,
+      3
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 6
+  },
+  {
+    "target": 17,
+    "numbers": [
+      8,
+      9
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 17
+  },
+  {
+    "target": 270,
+    "numbers": [
+      25,
+      7,
+      9,
+      8,
+      4,
+      2
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 270
+  },
+  {
+    "target": 12,
+    "numbers": [
+      3,
+      9
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 12
+  },
+  {
+    "target": 439,
+    "numbers": [
+      100,
+      50,
+      9,
+      4
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 441
+  },
+  {
+    "target": 403,
+    "numbers": [
+      7,
+      50,
+      5,
+      25
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 410
+  },
+  {
+    "target": 974,
+    "numbers": [
+      1,
+      100,
+      25,
+      75,
+      10,
+      50
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 974
+  },
+  {
+    "target": 45,
+    "numbers": [
+      5,
+      9
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 45
+  },
+  {
+    "target": 1,
+    "numbers": [
+      7,
+      6
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 1
+  },
+  {
+    "target": 996,
+    "numbers": [
+      100,
+      75,
+      8,
+      25,
+      50,
+      7
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": false,
+    "closest_possible": 994
+  },
+  {
+    "target": 4,
+    "numbers": [
+      9,
+      5
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 4
+  },
+  {
+    "target": 529,
+    "numbers": [
+      25,
+      2,
+      1,
+      100,
+      8,
+      6
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 529
+  },
+  {
+    "target": 402,
+    "numbers": [
+      50,
+      100,
+      75,
+      25,
+      2,
+      7
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 402
+  },
+  {
+    "target": 620,
+    "numbers": [
+      75,
+      10,
+      25,
+      8,
+      50,
+      100
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 620
+  },
+  {
+    "target": 195,
+    "numbers": [
+      25,
+      1,
+      8,
+      100
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 192
+  },
+  {
+    "target": 3,
+    "numbers": [
+      8,
+      5
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 3
+  },
+  {
+    "target": 827,
+    "numbers": [
+      25,
+      50,
+      3,
+      100,
+      75,
+      10
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": false,
+    "closest_possible": 825
+  },
+  {
+    "target": 174,
+    "numbers": [
+      25,
+      3,
+      6,
+      75
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 175
+  },
+  {
+    "target": 5,
+    "numbers": [
+      6,
+      1
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 5
+  },
+  {
+    "target": 473,
+    "numbers": [
+      100,
+      2,
+      9,
+      25
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 475
+  },
+  {
+    "target": 350,
+    "numbers": [
+      100,
+      25,
+      1,
+      7
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 357
+  },
+  {
+    "target": 30,
+    "numbers": [
+      3,
+      10
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 30
+  },
+  {
+    "target": 156,
+    "numbers": [
+      25,
+      75,
+      2,
+      5
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 155
+  },
+  {
+    "target": 1,
+    "numbers": [
+      10,
+      9
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 1
+  },
+  {
+    "target": 146,
+    "numbers": [
+      7,
+      75,
+      100,
+      5
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 150
+  },
+  {
+    "target": 16,
+    "numbers": [
+      10,
+      6
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 16
+  },
+  {
+    "target": 387,
+    "numbers": [
+      50,
+      75,
+      7,
+      6
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 383
+  },
+  {
+    "target": 5,
+    "numbers": [
+      6,
+      1
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 5
+  },
+  {
+    "target": 845,
+    "numbers": [
+      4,
+      1,
+      25,
+      10,
+      100,
+      50
+    ],
+    "difficulty": "hard",
+    "min_steps": 5,
+    "has_exact_solution": true,
+    "closest_possible": 845
+  },
+  {
+    "target": 5,
+    "numbers": [
+      9,
+      4
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 5
+  },
+  {
+    "target": 56,
+    "numbers": [
+      7,
+      8
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 56
+  },
+  {
+    "target": 185,
+    "numbers": [
+      8,
+      100,
+      10,
+      75
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 185
+  },
+  {
+    "target": 297,
+    "numbers": [
+      100,
+      7,
+      25,
+      3,
+      8,
+      2
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 297
+  },
+  {
+    "target": 542,
+    "numbers": [
+      9,
+      10,
+      7,
+      25,
+      100,
+      75
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 542
+  },
+  {
+    "target": 354,
+    "numbers": [
+      75,
+      100,
+      1,
+      10
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 260
+  },
+  {
+    "target": 448,
+    "numbers": [
+      6,
+      75,
+      7,
+      25,
+      50,
+      2
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 448
+  },
+  {
+    "target": 307,
+    "numbers": [
+      75,
+      100,
+      7,
+      6
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 308
+  },
+  {
+    "target": 580,
+    "numbers": [
+      100,
+      9,
+      50,
+      3,
+      10,
+      6
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 580
+  },
+  {
+    "target": 444,
+    "numbers": [
+      50,
+      10,
+      6,
+      100
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 440
+  },
+  {
+    "target": 17,
+    "numbers": [
+      9,
+      8
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 17
+  },
+  {
+    "target": 466,
+    "numbers": [
+      2,
+      6,
+      75,
+      25
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 463
+  },
+  {
+    "target": 485,
+    "numbers": [
+      25,
+      4,
+      5,
+      6,
+      75,
+      2
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 485
+  },
+  {
+    "target": 138,
+    "numbers": [
+      50,
+      1,
+      25,
+      100,
+      75,
+      10
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 138
+  },
+  {
+    "target": 24,
+    "numbers": [
+      6,
+      4
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 24
+  },
+  {
+    "target": 8,
+    "numbers": [
+      7,
+      1
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 8
+  },
+  {
+    "target": 523,
+    "numbers": [
+      25,
+      1,
+      50,
+      100,
+      6,
+      7
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": false,
+    "closest_possible": 524
+  },
+  {
+    "target": 125,
+    "numbers": [
+      5,
+      50,
+      1,
+      75
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 125
+  },
+  {
+    "target": 258,
+    "numbers": [
+      100,
+      25,
+      2,
+      10
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 260
+  },
+  {
+    "target": 9,
+    "numbers": [
+      4,
+      5
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 9
+  },
+  {
+    "target": 45,
+    "numbers": [
+      9,
+      5
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 45
+  },
+  {
+    "target": 189,
+    "numbers": [
+      75,
+      2,
+      100,
+      7
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 189
+  },
+  {
+    "target": 145,
+    "numbers": [
+      100,
+      5,
+      75,
+      9
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 145
+  },
+  {
+    "target": 151,
+    "numbers": [
+      6,
+      4,
+      10,
+      100,
+      3,
+      9
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 151
+  },
+  {
+    "target": 167,
+    "numbers": [
+      50,
+      25,
+      1,
+      8
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 175
+  },
+  {
+    "target": 858,
+    "numbers": [
+      100,
+      75,
+      25,
+      50,
+      1,
+      7
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": false,
+    "closest_possible": 850
+  },
+  {
+    "target": 837,
+    "numbers": [
+      75,
+      50,
+      4,
+      100,
+      3,
+      25
+    ],
+    "difficulty": "hard",
+    "min_steps": 5,
+    "has_exact_solution": true,
+    "closest_possible": 837
+  },
+  {
+    "target": 305,
+    "numbers": [
+      1,
+      7,
+      25,
+      100
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 300
+  },
+  {
+    "target": 2,
+    "numbers": [
+      4,
+      2
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 2
+  },
+  {
+    "target": 340,
+    "numbers": [
+      3,
+      25,
+      10,
+      75
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 330
+  },
+  {
+    "target": 533,
+    "numbers": [
+      4,
+      50,
+      9,
+      100,
+      8,
+      10
+    ],
+    "difficulty": "hard",
+    "min_steps": 5,
+    "has_exact_solution": true,
+    "closest_possible": 533
+  },
+  {
+    "target": 440,
+    "numbers": [
+      7,
+      100,
+      1,
+      50
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 443
+  },
+  {
+    "target": 164,
+    "numbers": [
+      5,
+      1,
+      10,
+      50,
+      9,
+      8
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 164
+  },
+  {
+    "target": 633,
+    "numbers": [
+      100,
+      3,
+      25,
+      9,
+      75,
+      4
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 633
+  },
+  {
+    "target": 12,
+    "numbers": [
+      8,
+      4
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 12
+  },
+  {
+    "target": 939,
+    "numbers": [
+      8,
+      75,
+      1,
+      2,
+      4,
+      6
+    ],
+    "difficulty": "hard",
+    "min_steps": 5,
+    "has_exact_solution": true,
+    "closest_possible": 939
+  },
+  {
+    "target": 177,
+    "numbers": [
+      100,
+      2,
+      4,
+      1,
+      50,
+      75
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 177
+  },
+  {
+    "target": 233,
+    "numbers": [
+      100,
+      8,
+      25,
+      3
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 233
+  },
+  {
+    "target": 221,
+    "numbers": [
+      75,
+      8,
+      6,
+      100
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 223
+  },
+  {
+    "target": 6,
+    "numbers": [
+      4,
+      2
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 6
+  },
+  {
+    "target": 72,
+    "numbers": [
+      8,
+      9
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 72
+  },
+  {
+    "target": 245,
+    "numbers": [
+      100,
+      7,
+      25,
+      10
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 245
+  },
+  {
+    "target": 9,
+    "numbers": [
+      5,
+      4
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 9
+  },
+  {
+    "target": 1,
+    "numbers": [
+      4,
+      3
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 1
+  },
+  {
+    "target": 30,
+    "numbers": [
+      3,
+      10
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 30
+  },
+  {
+    "target": 108,
+    "numbers": [
+      100,
+      4,
+      25,
+      5,
+      8,
+      6
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 108
+  },
+  {
+    "target": 300,
+    "numbers": [
+      25,
+      50,
+      5,
+      10
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 300
+  },
+  {
+    "target": 1,
+    "numbers": [
+      8,
+      7
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 1
+  },
+  {
+    "target": 155,
+    "numbers": [
+      3,
+      50,
+      5,
+      4,
+      25,
+      75
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 155
+  },
+  {
+    "target": 6,
+    "numbers": [
+      5,
+      1
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 6
+  },
+  {
+    "target": 400,
+    "numbers": [
+      2,
+      50,
+      4,
+      25
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 400
+  },
+  {
+    "target": 464,
+    "numbers": [
+      9,
+      75,
+      5,
+      100
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 466
+  },
+  {
+    "target": 27,
+    "numbers": [
+      9,
+      3
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 27
+  },
+  {
+    "target": 450,
+    "numbers": [
+      50,
+      7,
+      100,
+      9
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 450
+  },
+  {
+    "target": 12,
+    "numbers": [
+      3,
+      4
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 12
+  },
+  {
+    "target": 131,
+    "numbers": [
+      25,
+      75,
+      1,
+      7
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 125
+  },
+  {
+    "target": 138,
+    "numbers": [
+      2,
+      3,
+      25,
+      100,
+      50,
+      1
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 138
+  },
+  {
+    "target": 808,
+    "numbers": [
+      10,
+      8,
+      25,
+      100,
+      75,
+      50
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 808
+  },
+  {
+    "target": 12,
+    "numbers": [
+      3,
+      9
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 12
+  },
+  {
+    "target": 424,
+    "numbers": [
+      4,
+      75,
+      10,
+      25
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 425
+  },
+  {
+    "target": 7,
+    "numbers": [
+      3,
+      4
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 7
+  },
+  {
+    "target": 365,
+    "numbers": [
+      50,
+      100,
+      4,
+      3
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 362
+  },
+  {
+    "target": 229,
+    "numbers": [
+      3,
+      8,
+      25,
+      100
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 225
+  },
+  {
+    "target": 475,
+    "numbers": [
+      2,
+      75,
+      100,
+      6
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 475
+  },
+  {
+    "target": 280,
+    "numbers": [
+      75,
+      9,
+      50,
+      100,
+      2,
+      25
+    ],
+    "difficulty": "hard",
+    "min_steps": 5,
+    "has_exact_solution": true,
+    "closest_possible": 280
+  },
+  {
+    "target": 5,
+    "numbers": [
+      1,
+      5
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 5
+  },
+  {
+    "target": 280,
+    "numbers": [
+      50,
+      1,
+      8,
+      5,
+      7,
+      10
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 280
+  },
+  {
+    "target": 665,
+    "numbers": [
+      10,
+      1,
+      9,
+      4,
+      3,
+      75
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 665
+  },
+  {
+    "target": 442,
+    "numbers": [
+      3,
+      75,
+      5,
+      100
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 440
+  },
+  {
+    "target": 6,
+    "numbers": [
+      9,
+      3
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 6
+  },
+  {
+    "target": 15,
+    "numbers": [
+      9,
+      6
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 15
+  },
+  {
+    "target": 159,
+    "numbers": [
+      25,
+      50,
+      9,
+      6
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 159
+  },
+  {
+    "target": 590,
+    "numbers": [
+      4,
+      100,
+      10,
+      50,
+      75,
+      25
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 590
+  },
+  {
+    "target": 204,
+    "numbers": [
+      50,
+      6,
+      75,
+      5
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 205
+  },
+  {
+    "target": 258,
+    "numbers": [
+      8,
+      25,
+      75,
+      10
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 258
+  },
+  {
+    "target": 741,
+    "numbers": [
+      1,
+      10,
+      9,
+      4,
+      100,
+      7
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 741
+  },
+  {
+    "target": 184,
+    "numbers": [
+      75,
+      7,
+      50,
+      6
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 183
+  },
+  {
+    "target": 35,
+    "numbers": [
+      7,
+      5
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 35
+  },
+  {
+    "target": 100,
+    "numbers": [
+      9,
+      4,
+      100,
+      25
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 100
+  },
+  {
+    "target": 510,
+    "numbers": [
+      1,
+      7,
+      25,
+      50,
+      100,
+      75
+    ],
+    "difficulty": "hard",
+    "min_steps": 5,
+    "has_exact_solution": true,
+    "closest_possible": 510
+  },
+  {
+    "target": 1,
+    "numbers": [
+      2,
+      1
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 1
+  },
+  {
+    "target": 288,
+    "numbers": [
+      6,
+      50,
+      75,
+      2
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 288
+  },
+  {
+    "target": 336,
+    "numbers": [
+      6,
+      5,
+      3,
+      75,
+      1,
+      2
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 336
+  },
+  {
+    "target": 536,
+    "numbers": [
+      75,
+      1,
+      7,
+      100,
+      5,
+      50
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 536
+  },
+  {
+    "target": 7,
+    "numbers": [
+      6,
+      1
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 7
+  },
+  {
+    "target": 666,
+    "numbers": [
+      1,
+      75,
+      50,
+      8,
+      3,
+      6
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 666
+  },
+  {
+    "target": 171,
+    "numbers": [
+      2,
+      25,
+      50,
+      9
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 173
+  },
+  {
+    "target": 32,
+    "numbers": [
+      4,
+      8
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 32
+  },
+  {
+    "target": 638,
+    "numbers": [
+      100,
+      6,
+      1,
+      50,
+      25,
+      8
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": false,
+    "closest_possible": 642
+  },
+  {
+    "target": 389,
+    "numbers": [
+      7,
+      25,
+      8,
+      75
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 393
+  },
+  {
+    "target": 279,
+    "numbers": [
+      50,
+      6,
+      4,
+      100
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 276
+  },
+  {
+    "target": 756,
+    "numbers": [
+      6,
+      5,
+      7,
+      100,
+      1,
+      3
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 756
+  },
+  {
+    "target": 15,
+    "numbers": [
+      6,
+      9
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 15
+  },
+  {
+    "target": 219,
+    "numbers": [
+      3,
+      7,
+      50,
+      75
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 218
+  },
+  {
+    "target": 797,
+    "numbers": [
+      25,
+      5,
+      50,
+      4,
+      100,
+      3
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 797
+  },
+  {
+    "target": 274,
+    "numbers": [
+      75,
+      7,
+      50,
+      5
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 275
+  },
+  {
+    "target": 151,
+    "numbers": [
+      100,
+      25,
+      1,
+      7
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 150
+  },
+  {
+    "target": 5,
+    "numbers": [
+      8,
+      3
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 5
+  },
+  {
+    "target": 364,
+    "numbers": [
+      25,
+      75,
+      50,
+      2,
+      100,
+      6
+    ],
+    "difficulty": "hard",
+    "min_steps": 5,
+    "has_exact_solution": true,
+    "closest_possible": 364
+  },
+  {
+    "target": 9,
+    "numbers": [
+      4,
+      5
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 9
+  },
+  {
+    "target": 28,
+    "numbers": [
+      7,
+      4
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 28
+  },
+  {
+    "target": 15,
+    "numbers": [
+      10,
+      5
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 15
+  },
+  {
+    "target": 12,
+    "numbers": [
+      7,
+      5
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 12
+  },
+  {
+    "target": 130,
+    "numbers": [
+      7,
+      100,
+      6,
+      75
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 133
+  },
+  {
+    "target": 35,
+    "numbers": [
+      5,
+      7
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 35
+  },
+  {
+    "target": 110,
+    "numbers": [
+      1,
+      7,
+      75,
+      100
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 108
+  },
+  {
+    "target": 188,
+    "numbers": [
+      10,
+      100,
+      6,
+      4,
+      2,
+      9
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 188
+  },
+  {
+    "target": 48,
+    "numbers": [
+      6,
+      8
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 48
+  },
+  {
+    "target": 369,
+    "numbers": [
+      50,
+      25,
+      1,
+      8
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 367
+  },
+  {
+    "target": 363,
+    "numbers": [
+      25,
+      50,
+      5,
+      4
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 371
+  },
+  {
+    "target": 11,
+    "numbers": [
+      5,
+      6
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 11
+  },
+  {
+    "target": 217,
+    "numbers": [
+      100,
+      25,
+      4,
+      75,
+      50,
+      8
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 217
+  },
+  {
+    "target": 9,
+    "numbers": [
+      5,
+      4
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 9
+  },
+  {
+    "target": 4,
+    "numbers": [
+      6,
+      2
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 4
+  },
+  {
+    "target": 2,
+    "numbers": [
+      5,
+      3
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 2
+  },
+  {
+    "target": 393,
+    "numbers": [
+      100,
+      25,
+      6,
+      10
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 390
+  },
+  {
+    "target": 139,
+    "numbers": [
+      100,
+      8,
+      25,
+      4
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 137
+  },
+  {
+    "target": 176,
+    "numbers": [
+      25,
+      50,
+      10,
+      9
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 175
+  },
+  {
+    "target": 224,
+    "numbers": [
+      6,
+      100,
+      4,
+      25
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 224
+  },
+  {
+    "target": 454,
+    "numbers": [
+      75,
+      4,
+      50,
+      9
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 454
+  },
+  {
+    "target": 808,
+    "numbers": [
+      25,
+      100,
+      9,
+      10,
+      50,
+      75
+    ],
+    "difficulty": "hard",
+    "min_steps": 5,
+    "has_exact_solution": true,
+    "closest_possible": 808
+  },
+  {
+    "target": 463,
+    "numbers": [
+      6,
+      8,
+      3,
+      4,
+      25,
+      1
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 463
+  },
+  {
+    "target": 249,
+    "numbers": [
+      75,
+      50,
+      5,
+      7,
+      25,
+      10
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": false,
+    "closest_possible": 250
+  },
+  {
+    "target": 417,
+    "numbers": [
+      9,
+      75,
+      25,
+      5
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 420
+  },
+  {
+    "target": 205,
+    "numbers": [
+      75,
+      8,
+      25,
+      2,
+      50,
+      3
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 205
+  },
+  {
+    "target": 341,
+    "numbers": [
+      25,
+      75,
+      1,
+      7
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 343
+  },
+  {
+    "target": 7,
+    "numbers": [
+      6,
+      1
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 7
+  },
+  {
+    "target": 10,
+    "numbers": [
+      10,
+      1
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 10
+  },
+  {
+    "target": 11,
+    "numbers": [
+      2,
+      9
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 11
+  },
+  {
+    "target": 113,
+    "numbers": [
+      50,
+      6,
+      25,
+      8
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 108
+  },
+  {
+    "target": 148,
+    "numbers": [
+      1,
+      100,
+      50,
+      2
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 148
+  },
+  {
+    "target": 137,
+    "numbers": [
+      7,
+      5,
+      50,
+      75
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 137
+  },
+  {
+    "target": 964,
+    "numbers": [
+      8,
+      4,
+      5,
+      1,
+      25,
+      2
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 964
+  },
+  {
+    "target": 537,
+    "numbers": [
+      75,
+      4,
+      7,
+      10,
+      6,
+      5
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 537
+  },
+  {
+    "target": 10,
+    "numbers": [
+      3,
+      7
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 10
+  },
+  {
+    "target": 313,
+    "numbers": [
+      4,
+      1,
+      100,
+      25
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 304
+  },
+  {
+    "target": 180,
+    "numbers": [
+      25,
+      9,
+      100,
+      4
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 189
+  },
+  {
+    "target": 18,
+    "numbers": [
+      9,
+      2
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 18
+  },
+  {
+    "target": 7,
+    "numbers": [
+      9,
+      2
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 7
+  },
+  {
+    "target": 421,
+    "numbers": [
+      25,
+      5,
+      8,
+      75
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 415
+  },
+  {
+    "target": 405,
+    "numbers": [
+      25,
+      2,
+      5,
+      50
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 385
+  },
+  {
+    "target": 56,
+    "numbers": [
+      8,
+      7
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 56
+  },
+  {
+    "target": 345,
+    "numbers": [
+      75,
+      3,
+      25,
+      9
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 327
+  },
+  {
+    "target": 230,
+    "numbers": [
+      9,
+      8,
+      25,
+      100
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 228
+  },
+  {
+    "target": 200,
+    "numbers": [
+      100,
+      3,
+      25,
+      9
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 200
+  },
+  {
+    "target": 125,
+    "numbers": [
+      75,
+      7,
+      50,
+      8
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 125
+  },
+  {
+    "target": 2,
+    "numbers": [
+      6,
+      4
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 2
+  },
+  {
+    "target": 18,
+    "numbers": [
+      10,
+      8
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 18
+  },
+  {
+    "target": 700,
+    "numbers": [
+      25,
+      8,
+      10,
+      1,
+      100,
+      3
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 700
+  },
+  {
+    "target": 116,
+    "numbers": [
+      100,
+      75,
+      9,
+      8
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 117
+  },
+  {
+    "target": 386,
+    "numbers": [
+      25,
+      75,
+      1,
+      2
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 250
+  },
+  {
+    "target": 893,
+    "numbers": [
+      100,
+      25,
+      50,
+      75,
+      10,
+      6
+    ],
+    "difficulty": "hard",
+    "min_steps": 5,
+    "has_exact_solution": true,
+    "closest_possible": 893
+  },
+  {
+    "target": 807,
+    "numbers": [
+      25,
+      7,
+      10,
+      8,
+      5,
+      2
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 807
+  },
+  {
+    "target": 430,
+    "numbers": [
+      5,
+      10,
+      75,
+      100
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 425
+  },
+  {
+    "target": 322,
+    "numbers": [
+      5,
+      3,
+      50,
+      75,
+      2,
+      100
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 322
+  },
+  {
+    "target": 855,
+    "numbers": [
+      7,
+      4,
+      1,
+      2,
+      75,
+      3
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 855
+  },
+  {
+    "target": 388,
+    "numbers": [
+      50,
+      3,
+      4,
+      5,
+      2,
+      6
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 388
+  },
+  {
+    "target": 125,
+    "numbers": [
+      75,
+      50,
+      2,
+      1
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 125
+  },
+  {
+    "target": 109,
+    "numbers": [
+      6,
+      3,
+      25,
+      75
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 109
+  },
+  {
+    "target": 12,
+    "numbers": [
+      10,
+      2
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 12
+  },
+  {
+    "target": 674,
+    "numbers": [
+      2,
+      75,
+      50,
+      9,
+      4,
+      3
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 674
+  },
+  {
+    "target": 311,
+    "numbers": [
+      25,
+      10,
+      4,
+      6,
+      50,
+      75
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 311
+  },
+  {
+    "target": 874,
+    "numbers": [
+      25,
+      5,
+      10,
+      3,
+      1,
+      8
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 874
+  },
+  {
+    "target": 981,
+    "numbers": [
+      10,
+      25,
+      75,
+      100,
+      6,
+      50
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 981
+  },
+  {
+    "target": 247,
+    "numbers": [
+      100,
+      8,
+      75,
+      2
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 250
+  },
+  {
+    "target": 952,
+    "numbers": [
+      4,
+      10,
+      75,
+      1,
+      9,
+      6
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": false,
+    "closest_possible": 965
+  },
+  {
+    "target": 582,
+    "numbers": [
+      7,
+      6,
+      100,
+      75,
+      10,
+      2
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 582
+  },
+  {
+    "target": 9,
+    "numbers": [
+      9,
+      1
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 9
+  },
+  {
+    "target": 537,
+    "numbers": [
+      10,
+      9,
+      5,
+      4,
+      2,
+      100
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 537
+  },
+  {
+    "target": 243,
+    "numbers": [
+      100,
+      2,
+      4,
+      25
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 242
+  },
+  {
+    "target": 140,
+    "numbers": [
+      5,
+      9,
+      75,
+      6,
+      50,
+      100
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 140
+  },
+  {
+    "target": 275,
+    "numbers": [
+      10,
+      25,
+      75,
+      9
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 270
+  },
+  {
+    "target": 848,
+    "numbers": [
+      2,
+      5,
+      25,
+      4,
+      8,
+      7
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 848
+  },
+  {
+    "target": 464,
+    "numbers": [
+      100,
+      25,
+      1,
+      50,
+      10,
+      8
+    ],
+    "difficulty": "hard",
+    "min_steps": 5,
+    "has_exact_solution": true,
+    "closest_possible": 464
+  },
+  {
+    "target": 332,
+    "numbers": [
+      75,
+      2,
+      100,
+      8
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 334
+  },
+  {
+    "target": 392,
+    "numbers": [
+      5,
+      25,
+      75,
+      10
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 390
+  },
+  {
+    "target": 596,
+    "numbers": [
+      100,
+      25,
+      6,
+      4,
+      8,
+      5
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 596
+  },
+  {
+    "target": 390,
+    "numbers": [
+      7,
+      75,
+      3,
+      9,
+      10,
+      25
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 390
+  },
+  {
+    "target": 119,
+    "numbers": [
+      10,
+      75,
+      4,
+      25
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 120
+  },
+  {
+    "target": 363,
+    "numbers": [
+      3,
+      10,
+      100,
+      25
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 365
+  },
+  {
+    "target": 463,
+    "numbers": [
+      4,
+      100,
+      50,
+      2
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 458
+  },
+  {
+    "target": 918,
+    "numbers": [
+      6,
+      9,
+      7,
+      8,
+      100,
+      50
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 918
+  },
+  {
+    "target": 486,
+    "numbers": [
+      75,
+      100,
+      5,
+      2
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 485
+  },
+  {
+    "target": 270,
+    "numbers": [
+      8,
+      10,
+      5,
+      100,
+      4,
+      2
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 270
+  },
+  {
+    "target": 106,
+    "numbers": [
+      10,
+      25,
+      6,
+      75
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 106
+  },
+  {
+    "target": 183,
+    "numbers": [
+      25,
+      2,
+      50,
+      10
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 180
+  },
+  {
+    "target": 14,
+    "numbers": [
+      5,
+      9
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 14
+  },
+  {
+    "target": 369,
+    "numbers": [
+      8,
+      75,
+      50,
+      4
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 368
+  },
+  {
+    "target": 193,
+    "numbers": [
+      75,
+      10,
+      25,
+      3
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 195
+  },
+  {
+    "target": 188,
+    "numbers": [
+      100,
+      8,
+      25,
+      50,
+      1,
+      4
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 188
+  },
+  {
+    "target": 224,
+    "numbers": [
+      100,
+      7,
+      50,
+      3
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 229
+  },
+  {
+    "target": 5,
+    "numbers": [
+      7,
+      2
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 5
+  },
+  {
+    "target": 1,
+    "numbers": [
+      4,
+      3
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 1
+  },
+  {
+    "target": 11,
+    "numbers": [
+      4,
+      7
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 11
+  },
+  {
+    "target": 9,
+    "numbers": [
+      2,
+      7
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 9
+  },
+  {
+    "target": 237,
+    "numbers": [
+      25,
+      8,
+      6,
+      100,
+      50,
+      10
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 237
+  },
+  {
+    "target": 2,
+    "numbers": [
+      4,
+      2
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 2
+  },
+  {
+    "target": 108,
+    "numbers": [
+      2,
+      4,
+      75,
+      25
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 108
+  },
+  {
+    "target": 259,
+    "numbers": [
+      8,
+      75,
+      9,
+      50
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 253
+  },
+  {
+    "target": 20,
+    "numbers": [
+      2,
+      10
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 20
+  },
+  {
+    "target": 338,
+    "numbers": [
+      50,
+      6,
+      2,
+      75
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 350
+  },
+  {
+    "target": 349,
+    "numbers": [
+      5,
+      50,
+      75,
+      7
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 350
+  },
+  {
+    "target": 36,
+    "numbers": [
+      9,
+      4
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 36
+  },
+  {
+    "target": 468,
+    "numbers": [
+      6,
+      50,
+      25,
+      3
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 468
+  },
+  {
+    "target": 4,
+    "numbers": [
+      7,
+      3
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 4
+  },
+  {
+    "target": 355,
+    "numbers": [
+      5,
+      75,
+      3,
+      50
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 360
+  },
+  {
+    "target": 427,
+    "numbers": [
+      3,
+      25,
+      75,
+      9
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 425
+  },
+  {
+    "target": 2,
+    "numbers": [
+      5,
+      3
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 2
+  },
+  {
+    "target": 456,
+    "numbers": [
+      4,
+      100,
+      75,
+      3,
+      50,
+      10
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 456
+  },
+  {
+    "target": 166,
+    "numbers": [
+      6,
+      25,
+      50,
+      7
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 167
+  },
+  {
+    "target": 998,
+    "numbers": [
+      8,
+      25,
+      6,
+      7,
+      100,
+      10
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 998
+  },
+  {
+    "target": 376,
+    "numbers": [
+      75,
+      50,
+      5,
+      9
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 375
+  },
+  {
+    "target": 807,
+    "numbers": [
+      50,
+      1,
+      8,
+      10,
+      100,
+      7
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 807
+  },
+  {
+    "target": 106,
+    "numbers": [
+      50,
+      1,
+      3,
+      25
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 100
+  },
+  {
+    "target": 173,
+    "numbers": [
+      4,
+      100,
+      75,
+      2
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 173
+  },
+  {
+    "target": 13,
+    "numbers": [
+      5,
+      8
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 13
+  },
+  {
+    "target": 2,
+    "numbers": [
+      4,
+      2
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 2
+  },
+  {
+    "target": 150,
+    "numbers": [
+      25,
+      5,
+      10,
+      75
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 150
+  },
+  {
+    "target": 543,
+    "numbers": [
+      100,
+      50,
+      10,
+      25,
+      75,
+      1
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": false,
+    "closest_possible": 540
+  },
+  {
+    "target": 16,
+    "numbers": [
+      8,
+      2
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 16
+  },
+  {
+    "target": 607,
+    "numbers": [
+      4,
+      1,
+      75,
+      8,
+      7,
+      10
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 607
+  },
+  {
+    "target": 256,
+    "numbers": [
+      5,
+      2,
+      50,
+      75
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 255
+  },
+  {
+    "target": 263,
+    "numbers": [
+      7,
+      1,
+      50,
+      100
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 257
+  },
+  {
+    "target": 921,
+    "numbers": [
+      25,
+      2,
+      50,
+      75,
+      7,
+      3
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 921
+  },
+  {
+    "target": 102,
+    "numbers": [
+      10,
+      25,
+      75,
+      2
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 102
+  },
+  {
+    "target": 792,
+    "numbers": [
+      4,
+      75,
+      25,
+      3,
+      50,
+      100
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": false,
+    "closest_possible": 800
+  },
+  {
+    "target": 523,
+    "numbers": [
+      75,
+      9,
+      50,
+      8,
+      100,
+      3
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 523
+  },
+  {
+    "target": 199,
+    "numbers": [
+      100,
+      6,
+      8,
+      5,
+      50,
+      10
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 199
+  },
+  {
+    "target": 320,
+    "numbers": [
+      75,
+      10,
+      100,
+      4
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 325
+  },
+  {
+    "target": 144,
+    "numbers": [
+      4,
+      5,
+      8,
+      25,
+      6,
+      10
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 144
+  },
+  {
+    "target": 3,
+    "numbers": [
+      9,
+      6
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 3
+  },
+  {
+    "target": 357,
+    "numbers": [
+      10,
+      100,
+      2,
+      50
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 350
+  },
+  {
+    "target": 315,
+    "numbers": [
+      100,
+      9,
+      10,
+      25
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 315
+  },
+  {
+    "target": 672,
+    "numbers": [
+      50,
+      5,
+      75,
+      4,
+      8,
+      1
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 672
+  },
+  {
+    "target": 366,
+    "numbers": [
+      2,
+      100,
+      5,
+      75
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 365
+  },
+  {
+    "target": 261,
+    "numbers": [
+      75,
+      10,
+      50,
+      9
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 259
+  },
+  {
+    "target": 151,
+    "numbers": [
+      75,
+      9,
+      50,
+      5
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 145
+  },
+  {
+    "target": 275,
+    "numbers": [
+      1,
+      75,
+      7,
+      50
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 275
+  },
+  {
+    "target": 610,
+    "numbers": [
+      7,
+      2,
+      5,
+      100,
+      8,
+      25
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 610
+  },
+  {
+    "target": 6,
+    "numbers": [
+      3,
+      2
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 6
+  },
+  {
+    "target": 13,
+    "numbers": [
+      7,
+      6
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 13
+  },
+  {
+    "target": 396,
+    "numbers": [
+      25,
+      8,
+      3,
+      50
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 397
+  },
+  {
+    "target": 152,
+    "numbers": [
+      5,
+      50,
+      9,
+      100
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 150
+  },
+  {
+    "target": 15,
+    "numbers": [
+      8,
+      7
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 15
+  },
+  {
+    "target": 887,
+    "numbers": [
+      6,
+      8,
+      75,
+      50,
+      100,
+      5
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 887
+  },
+  {
+    "target": 461,
+    "numbers": [
+      10,
+      2,
+      50,
+      25
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 455
+  },
+  {
+    "target": 411,
+    "numbers": [
+      4,
+      8,
+      25,
+      50
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 407
+  },
+  {
+    "target": 8,
+    "numbers": [
+      10,
+      2
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 8
+  },
+  {
+    "target": 1,
+    "numbers": [
+      5,
+      4
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 1
+  },
+  {
+    "target": 312,
+    "numbers": [
+      5,
+      4,
+      75,
+      25
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 315
+  },
+  {
+    "target": 173,
+    "numbers": [
+      9,
+      25,
+      4,
+      100
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 164
+  },
+  {
+    "target": 12,
+    "numbers": [
+      8,
+      4
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 12
+  },
+  {
+    "target": 106,
+    "numbers": [
+      6,
+      75,
+      25,
+      2
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 106
+  },
+  {
+    "target": 392,
+    "numbers": [
+      25,
+      8,
+      2,
+      100
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 400
+  },
+  {
+    "target": 554,
+    "numbers": [
+      10,
+      5,
+      1,
+      25,
+      3,
+      7
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 554
+  },
+  {
+    "target": 705,
+    "numbers": [
+      4,
+      75,
+      8,
+      7,
+      2,
+      3
+    ],
+    "difficulty": "hard",
+    "min_steps": 5,
+    "has_exact_solution": true,
+    "closest_possible": 705
+  },
+  {
+    "target": 339,
+    "numbers": [
+      75,
+      3,
+      25,
+      4
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 337
+  },
+  {
+    "target": 237,
+    "numbers": [
+      50,
+      75,
+      25,
+      10,
+      100,
+      7
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 237
+  },
+  {
+    "target": 263,
+    "numbers": [
+      4,
+      9,
+      25,
+      100
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 264
+  },
+  {
+    "target": 30,
+    "numbers": [
+      5,
+      6
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 30
+  },
+  {
+    "target": 497,
+    "numbers": [
+      3,
+      100,
+      6,
+      2,
+      10,
+      75
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 497
+  },
+  {
+    "target": 218,
+    "numbers": [
+      75,
+      25,
+      10,
+      4
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 215
+  },
+  {
+    "target": 20,
+    "numbers": [
+      5,
+      4
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 20
+  },
+  {
+    "target": 10,
+    "numbers": [
+      1,
+      9
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 10
+  },
+  {
+    "target": 426,
+    "numbers": [
+      3,
+      10,
+      100,
+      75
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 425
+  },
+  {
+    "target": 10,
+    "numbers": [
+      7,
+      3
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 10
+  },
+  {
+    "target": 213,
+    "numbers": [
+      9,
+      2,
+      50,
+      100
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 209
+  },
+  {
+    "target": 10,
+    "numbers": [
+      8,
+      2
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 10
+  },
+  {
+    "target": 301,
+    "numbers": [
+      6,
+      50,
+      100,
+      4
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 300
+  },
+  {
+    "target": 418,
+    "numbers": [
+      1,
+      9,
+      50,
+      25
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 416
+  },
+  {
+    "target": 40,
+    "numbers": [
+      5,
+      8
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 40
+  },
+  {
+    "target": 17,
+    "numbers": [
+      8,
+      9
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 17
+  },
+  {
+    "target": 20,
+    "numbers": [
+      5,
+      4
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 20
+  },
+  {
+    "target": 647,
+    "numbers": [
+      7,
+      100,
+      6,
+      50,
+      9,
+      2
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 647
+  },
+  {
+    "target": 3,
+    "numbers": [
+      1,
+      2
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 3
+  },
+  {
+    "target": 279,
+    "numbers": [
+      7,
+      50,
+      75,
+      4,
+      100,
+      1
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 279
+  },
+  {
+    "target": 373,
+    "numbers": [
+      50,
+      25,
+      5,
+      1
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 374
+  },
+  {
+    "target": 389,
+    "numbers": [
+      50,
+      5,
+      4,
+      6,
+      10,
+      25
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 389
+  },
+  {
+    "target": 143,
+    "numbers": [
+      5,
+      2,
+      9,
+      100,
+      7,
+      8
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 143
+  },
+  {
+    "target": 520,
+    "numbers": [
+      50,
+      6,
+      25,
+      5,
+      10,
+      100
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 520
+  },
+  {
+    "target": 475,
+    "numbers": [
+      75,
+      1,
+      3,
+      9,
+      100,
+      25
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 475
+  },
+  {
+    "target": 10,
+    "numbers": [
+      3,
+      7
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 10
+  },
+  {
+    "target": 9,
+    "numbers": [
+      4,
+      5
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 9
+  },
+  {
+    "target": 3,
+    "numbers": [
+      7,
+      4
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 3
+  },
+  {
+    "target": 100,
+    "numbers": [
+      100,
+      10,
+      5,
+      50
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 100
+  },
+  {
+    "target": 612,
+    "numbers": [
+      50,
+      4,
+      6,
+      2,
+      100,
+      75
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 612
+  },
+  {
+    "target": 4,
+    "numbers": [
+      7,
+      3
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 4
+  },
+  {
+    "target": 285,
+    "numbers": [
+      50,
+      3,
+      9,
+      10,
+      25,
+      5
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 285
+  },
+  {
+    "target": 217,
+    "numbers": [
+      1,
+      75,
+      8,
+      50
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 208
+  },
+  {
+    "target": 10,
+    "numbers": [
+      1,
+      9
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 10
+  },
+  {
+    "target": 454,
+    "numbers": [
+      6,
+      50,
+      75,
+      1
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 456
+  },
+  {
+    "target": 14,
+    "numbers": [
+      4,
+      10
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 14
+  },
+  {
+    "target": 365,
+    "numbers": [
+      8,
+      1,
+      75,
+      100
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 425
+  },
+  {
+    "target": 20,
+    "numbers": [
+      2,
+      10
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 20
+  },
+  {
+    "target": 10,
+    "numbers": [
+      5,
+      2
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 10
+  },
+  {
+    "target": 558,
+    "numbers": [
+      100,
+      3,
+      75,
+      9,
+      8,
+      6
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 558
+  },
+  {
+    "target": 968,
+    "numbers": [
+      8,
+      6,
+      25,
+      9,
+      5,
+      75
+    ],
+    "difficulty": "hard",
+    "min_steps": 5,
+    "has_exact_solution": true,
+    "closest_possible": 968
+  },
+  {
+    "target": 3,
+    "numbers": [
+      5,
+      2
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 3
+  },
+  {
+    "target": 568,
+    "numbers": [
+      7,
+      5,
+      100,
+      6,
+      3,
+      50
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 568
+  },
+  {
+    "target": 333,
+    "numbers": [
+      5,
+      75,
+      50,
+      1
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 330
+  },
+  {
+    "target": 330,
+    "numbers": [
+      6,
+      100,
+      50,
+      10
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 340
+  }
+]

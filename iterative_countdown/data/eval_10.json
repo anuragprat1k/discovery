@@ -1,0 +1,132 @@
+[
+  {
+    "target": 6,
+    "numbers": [
+      4,
+      2
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 6
+  },
+  {
+    "target": 18,
+    "numbers": [
+      6,
+      3
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 18
+  },
+  {
+    "target": 2,
+    "numbers": [
+      3,
+      1
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 2
+  },
+  {
+    "target": 177,
+    "numbers": [
+      100,
+      2,
+      7,
+      25
+    ],
+    "difficulty": "medium",
+    "min_steps": 2,
+    "has_exact_solution": true,
+    "closest_possible": 177
+  },
+  {
+    "target": 287,
+    "numbers": [
+      75,
+      1,
+      7,
+      100
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 350
+  },
+  {
+    "target": 123,
+    "numbers": [
+      5,
+      50,
+      100,
+      2
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 125
+  },
+  {
+    "target": 406,
+    "numbers": [
+      100,
+      6,
+      5,
+      25
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 405
+  },
+  {
+    "target": 715,
+    "numbers": [
+      4,
+      50,
+      1,
+      25,
+      6,
+      7
+    ],
+    "difficulty": "hard",
+    "min_steps": 5,
+    "has_exact_solution": true,
+    "closest_possible": 715
+  },
+  {
+    "target": 672,
+    "numbers": [
+      25,
+      100,
+      75,
+      6,
+      2,
+      50
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 672
+  },
+  {
+    "target": 802,
+    "numbers": [
+      10,
+      6,
+      25,
+      5,
+      50,
+      9
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": false,
+    "closest_possible": 800
+  }
+]

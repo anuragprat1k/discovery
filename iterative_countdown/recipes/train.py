@@ -26,8 +26,9 @@ class CLIConfig:
     train_problems_path: str | None = None
     eval_problems_path: str | None = None
     n_train: int = 500
-    n_eval: int = 100
+    n_eval: int = 200
     seed: int = 42
+    max_steps: int = 500
     max_trajectory_tokens: int = 4096
 
     # Training
@@ -76,6 +77,7 @@ def build_config(cli: CLIConfig) -> Config:
         dataset_builder=dataset_builder,
         model_name=cli.model_name,
         max_tokens=cli.max_tokens,
+        max_steps=cli.max_steps,
         log_path=cli.log_path,
         eval_every=cli.eval_every,
         save_every=cli.save_every,

@@ -1,0 +1,132 @@
+[
+  {
+    "target": 21,
+    "numbers": [
+      7,
+      3
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 21
+  },
+  {
+    "target": 3,
+    "numbers": [
+      6,
+      3
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 3
+  },
+  {
+    "target": 9,
+    "numbers": [
+      9,
+      1
+    ],
+    "difficulty": "easy",
+    "min_steps": 1,
+    "has_exact_solution": true,
+    "closest_possible": 9
+  },
+  {
+    "target": 155,
+    "numbers": [
+      5,
+      75,
+      25,
+      3
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 155
+  },
+  {
+    "target": 305,
+    "numbers": [
+      6,
+      9,
+      50,
+      100
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 309
+  },
+  {
+    "target": 479,
+    "numbers": [
+      75,
+      5,
+      25,
+      3
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 485
+  },
+  {
+    "target": 467,
+    "numbers": [
+      10,
+      25,
+      9,
+      100
+    ],
+    "difficulty": "medium",
+    "min_steps": 3,
+    "has_exact_solution": false,
+    "closest_possible": 475
+  },
+  {
+    "target": 680,
+    "numbers": [
+      100,
+      5,
+      75,
+      3,
+      25,
+      50
+    ],
+    "difficulty": "hard",
+    "min_steps": 4,
+    "has_exact_solution": true,
+    "closest_possible": 680
+  },
+  {
+    "target": 726,
+    "numbers": [
+      100,
+      50,
+      25,
+      9,
+      10,
+      75
+    ],
+    "difficulty": "hard",
+    "min_steps": 5,
+    "has_exact_solution": true,
+    "closest_possible": 726
+  },
+  {
+    "target": 892,
+    "numbers": [
+      25,
+      2,
+      50,
+      9,
+      7,
+      8
+    ],
+    "difficulty": "hard",
+    "min_steps": 3,
+    "has_exact_solution": true,
+    "closest_possible": 892
+  }
+]
