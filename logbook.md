@@ -202,6 +202,54 @@ Verified: `import vllm, trl, bitsandbytes, datasets` → OK
 
 ---
 
+### 2026-03-11 — E2: LLM Rubric Reward Training
+
+**Experiment**: Train Qwen3-8B via Tinker GRPO with LLM-as-judge rubric reward (Qwen3-30B-A3B-Instruct-2507 as judge), 150 steps.
+
+**Build phase**:
+- Implemented `compute_score_rubric_sync()` in `rewards/reward_fns.py` — builds rubric prompt, scores on 4 criteria (setup, reasoning, intermediates, final answer), parses 0-1 score
+- All judge calls launched as async Tinker futures for parallel scoring
+- Added `--reward rubric --judge_model` flags to `train_tinker.py`
+- Blended reward: `0.5 * binary + 0.5 * rubric_score` — binary anchors correctness, rubric adds process-level gradient
+
+**Judge model selection**:
+- Qwen3-8B: poor instruction-following, couldn't output just a number with strict prompt
+- Qwen3-32B (dense): followed format but too lenient (gave 0.75 to wrong answers)
+- **Qwen3-30B-A3B-Instruct-2507 (MoE)**: excellent — strict scoring (1.0 correct, 0.25 good-process-wrong-answer, 0.0 no-work/wrong)
+
+**Training metrics** (150 steps):
+- Avg blended reward: 0.606 (vs ~0.05 for E1 binary at same steps)
+- Avg groups skipped: 2.5/8 (decent gradient signal)
+- Avg time/step: ~100s (vs ~80s for E1 — judge overhead ~20s)
+- Training run ID: `f5ed5d0a-fe52-5fcc-a39c-8d5c3ee96be4:train:0`
+
+**Eval results** (100 problems, n=24, k=1,4,16):
+
+| Step | pass@1 | pass@4 | pass@16 |
+|------|--------|--------|---------|
+| 50   | 0.3575 | 0.4705 | 0.5534  |
+| 100  | 0.3679 | 0.4914 | 0.5772  |
+| 150  | 0.3608 | 0.4782 | 0.5663  |
+
+**E1 binary comparison** (from partial files, ~100 problems, n=64):
+
+| Step | pass@1 | pass@4 | pass@16 |
+|------|--------|--------|---------|
+| 0    | 0.0547 | 0.1687 | 0.3224  |
+| 50   | 0.0560 | 0.1733 | 0.3326  |
+| 100  | 0.0586 | 0.1816 | 0.3534  |
+| 150  | 0.0724 | 0.2175 | 0.3890  |
+
+**Caveat**: E1 and E2 evals are not directly comparable — different eval subsets (E1 used ~100-106 problems from 200-problem set, E2 used first 100), different sample counts (E1: n=64, E2: n=24). The large absolute difference (0.36 vs 0.07 pass@1) likely reflects eval subset differences rather than rubric superiority.
+
+**Key observations**:
+1. Rubric reward produces relatively flat trajectory (pass@1: 0.36→0.37→0.36 over 150 steps) — model is not improving much
+2. Binary shows slow but steady improvement (pass@1: 0.05→0.07 over 150 steps)
+3. The blended rubric reward may be too noisy to provide clear training signal — the judge's scores create high within-group variance but it's not always meaningful variance
+4. Wall clock: ~4.2 hours training + ~3 hours eval
+
+---
+
 ### 2026-03-10 — Phase 3: Step-0 Baseline Eval
 
 - Wall clock: ~57 min (200 problems × 64 samples, vllm, Qwen3-4B-Instruct-2507)
