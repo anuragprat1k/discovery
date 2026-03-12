@@ -189,29 +189,100 @@ def grpo_step(
         temperature=args.temperature,
     )
 
-    # --- 1. Generate rollouts ---
+    # --- 1. Generate rollouts (batched by turn depth) ---
     import asyncio
     loop = asyncio.new_event_loop()
 
     t_gen_start = time.time()
-    all_episodes: list[dict] = []
-    rewards: list[float] = []
 
+    # Initialize all episodes
+    n_total = len(batch_problems) * args.group_size
+    episodes_state: list[dict] = []
     for problem in batch_problems:
         for _g in range(args.group_size):
-            episode = run_episode(
-                problem=problem,
-                sampling_client=sampling_client,
-                tokenizer=tokenizer,
-                sampling_params=sampling_params,
-                max_turns=args.max_turns,
-                _loop=loop,
+            target = problem["target"]
+            numbers = problem["numbers"]
+            env = CountdownMessageEnv(target=target, numbers=list(numbers), max_turns=args.max_turns)
+            messages = loop.run_until_complete(env.initial_observation())
+            episodes_state.append({
+                "env": env,
+                "messages": messages,
+                "target": target,
+                "numbers": numbers,
+                "model_outputs": [],
+                "all_prompt_tokens": [],
+                "all_completion_tokens": [],
+                "all_logprobs": [],
+                "done": False,
+            })
+
+    # Run turns in batches — all active episodes at the same turn depth
+    for turn in range(args.max_turns):
+        active = [i for i, ep in enumerate(episodes_state) if not ep["done"]]
+        if not active:
+            break
+
+        # Fire all sample requests as futures (parallel)
+        futures = []
+        for i in active:
+            ep = episodes_state[i]
+            prompt_text = tokenizer.apply_chat_template(
+                ep["messages"], tokenize=False, add_generation_prompt=True
             )
-            all_episodes.append(episode)
-            reward = compute_episode_reward(episode, reward_module, args.max_turns)
-            rewards.append(reward)
+            prompt_tokens = tokenizer.encode(prompt_text, add_special_tokens=False)
+            prompt_input = tinker.ModelInput.from_ints(prompt_tokens)
+
+            future = sampling_client.sample(
+                prompt=prompt_input,
+                num_samples=1,
+                sampling_params=sampling_params,
+            )
+            futures.append((i, future, prompt_tokens))
+
+        # Collect all results
+        for i, future, prompt_tokens in futures:
+            ep = episodes_state[i]
+            result = future.result()
+            seq = result.sequences[0]
+            completion_text = tokenizer.decode(seq.tokens, skip_special_tokens=True)
+
+            ep["model_outputs"].append(completion_text)
+            ep["all_prompt_tokens"].append(prompt_tokens)
+            ep["all_completion_tokens"].append(list(seq.tokens))
+            ep["all_logprobs"].append(
+                [lp if lp is not None else 0.0 for lp in seq.logprobs]
+                if seq.logprobs else [0.0] * len(seq.tokens)
+            )
+
+            step_result = loop.run_until_complete(
+                ep["env"].step({"role": "assistant", "content": completion_text})
+            )
+            if step_result.episode_done:
+                ep["done"] = True
+            else:
+                ep["messages"] = step_result.next_messages
 
     loop.close()
+
+    # Build final episode dicts
+    all_episodes: list[dict] = []
+    rewards: list[float] = []
+    for ep in episodes_state:
+        episode = {
+            "target": ep["target"],
+            "numbers": ep["numbers"],
+            "initial_distance": abs(ep["target"]),
+            "best_distance": ep["env"].best_distance,
+            "target_reached": ep["env"].best_distance == 0,
+            "turns_used": len(ep["model_outputs"]),
+            "model_outputs": ep["model_outputs"],
+            "all_prompt_tokens": ep["all_prompt_tokens"],
+            "all_completion_tokens": ep["all_completion_tokens"],
+            "all_logprobs": ep["all_logprobs"],
+        }
+        all_episodes.append(episode)
+        reward = compute_episode_reward(episode, reward_module, args.max_turns)
+        rewards.append(reward)
 
     t_gen = time.time() - t_gen_start
     rewards_arr = np.array(rewards, dtype=np.float32)
