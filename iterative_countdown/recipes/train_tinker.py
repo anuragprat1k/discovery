@@ -60,11 +60,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output_dir", type=str, default=None)
     parser.add_argument("--loss_fn", type=str, default="importance_sampling")
     parser.add_argument("--eval_steps", type=int, default=50, help="Run eval every N steps (0 to disable)")
-    parser.add_argument("--eval_problems", type=str, default="iterative_countdown/data/eval_problems.json")
+    parser.add_argument("--eval_problems", type=str, default="iterative_countdown/data/eval_50.json")
     parser.add_argument("--eval_n_problems", type=int, default=20, help="Number of eval problems to sample (for speed)")
     parser.add_argument("--no_wandb", action="store_true")
     parser.add_argument("--wandb_project", type=str, default="discovery-countdown")
     parser.add_argument("--wandb_name", type=str, default=None)
+    parser.add_argument("--wandb_group", type=str, default=None, help="W&B group for grouping related runs")
     return parser.parse_args()
 
 
@@ -622,6 +623,7 @@ def main() -> None:
         wandb.init(
             project=args.wandb_project,
             name=wandb_name,
+            group=args.wandb_group,
             config=vars(args),
         )
         # Allow eval metrics to arrive out-of-order (async eval)
