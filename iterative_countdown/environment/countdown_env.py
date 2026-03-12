@@ -456,16 +456,68 @@ if _HAS_TINKER_COOKBOOK:
             return train_dataset, eval_dataset
 
 else:
-    # Stubs when tinker-cookbook is not available
-    class CountdownEnvGroupBuilder:  # type: ignore[no-redef]
-        """Stub: requires tinker-cookbook (with torch) to be installed."""
-        def __init__(self, *args, **kwargs):
-            raise ImportError("CountdownEnvGroupBuilder requires tinker-cookbook and torch")
+    # Standalone dataclasses when tinker-cookbook is not available.
+    # Core logic (get_batch, __len__) works without tinker; only methods
+    # that need the tinker runtime (make_envs, compute_group_rewards,
+    # __call__) raise ImportError when invoked.
 
+    @dataclass(frozen=True)
+    class CountdownEnvGroupBuilder:  # type: ignore[no-redef]
+        """Countdown env group builder (standalone, no tinker base class)."""
+
+        target: int
+        numbers: tuple[int, ...]
+        num_envs: int
+        max_turns: int
+        renderer_name: str
+        model_name_for_tokenizer: str
+        reward_type: str = "dense"
+        max_trajectory_tokens: int | None = 4096
+
+        async def make_envs(self) -> Sequence[Any]:
+            raise ImportError("make_envs requires tinker-cookbook and torch")
+
+        async def compute_group_rewards(self, trajectory_group: list, env_group: Sequence) -> list:
+            raise ImportError("compute_group_rewards requires tinker-cookbook and torch")
+
+        def logging_tags(self) -> list[str]:
+            return ["countdown"]
+
+    @dataclass
     class CountdownDataset:  # type: ignore[no-redef]
-        """Stub: requires tinker-cookbook (with torch) to be installed."""
-        def __init__(self, *args, **kwargs):
-            raise ImportError("CountdownDataset requires tinker-cookbook and torch")
+        """Countdown dataset (standalone, no tinker base class)."""
+
+        problems: tuple[dict[str, Any], ...]
+        batch_size: int
+        group_size: int
+        max_turns: int
+        renderer_name: str
+        model_name_for_tokenizer: str
+        reward_type: str
+        max_trajectory_tokens: int | None
+
+        def get_batch(self, index: int) -> Sequence[CountdownEnvGroupBuilder]:
+            n = len(self.problems)
+            start = (index * self.batch_size) % n
+            batch_problems = [
+                self.problems[(start + i) % n] for i in range(self.batch_size)
+            ]
+            return [
+                CountdownEnvGroupBuilder(
+                    target=p["target"],
+                    numbers=tuple(p["numbers"]),
+                    num_envs=self.group_size,
+                    max_turns=self.max_turns,
+                    renderer_name=self.renderer_name,
+                    model_name_for_tokenizer=self.model_name_for_tokenizer,
+                    reward_type=self.reward_type,
+                    max_trajectory_tokens=self.max_trajectory_tokens,
+                )
+                for p in batch_problems
+            ]
+
+        def __len__(self) -> int:
+            return max(1, len(self.problems) // self.batch_size)
 
     class CountdownDatasetBuilder:  # type: ignore[no-redef]
         """Stub: requires tinker-cookbook (with torch) to be installed."""

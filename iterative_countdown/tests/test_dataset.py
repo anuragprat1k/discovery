@@ -8,13 +8,10 @@ from iterative_countdown.environment.problem_generator import (
     generate_problems,
     solve_countdown,
 )
-from iterative_countdown.environment.countdown_env import _HAS_TINKER_COOKBOOK
-
-if _HAS_TINKER_COOKBOOK:
-    from iterative_countdown.environment.countdown_env import (
-        CountdownDataset,
-        CountdownEnvGroupBuilder,
-    )
+from iterative_countdown.environment.countdown_env import (
+    CountdownDataset,
+    CountdownEnvGroupBuilder,
+)
 
 
 class TestSolveCountdown:
@@ -120,7 +117,6 @@ class TestGenerateProblems:
             assert len(p["numbers"]) == 6
 
 
-@pytest.mark.skipif(not _HAS_TINKER_COOKBOOK, reason="tinker-cookbook (torch) not installed")
 class TestCountdownDataset:
     """Tests for CountdownDataset."""
 
