@@ -292,12 +292,15 @@ async def _run_episode(
         messages = step_result.next_messages
 
     # Build result using the same format as evaluate_countdown_episode
-    return evaluate_countdown_episode(
+    result = evaluate_countdown_episode(
         model_outputs=model_outputs,
         target=env.target,
         numbers=env.initial_numbers,
         max_turns=max_turns,
     )
+    # Attach raw model outputs for selective trace saving
+    result["model_outputs"] = model_outputs
+    return result
 
 
 # ---------------------------------------------------------------------------
@@ -443,6 +446,7 @@ async def _run_eval(args) -> dict:
     # Evaluate remaining problems
     remaining = [i for i in range(n_problems) if i not in partial]
     t0 = time.time()
+    trace_counter = 0  # for selective trace saving
 
     pbar = progress(remaining, total=n_problems, desc="Problems", initial=n_done)
     for idx in pbar:
@@ -468,6 +472,20 @@ async def _run_eval(args) -> dict:
             episodes.append(episode)
 
         record = _evaluate_problem(problem, episodes, args.k_values, idx)
+
+        # Save raw model text selectively (every 10th problem)
+        if trace_counter % 10 == 0:
+            traces = []
+            for ep in episodes[:3]:  # at most 3 samples
+                traces.append({
+                    "model_outputs": [o[:2000] for o in ep.get("model_outputs", [])],
+                    "target_reached": ep["target_reached"],
+                    "best_distance": ep["best_distance"],
+                    "turns_used": ep["turns_used"],
+                })
+            record["traces"] = traces
+        trace_counter += 1
+
         _append_result(sidecar, record)
         partial[idx] = record
 
