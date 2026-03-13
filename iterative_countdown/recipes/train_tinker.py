@@ -118,7 +118,7 @@ def run_periodic_eval(
     sampling_params = tinker.SamplingParams(max_tokens=max_tokens, temperature=temperature)
 
     async def sample_fn(messages):
-        prompt_text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True, enable_thinking=True)
+        prompt_text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
         prompt_tokens = tokenizer.encode(prompt_text, add_special_tokens=False)
         prompt_input = tinker.ModelInput.from_ints(prompt_tokens)
         result = sampling_client.sample(

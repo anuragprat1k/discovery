@@ -62,8 +62,9 @@ Example:
   Turn 1 → Expression: 2 + 3   (result: 5, pool becomes [10, 5])
   Turn 2 → Expression: 10 + 5  (result: 15 ✓ target reached!)
 
-Use <think>...</think> tags to reason about your approach, then write your final expression as:
-Expression: <your expression>\
+Respond with ONLY your expression on the last line, like:
+Expression: <your expression>
+Keep your reasoning brief. The Expression line must be the final line of your response.\
 """
 
 

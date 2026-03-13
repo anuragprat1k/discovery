@@ -364,7 +364,7 @@ def _make_sample_fn(sampling_client, tokenizer, tinker_module, max_tokens: int, 
     async def sample_fn(messages: list[dict]) -> str:
         """Apply chat template, sample from model, decode response."""
         prompt_text = tokenizer.apply_chat_template(
-            messages, tokenize=False, add_generation_prompt=True, enable_thinking=True
+            messages, tokenize=False, add_generation_prompt=True
         )
         prompt_token_ids = tokenizer.encode(prompt_text, add_special_tokens=False)
         prompt_input = tinker_module.types.ModelInput.from_ints(prompt_token_ids)
