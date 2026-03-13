@@ -351,7 +351,7 @@ async def _create_tinker_sampling_client(model: str | None, tinker_path: str | N
     return sampling_client, tokenizer, tinker
 
 
-def _make_sample_fn(sampling_client, tokenizer, tinker_module, max_tokens: int, temperature: float):
+def _make_sample_fn(sampling_client, tokenizer, tinker_module, max_tokens: int, temperature: float, template_kwargs: dict | None = None):
     """Create an async sample function that calls tinker.
 
     Returns an async callable(messages: list[dict]) -> str
@@ -364,7 +364,7 @@ def _make_sample_fn(sampling_client, tokenizer, tinker_module, max_tokens: int, 
     async def sample_fn(messages: list[dict]) -> str:
         """Apply chat template, sample from model, decode response."""
         prompt_text = tokenizer.apply_chat_template(
-            messages, tokenize=False, add_generation_prompt=True
+            messages, tokenize=False, add_generation_prompt=True, **(template_kwargs or {})
         )
         prompt_token_ids = tokenizer.encode(prompt_text, add_special_tokens=False)
         prompt_input = tinker_module.types.ModelInput.from_ints(prompt_token_ids)
@@ -438,10 +438,12 @@ async def _run_eval(args) -> dict:
     sampling_client, tokenizer, tinker_module = await _create_tinker_sampling_client(
         model=args.model, tinker_path=args.tinker_path
     )
+    tmpl_kwargs = {"enable_thinking": False} if getattr(args, "no_thinking", False) else {}
     sample_fn = _make_sample_fn(
         sampling_client, tokenizer, tinker_module,
         max_tokens=args.max_tokens,
         temperature=args.temperature,
+        template_kwargs=tmpl_kwargs,
     )
 
     # Evaluate remaining problems
@@ -609,6 +611,11 @@ def main() -> None:
         type=int,
         default=256,
         help="Max tokens per turn",
+    )
+    parser.add_argument(
+        "--no_thinking",
+        action="store_true",
+        help="Disable thinking mode (for Qwen3 thinking models)",
     )
     args = parser.parse_args()
 

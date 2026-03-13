@@ -47,7 +47,8 @@ def parse_args() -> argparse.Namespace:
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument("--reward", required=True, choices=["binary", "dense", "prime"])
-    parser.add_argument("--model", type=str, default="Qwen/Qwen3-4B-Instruct-2507")
+    parser.add_argument("--model", type=str, default="Qwen/Qwen3-8B")
+    parser.add_argument("--no_thinking", action="store_true", help="Disable thinking mode (adds empty think block to suppress reasoning)")
     parser.add_argument("--max_steps", type=int, default=200)
     parser.add_argument("--group_size", type=int, default=16)
     parser.add_argument("--batch_size", type=int, default=8)
@@ -69,6 +70,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--wandb_group", type=str, default=None, help="W&B group for grouping related runs")
     return parser.parse_args()
 
+
+# Chat template kwargs — set from args in main(), used by all template calls.
+# enable_thinking=False inserts empty <think></think> to suppress thinking.
+_TEMPLATE_KWARGS: dict = {}
 
 # ---------------------------------------------------------------------------
 # Reward functions
@@ -118,7 +123,7 @@ def run_periodic_eval(
     sampling_params = tinker.SamplingParams(max_tokens=max_tokens, temperature=temperature)
 
     async def sample_fn(messages):
-        prompt_text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+        prompt_text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True, **_TEMPLATE_KWARGS)
         prompt_tokens = tokenizer.encode(prompt_text, add_special_tokens=False)
         prompt_input = tinker.ModelInput.from_ints(prompt_tokens)
         result = sampling_client.sample(
@@ -220,7 +225,7 @@ def run_episode(
 
     for turn in range(max_turns):
         prompt_text = tokenizer.apply_chat_template(
-            messages, tokenize=False, add_generation_prompt=True, enable_thinking=True
+            messages, tokenize=False, add_generation_prompt=True
         )
         prompt_tokens = tokenizer.encode(prompt_text, add_special_tokens=False)
         prompt_input = tinker.ModelInput.from_ints(prompt_tokens)
@@ -577,7 +582,10 @@ def grpo_step(
 # ---------------------------------------------------------------------------
 
 def main() -> None:
+    global _TEMPLATE_KWARGS
     args = parse_args()
+    if args.no_thinking:
+        _TEMPLATE_KWARGS = {"enable_thinking": False}
     output_dir = args.output_dir or f"checkpoints/countdown_{args.reward}"
     os.makedirs(output_dir, exist_ok=True)
 
