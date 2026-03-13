@@ -34,6 +34,7 @@ import tinker
 from tinker import ServiceClient
 
 from ..environment.countdown_env import CountdownMessageEnv
+from ..environment.expression_parser import strip_think_tags
 
 
 # ---------------------------------------------------------------------------
@@ -52,7 +53,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--batch_size", type=int, default=8)
     parser.add_argument("--lora_rank", type=int, default=32)
     parser.add_argument("--lr", type=float, default=3e-5)
-    parser.add_argument("--max_tokens", type=int, default=256, help="Max tokens per turn")
+    parser.add_argument("--max_tokens", type=int, default=512, help="Max tokens per turn")
     parser.add_argument("--max_turns", type=int, default=5)
     parser.add_argument("--temperature", type=float, default=1.0)
     parser.add_argument("--save_steps", type=int, default=50)
@@ -117,13 +118,14 @@ def run_periodic_eval(
     sampling_params = tinker.SamplingParams(max_tokens=max_tokens, temperature=temperature)
 
     async def sample_fn(messages):
-        prompt_text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+        prompt_text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True, enable_thinking=True)
         prompt_tokens = tokenizer.encode(prompt_text, add_special_tokens=False)
         prompt_input = tinker.ModelInput.from_ints(prompt_tokens)
         result = sampling_client.sample(
             prompt=prompt_input, num_samples=1, sampling_params=sampling_params,
         ).result()
-        return tokenizer.decode(result.sequences[0].tokens, skip_special_tokens=True)
+        decoded = tokenizer.decode(result.sequences[0].tokens, skip_special_tokens=True)
+        return strip_think_tags(decoded)
 
     loop = asyncio.new_event_loop()
     out_dir = Path(output_dir)
@@ -218,7 +220,7 @@ def run_episode(
 
     for turn in range(max_turns):
         prompt_text = tokenizer.apply_chat_template(
-            messages, tokenize=False, add_generation_prompt=True
+            messages, tokenize=False, add_generation_prompt=True, enable_thinking=True
         )
         prompt_tokens = tokenizer.encode(prompt_text, add_special_tokens=False)
         prompt_input = tinker.ModelInput.from_ints(prompt_tokens)
@@ -231,6 +233,7 @@ def run_episode(
 
         seq = result.sequences[0]
         completion_text = tokenizer.decode(seq.tokens, skip_special_tokens=True)
+        answer_text = strip_think_tags(completion_text)
         model_outputs.append(completion_text)
         all_prompt_tokens.append(prompt_tokens)
         all_completion_tokens.append(list(seq.tokens))
@@ -240,7 +243,7 @@ def run_episode(
         )
 
         step_result = _loop.run_until_complete(
-            env.step({"role": "assistant", "content": completion_text})
+            env.step({"role": "assistant", "content": answer_text})
         )
 
         if step_result.episode_done:
@@ -365,6 +368,8 @@ def grpo_step(
             result = future.result()
             seq = result.sequences[0]
             completion_text = tokenizer.decode(seq.tokens, skip_special_tokens=True)
+            # Strip thinking content — only pass the answer to env/rewards
+            answer_text = strip_think_tags(completion_text)
 
             ep["model_outputs"].append(completion_text)
             ep["all_prompt_tokens"].append(prompt_tokens)
@@ -375,7 +380,7 @@ def grpo_step(
             )
 
             step_result = loop.run_until_complete(
-                ep["env"].step({"role": "assistant", "content": completion_text})
+                ep["env"].step({"role": "assistant", "content": answer_text})
             )
 
             # Compute turn reward from our reward module
@@ -404,7 +409,7 @@ def grpo_step(
             if "prev_distance" in sig.parameters:
                 turn_kwargs["prev_distance"] = ep["prev_distance"]
             if "model_text" in sig.parameters:
-                turn_kwargs["model_text"] = completion_text
+                turn_kwargs["model_text"] = answer_text
             if "weights" in sig.parameters:
                 turn_kwargs["weights"] = None
             # Fix result: use actual result from env history if available

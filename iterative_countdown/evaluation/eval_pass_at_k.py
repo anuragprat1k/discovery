@@ -25,7 +25,7 @@ from pathlib import Path
 import numpy as np
 
 from ..environment.countdown_env import CountdownMessageEnv
-from ..environment.expression_parser import extract_expression, parse_expression
+from ..environment.expression_parser import extract_expression, parse_expression, strip_think_tags
 
 
 # ---------------------------------------------------------------------------
@@ -364,7 +364,7 @@ def _make_sample_fn(sampling_client, tokenizer, tinker_module, max_tokens: int, 
     async def sample_fn(messages: list[dict]) -> str:
         """Apply chat template, sample from model, decode response."""
         prompt_text = tokenizer.apply_chat_template(
-            messages, tokenize=False, add_generation_prompt=True
+            messages, tokenize=False, add_generation_prompt=True, enable_thinking=True
         )
         prompt_token_ids = tokenizer.encode(prompt_text, add_special_tokens=False)
         prompt_input = tinker_module.types.ModelInput.from_ints(prompt_token_ids)
@@ -375,7 +375,8 @@ def _make_sample_fn(sampling_client, tokenizer, tinker_module, max_tokens: int, 
             sampling_params=sampling_params,
         ).result()
 
-        return tokenizer.decode(result.sequences[0].tokens, skip_special_tokens=True)
+        decoded = tokenizer.decode(result.sequences[0].tokens, skip_special_tokens=True)
+        return strip_think_tags(decoded)
 
     return sample_fn
 
