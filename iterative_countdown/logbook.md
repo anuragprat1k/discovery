@@ -94,3 +94,68 @@ Replaced the stub with functional multi-turn Tinker eval. Key design:
 ### Notes
 - tinker-cookbook is not pip-installable (it's a local/custom package). Training configs import it at runtime. The eval code only imports tinker (not tinker-cookbook).
 - The `max_steps` field was added to `Config()` call — this assumes tinker-cookbook's Config supports it. If not, it'll be a clear error at training time and easy to fix.
+
+## 2026-03-13 — V2 Countdown Training (50 steps) with Per-Turn + Formatting Fixes
+
+### Context
+Re-ran 50-step binary and dense training after two key fixes landed on `main`:
+1. **Per-turn training** — train on all turns per episode, not just the last (`fix(train): train on all turns per episode`)
+2. **Formatting reward** — +0.1 reward for correct `Expression: <expr>` format in both binary and dense reward modules (`feat(rewards): add formatting reward`)
+
+Rebased `exp/full-countdown-runs` onto `origin/main` — cherry-picked commits were auto-skipped.
+
+### Training Config
+- Model: Qwen/Qwen3-4B-Instruct-2507
+- LoRA rank: 32, LR: 3e-05
+- Batch: 16 problems × 16 rollouts, max 5 turns
+- 50 steps, eval every 10 steps (20 problems sampled from eval_50)
+- W&B group: `v2-50step`
+
+### Training Metrics Summary
+
+| Metric | Binary V1 | Binary V2 | Dense V1 | Dense V2 |
+|--------|-----------|-----------|----------|----------|
+| Avg reward (first 10) | 0.016 | 0.303 | 0.008 | 0.225 |
+| Avg reward (last 10) | 0.017 | 0.301 | -0.003 | 0.222 |
+| Wall-clock time | 66.2m | 52.6m | 80.6m | 63.7m |
+
+Key observation: **V2 rewards are ~15-20x higher than V1** due to the formatting reward (+0.1 per correctly formatted turn). This means the formatting signal is dominating — most of the reward comes from learning to output `Expression: ...` rather than from solving the problem.
+
+### Eval Results (pass@1 on 20-problem sample)
+
+| Step | Binary V1 | Binary V2 | Dense V1 | Dense V2 |
+|------|-----------|-----------|----------|----------|
+| 10 | 0.02 | 0.05 | 0.00 | 0.05 |
+| 20 | 0.00 | 0.00 | 0.04 | 0.00 |
+| 30 | 0.04 | 0.00 | 0.02 | 0.05 |
+| 40 | 0.00 | 0.00 | 0.02 | 0.00 |
+| 50 | 0.00 | 0.00 | 0.00 | 0.00 |
+
+### Eval Results (mean_best_distance on 20-problem sample)
+
+| Step | Binary V1 | Binary V2 | Dense V1 | Dense V2 |
+|------|-----------|-----------|----------|----------|
+| 10 | 200.6 | 206.7 | 196.5 | 177.7 |
+| 20 | 178.6 | 230.8 | 212.2 | 204.7 |
+| 30 | 216.0 | 186.8 | 173.6 | 243.3 |
+| 40 | 219.6 | 210.8 | 225.2 | 247.0 |
+| 50 | 212.4 | 255.2 | 164.7 | 171.4 |
+
+### W&B Links
+- Binary V2: https://wandb.ai/anuragprateek/discovery-countdown/runs/faetzkyl
+- Dense V2: https://wandb.ai/anuragprateek/discovery-countdown/runs/842qpxuu
+
+### Key Takeaways
+
+1. **Formatting reward dominates**: V2 mean rewards (~0.22-0.30) are vastly higher than V1 (~0.01-0.02), but this is almost entirely from the +0.1 formatting bonus on ~3-5 turns per episode. The actual solve rate barely changed.
+
+2. **No meaningful improvement in pass@1**: Both V1 and V2 hover around 0-5% pass@1 across all steps. The per-turn training fix and formatting reward don't meaningfully improve problem-solving ability at 50 steps.
+
+3. **Distance metrics noisy**: mean_best_distance fluctuates wildly (120-255) across steps for all runs, with no clear trend. The 20-problem eval sample is too small for stable distance estimates.
+
+4. **Binary vs Dense still inconclusive at 50 steps**: Neither reward type shows a clear advantage. The hypothesis about binary "sharpening" vs dense "discovery" cannot be evaluated at this training scale.
+
+5. **Dense V2 has more reward variance**: Dense reward_std (~0.28-0.47) is much higher than binary (~0.08-0.22), expected since dense rewards are continuous while binary rewards cluster near 0/1 + formatting bonus.
+
+### Issues
+- Dense training process hit Tinker API connection errors after step 50 completed, causing the step 50 eval to only finish 18/20 problems before the session died. All other evals completed normally.
