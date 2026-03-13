@@ -466,55 +466,55 @@ def grpo_step(
             advantages[start:end] = (group_rewards - group_mean) / (group_std + 1e-8)
 
     # --- 3. Build Datum objects ---
-    # For multi-turn: concatenate all turns' tokens into one sequence per episode
+    # Per-turn training: create one Datum per turn per episode so all model
+    # decisions receive gradient signal, not just the last turn.
     data = []
     for idx, episode in enumerate(all_episodes):
         if abs(advantages[idx]) < 1e-8:
             continue
 
-        # Use the last turn's full prompt + completion as the training signal
-        # This captures the full conversation context
-        last_turn = len(episode["all_prompt_tokens"]) - 1
-        prompt_tokens = episode["all_prompt_tokens"][last_turn]
-        completion_tokens = episode["all_completion_tokens"][last_turn]
-        logprobs = episode["all_logprobs"][last_turn]
-
-        n_prompt = len(prompt_tokens)
-        n_completion = len(completion_tokens)
-        full_tokens = prompt_tokens + completion_tokens
-
-        model_input = tinker.ModelInput.from_ints(full_tokens)
-
-        target_tokens = tinker.TensorData(
-            data=full_tokens,
-            dtype="int64",
-        )
-
         adv_value = float(advantages[idx])
-        token_advantages = tinker.TensorData(
-            data=[0.0] * n_prompt + [adv_value] * n_completion,
-            dtype="float32",
-        )
+        n_turns = len(episode["all_prompt_tokens"])
+        for turn in range(n_turns):
+            prompt_tokens = episode["all_prompt_tokens"][turn]
+            completion_tokens = episode["all_completion_tokens"][turn]
+            logprobs = episode["all_logprobs"][turn]
 
-        lp_list = [0.0] * n_prompt + logprobs[:n_completion]
-        # Pad if logprobs shorter than completion
-        if len(lp_list) < n_prompt + n_completion:
-            lp_list.extend([0.0] * (n_prompt + n_completion - len(lp_list)))
+            n_prompt = len(prompt_tokens)
+            n_completion = len(completion_tokens)
+            full_tokens = prompt_tokens + completion_tokens
 
-        logprobs_tensor = tinker.TensorData(
-            data=lp_list,
-            dtype="float32",
-        )
+            model_input = tinker.ModelInput.from_ints(full_tokens)
 
-        datum = tinker.Datum(
-            model_input=model_input,
-            loss_fn_inputs={
-                "target_tokens": target_tokens,
-                "logprobs": logprobs_tensor,
-                "advantages": token_advantages,
-            },
-        )
-        data.append(datum)
+            target_tokens = tinker.TensorData(
+                data=full_tokens,
+                dtype="int64",
+            )
+
+            token_advantages = tinker.TensorData(
+                data=[0.0] * n_prompt + [adv_value] * n_completion,
+                dtype="float32",
+            )
+
+            lp_list = [0.0] * n_prompt + logprobs[:n_completion]
+            # Pad if logprobs shorter than completion
+            if len(lp_list) < n_prompt + n_completion:
+                lp_list.extend([0.0] * (n_prompt + n_completion - len(lp_list)))
+
+            logprobs_tensor = tinker.TensorData(
+                data=lp_list,
+                dtype="float32",
+            )
+
+            datum = tinker.Datum(
+                model_input=model_input,
+                loss_fn_inputs={
+                    "target_tokens": target_tokens,
+                    "logprobs": logprobs_tensor,
+                    "advantages": token_advantages,
+                },
+            )
+            data.append(datum)
 
     if not data:
         return {
