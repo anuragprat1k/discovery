@@ -46,17 +46,22 @@ class MessageStepResult:
 
 
 SYSTEM_PROMPT = """\
-You are playing the Countdown numbers game. Your goal is to reach a target \
-number by combining available numbers using arithmetic operations: +, -, *, /.
+You are playing the Countdown numbers game.
 
-Rules:
-- Each turn, write an arithmetic expression using some of the available numbers.
-- Write your expression as: Expression: <your expression>
-- The result of your expression becomes a new available number.
-- Each number can only be used once per expression.
-- Division must produce an exact integer (no fractions).
-- You may use parentheses for grouping.
-- Try to reach the target exactly in as few turns as possible.\
+Goal: Reach the target number by combining available numbers with +, -, *, /.
+
+How it works:
+- Each turn, pick SOME (not necessarily all) available numbers and write one arithmetic expression.
+- The numbers you use are REMOVED from the pool. The result is ADDED as a new available number.
+- Division must be exact (no remainders). Parentheses are fine.
+- You have a limited number of turns. Try to reach the target exactly.
+
+Example:
+  Target: 15, Available: [2, 3, 10]
+  Turn 1 → Expression: 2 + 3   (result: 5, pool becomes [10, 5])
+  Turn 2 → Expression: 10 + 5  (result: 15 ✓ target reached!)
+
+Write your expression as: Expression: <your expression>\
 """
 
 
@@ -86,9 +91,8 @@ class CountdownMessageEnv:
         numbers_str = ", ".join(str(n) for n in self.initial_numbers)
         user_content = (
             f"Target: {self.target}\n"
-            f"Available numbers: [{numbers_str}]\n\n"
-            f"Make an arithmetic expression using some of these numbers. "
-            f"Write your expression as: Expression: <expr>"
+            f"Available numbers: [{numbers_str}]\n"
+            f"Turns remaining: {self.max_turns}"
         )
         return [
             {"role": "system", "content": SYSTEM_PROMPT},
@@ -211,9 +215,8 @@ class CountdownMessageEnv:
                 "role": "user",
                 "content": (
                     f"Target: {self.target}\n"
-                    f"Available numbers: [{initial_numbers_str}]\n\n"
-                    f"Make an arithmetic expression using some of these numbers. "
-                    f"Write your expression as: Expression: <expr>"
+                    f"Available numbers: [{initial_numbers_str}]\n"
+                    f"Turns remaining: {self.max_turns}"
                 ),
             },
         ]
