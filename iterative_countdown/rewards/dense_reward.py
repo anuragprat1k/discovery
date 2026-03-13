@@ -6,15 +6,23 @@ discovery of solutions to previously unsolvable problems.
 """
 from __future__ import annotations
 
+import re
+
 from . import reward_utils
 
 # Default weights for reward components
 DEFAULT_WEIGHTS: dict[str, float] = {
     "proximity": 0.3,   # Getting closer to target
-    "validity": 0.1,    # Valid expression syntax + valid numbers
+    "validity": 0.05,   # Valid expression syntax + valid numbers
+    "format": 0.1,      # Correct Expression: format in output
     "progress": 0.2,    # Progress relative to turn budget
-    "correctness": 0.4, # Exact match (only on turn where target is hit)
+    "correctness": 0.35, # Exact match (only on turn where target is hit)
 }
+
+
+def _has_expression_format(text: str) -> bool:
+    """Check if model output contains 'Expression: <something>'."""
+    return bool(re.search(r'[Ee]xpression:\s*.+', text))
 
 
 def compute_turn_reward(
@@ -29,6 +37,7 @@ def compute_turn_reward(
     initial_distance: float,
     prev_distance: float,
     weights: dict[str, float] | None = None,
+    model_text: str = "",
 ) -> tuple[float, dict[str, float]]:
     """Per-turn reward combining multiple components.
 
@@ -44,10 +53,16 @@ def compute_turn_reward(
     w = weights or DEFAULT_WEIGHTS
     metrics: dict[str, float] = {"turn": turn, "valid": float(expression_valid)}
 
+    # Format reward: credit for using Expression: format, even if expression is wrong
+    has_format = _has_expression_format(model_text) if model_text else False
+    fmt = 1.0 if has_format else 0.0
+    metrics["format_reward"] = w.get("format", 0.1) * fmt
+
     if not expression_valid or result is None:
-        # Penalty for invalid expression
-        reward = -0.1
+        # Penalty for invalid expression, but still give format credit
+        reward = -0.1 + w.get("format", 0.1) * fmt
         metrics["reward"] = reward
+        metrics["format_component"] = fmt
         return reward, metrics
 
     new_distance = abs(target - result)
@@ -70,6 +85,7 @@ def compute_turn_reward(
     reward = (
         w["proximity"] * prox
         + w["validity"] * val
+        + w.get("format", 0.1) * fmt
         + w["progress"] * prog
         + w["correctness"] * correct
     )
@@ -78,6 +94,7 @@ def compute_turn_reward(
         {
             "proximity_component": prox,
             "validity_component": val,
+            "format_component": fmt,
             "progress_component": prog,
             "correctness_component": correct,
             "reward": reward,
