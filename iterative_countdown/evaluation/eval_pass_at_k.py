@@ -96,7 +96,7 @@ def evaluate_countdown_episode(
     for output in model_outputs[:max_turns]:
         expr_str = extract_expression(output)
         if expr_str is None:
-            break
+            continue
 
         try:
             result, nums_used = parse_expression(expr_str, available)
@@ -115,7 +115,7 @@ def evaluate_countdown_episode(
                 target_reached = True
                 break
         except (ValueError, ZeroDivisionError):
-            break
+            continue
 
     return {
         "target_reached": target_reached,

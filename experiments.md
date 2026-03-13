@@ -16,8 +16,8 @@ Status: `TODO` | `IN PROGRESS` | `DONE` | `BLOCKED`
 
 | ID | Name | Status | Branch | Depends On | Description |
 |----|------|--------|--------|------------|-------------|
-| C1 | Countdown binary reward | IN PROGRESS | exp/full-countdown-runs | — | Full 200-step GRPO training with binary reward on Countdown, group_size=16, batch_size=8. Eval at every 25 steps. |
-| C2 | Countdown dense reward | IN PROGRESS | exp/full-countdown-runs | — | Full 200-step GRPO training with dense reward on Countdown, group_size=16, batch_size=8. Eval at every 25 steps. |
+| C1 | Countdown binary reward | DONE | exp/full-countdown-runs | — | Ran 4 iterations (V1-V4) via Tinker. V3 best: 14% pass@1. V4 final (med+hard only): 2% pass@1. Zero-variance groups caused wasted gradient steps. |
+| C2 | Countdown dense reward | DONE | exp/full-countdown-runs | — | Ran 4 iterations (V1-V4) via Tinker. V3 best: 26% pass@1 (faster learning than binary). V4 final (med+hard only): 2% pass@1. Inconclusive overall — task too hard without easy problems. |
 | C3 | Countdown PRIME reward | TODO | — | C1, C2 | Deferred. Full 200-step GRPO training with PRIME reward on Countdown. |
 
 ## Tasks
