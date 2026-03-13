@@ -13,8 +13,20 @@ from collections import Counter
 
 
 def strip_think_tags(text: str) -> str:
-    """Remove <think>...</think> blocks from model output, keeping only the answer."""
-    return re.sub(r'<think>.*?</think>\s*', '', text, flags=re.DOTALL).strip()
+    """Remove <think>...</think> blocks and special tokens from model output.
+
+    Works whether the tags are present as literal text (skip_special_tokens=False)
+    or stripped by the tokenizer (skip_special_tokens=True). When tags are stripped,
+    we can't recover the boundary, so callers should decode with
+    skip_special_tokens=False for best results.
+    """
+    # Remove <think>...</think> blocks (handles multiple)
+    text = re.sub(r'<think>.*?</think>\s*', '', text, flags=re.DOTALL)
+    # Remove unclosed <think> block (model hit token limit mid-thinking)
+    text = re.sub(r'<think>.*', '', text, flags=re.DOTALL)
+    # Remove any leftover special tokens from Qwen chat format
+    text = re.sub(r'<\|[^>]+\|>', '', text)
+    return text.strip()
 
 
 def parse_expression(expr: str, available: list[int]) -> tuple[int, list[int]]:

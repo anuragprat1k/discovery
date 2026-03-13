@@ -375,7 +375,7 @@ def _make_sample_fn(sampling_client, tokenizer, tinker_module, max_tokens: int, 
             sampling_params=sampling_params,
         ).result()
 
-        decoded = tokenizer.decode(result.sequences[0].tokens, skip_special_tokens=True)
+        decoded = tokenizer.decode(result.sequences[0].tokens, skip_special_tokens=False)
         return strip_think_tags(decoded)
 
     return sample_fn

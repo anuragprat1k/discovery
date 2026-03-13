@@ -124,7 +124,7 @@ def run_periodic_eval(
         result = sampling_client.sample(
             prompt=prompt_input, num_samples=1, sampling_params=sampling_params,
         ).result()
-        decoded = tokenizer.decode(result.sequences[0].tokens, skip_special_tokens=True)
+        decoded = tokenizer.decode(result.sequences[0].tokens, skip_special_tokens=False)
         return strip_think_tags(decoded)
 
     loop = asyncio.new_event_loop()
@@ -232,7 +232,7 @@ def run_episode(
         ).result()
 
         seq = result.sequences[0]
-        completion_text = tokenizer.decode(seq.tokens, skip_special_tokens=True)
+        completion_text = tokenizer.decode(seq.tokens, skip_special_tokens=False)
         answer_text = strip_think_tags(completion_text)
         model_outputs.append(completion_text)
         all_prompt_tokens.append(prompt_tokens)
@@ -367,7 +367,7 @@ def grpo_step(
             ep = episodes_state[i]
             result = future.result()
             seq = result.sequences[0]
-            completion_text = tokenizer.decode(seq.tokens, skip_special_tokens=True)
+            completion_text = tokenizer.decode(seq.tokens, skip_special_tokens=False)
             # Strip thinking content — only pass the answer to env/rewards
             answer_text = strip_think_tags(completion_text)
 
