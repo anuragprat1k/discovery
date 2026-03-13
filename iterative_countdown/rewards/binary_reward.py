@@ -1,9 +1,16 @@
 """Binary reward: 1.0 if target reached, 0.0 otherwise.
 
 Used as the group-level reward in compute_group_rewards.
-Per-turn reward is 0 (no shaping signal).
+Per-turn reward is a small formatting signal only.
 """
 from __future__ import annotations
+
+import re
+
+
+def _has_expression_format(text: str) -> bool:
+    """Check if model output contains 'Expression: <something>'."""
+    return bool(re.search(r'[Ee]xpression:\s*.+', text))
 
 
 def compute_turn_reward(
@@ -15,16 +22,23 @@ def compute_turn_reward(
     max_turns: int,
     best_distance: float,
     initial_distance: float,
+    model_text: str = "",
 ) -> tuple[float, dict[str, float]]:
     """Per-turn reward for binary mode.
 
-    Always returns 0.0 reward — all signal comes from the episode end.
-    Returns (reward, metrics).
+    Returns 0.1 if model output has correct Expression: format, 0.0 otherwise.
+    Main signal still comes from episode end.
     """
-    metrics: dict[str, float] = {"turn": turn, "valid": float(expression_valid)}
+    has_format = _has_expression_format(model_text) if model_text else False
+    reward = 0.1 if has_format else 0.0
+    metrics: dict[str, float] = {
+        "turn": turn,
+        "valid": float(expression_valid),
+        "format_reward": reward,
+    }
     if result is not None:
         metrics["distance"] = abs(target - result)
-    return 0.0, metrics
+    return reward, metrics
 
 
 def compute_episode_reward(
