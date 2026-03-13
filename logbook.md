@@ -210,3 +210,67 @@ Verified: `import vllm, trl, bitsandbytes, datasets` → OK
 - By level (pass@64): L1=0.882, L2=0.861, L3=0.911, L4=0.714, L5=0.509
 - answer_entropy: 0.248 | mean_correct_per_problem: 36.35/64
 - Result file: results/binary/step_0000.json
+
+---
+
+### 2026-03-13 — C1/C2: Countdown Binary vs Dense GRPO Training
+
+**Objective**: Test binary vs dense GRPO rewards on multi-turn iterative Countdown task using Qwen3-4B-Instruct-2507 via Tinker API.
+
+**Code changes**:
+- Added `--wandb_group` flag to `train_tinker.py`
+- Generated `eval_50.json` (stratified 50-problem eval subset)
+- Added formatting reward component to binary and dense reward modules
+- Fixed per-turn training (train on all turns per episode, not just last)
+- Fixed multi-turn prompt for clearer instructions
+- Filtered training set to 350 problems (200 medium + 150 hard, removing easy)
+- Regenerated eval_50.json without easy problems (25 medium + 25 hard)
+
+**Four iterations were run** due to config changes and bugfixes merged to main mid-experiment:
+
+#### V1 (batch_size=8, group_size=16, 200 steps, eval@25 steps)
+- Baseline: pass@1 = 10.0%, mean_best_distance = 167.1
+- Binary trajectory: step 25→24%, step 50→24%, step 75→18% (declining)
+- Dense trajectory: step 25→24%, step 50→24%, step 75→20% (declining)
+- Killed at ~step 105 for prompt fix merge
+- Observation: Both initially improved 10%→24% but plateaued/declined. Binary had many `loss=0.0000` steps (zero-variance groups).
+
+#### V2 (after prompt fix, batch_size=8, 200 steps)
+- Step 1 solve rates jumped to 53-55% (vs much lower in V1), confirming prompt helped
+- Killed early to switch to larger batch size
+
+#### V3 (batch_size=32, 100 steps, eval@10 steps)
+- Binary: step 10→4%, step 20→14% (killed at step 40)
+- Dense: step 10→18%, step 20→26%, step 30→26%, step 40→16% (killed at step 51)
+- **Key finding**: Dense learned faster and peaked higher (26% vs 14%)
+- Killed for per-turn training fix merge
+
+#### V4 — Final (batch_size=16, group_size=16, 50 steps, eval@10, medium+hard only)
+- Baseline: pass@1 = 2% (1/50 problems solved)
+- Binary: step 10→0%, step 20→2%, step 30→0%, step 40→2%. Wall-clock: 150.9 min
+- Dense: step 10→0%, step 20→0%, step 30→2%, step 40→0%. Wall-clock: 129.8 min
+- Mean distance stayed high (364-389) for both
+- Tinker API connection errors during eval at later steps
+
+**Summary metrics (V4 final)**:
+
+| Run | Baseline pass@1 | Best pass@1 | Wall-clock |
+|-----|----------------|-------------|------------|
+| Binary (C1) | 2% | 2% (step 20, 40) | 150.9 min |
+| Dense (C2) | 2% | 2% (step 30) | 129.8 min |
+
+**Issues encountered**:
+1. Tinker API connection errors (session heartbeat failures at 430s and 1691s timeouts)
+2. Four restarts needed due to prompt fix, per-turn training fix, dataset filtering, batch size changes
+3. Zero-variance groups in binary training (all rollouts same reward → loss=0, no gradient update)
+4. Serial eval blocked training loop (binary evals ~25 min each; dense ~10 min)
+
+**Key findings**:
+1. **Dense reward showed faster early learning in V3** (26% vs 14% pass@1), supporting the hypothesis that partial-credit rewards provide better gradient signal
+2. **Binary reward suffers from zero-variance groups**: With binary {0,1} reward and group_size=16, many groups had identical rewards → zero advantage variance → wasted gradient steps
+3. **Both reward types plateau then decline**: After initial improvement, performance degraded, suggesting possible overfitting or reward hacking
+4. **Medium+hard problems too difficult for 4B model**: V4 with only medium+hard problems saw near-zero solve rates (0-2%), providing almost no training signal
+5. **Easy problems critical for training signal**: V1/V3 (with easy problems) showed meaningful learning; V4 (medium+hard only) showed essentially none
+6. **Dense training runs faster**: Successful episodes exit early (fewer turns), reducing both training and eval time
+
+**Go/No-Go assessment**: **Inconclusive / Weak signal**. The V3 results (dense 26% vs binary 14%) suggest a real effect favoring dense rewards, but the experiment was confounded by multiple restarts and config changes. V4 (the cleanest run) showed no learning for either condition because the problem set was too hard. To get a conclusive answer, the experiment should be re-run with easy problems included in both training and eval, and without mid-experiment config changes. The Countdown task itself is viable but requires careful difficulty calibration.

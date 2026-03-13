@@ -1,16 +1,5 @@
 [
   {
-    "target": 21,
-    "numbers": [
-      7,
-      3
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 21
-  },
-  {
     "target": 155,
     "numbers": [
       5,
@@ -37,28 +26,6 @@
     "min_steps": 4,
     "has_exact_solution": true,
     "closest_possible": 680
-  },
-  {
-    "target": 3,
-    "numbers": [
-      6,
-      3
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 3
-  },
-  {
-    "target": 9,
-    "numbers": [
-      9,
-      1
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 9
   },
   {
     "target": 305,
@@ -117,28 +84,6 @@
     "closest_possible": 485
   },
   {
-    "target": 14,
-    "numbers": [
-      10,
-      4
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 14
-  },
-  {
-    "target": 11,
-    "numbers": [
-      4,
-      7
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 11
-  },
-  {
     "target": 434,
     "numbers": [
       75,
@@ -165,39 +110,6 @@
     "min_steps": 3,
     "has_exact_solution": false,
     "closest_possible": 475
-  },
-  {
-    "target": 80,
-    "numbers": [
-      10,
-      8
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 80
-  },
-  {
-    "target": 3,
-    "numbers": [
-      2,
-      1
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 3
-  },
-  {
-    "target": 1,
-    "numbers": [
-      2,
-      1
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 1
   },
   {
     "target": 141,
@@ -243,17 +155,6 @@
     "closest_possible": 271
   },
   {
-    "target": 14,
-    "numbers": [
-      2,
-      7
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 14
-  },
-  {
     "target": 631,
     "numbers": [
       2,
@@ -295,17 +196,6 @@
     "closest_possible": 280
   },
   {
-    "target": 14,
-    "numbers": [
-      4,
-      10
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 14
-  },
-  {
     "target": 146,
     "numbers": [
       100,
@@ -334,17 +224,6 @@
     "min_steps": 4,
     "has_exact_solution": false,
     "closest_possible": 880
-  },
-  {
-    "target": 2,
-    "numbers": [
-      2,
-      1
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 2
   },
   {
     "target": 385,
@@ -472,17 +351,6 @@
     "closest_possible": 252
   },
   {
-    "target": 6,
-    "numbers": [
-      5,
-      1
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 6
-  },
-  {
     "target": 184,
     "numbers": [
       7,
@@ -584,17 +452,6 @@
     "closest_possible": 706
   },
   {
-    "target": 17,
-    "numbers": [
-      9,
-      8
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 17
-  },
-  {
     "target": 303,
     "numbers": [
       9,
@@ -606,17 +463,6 @@
     "min_steps": 3,
     "has_exact_solution": false,
     "closest_possible": 300
-  },
-  {
-    "target": 40,
-    "numbers": [
-      10,
-      4
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 40
   },
   {
     "target": 652,
@@ -649,28 +495,6 @@
     "closest_possible": 332
   },
   {
-    "target": 1,
-    "numbers": [
-      10,
-      9
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 1
-  },
-  {
-    "target": 11,
-    "numbers": [
-      9,
-      2
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 11
-  },
-  {
     "target": 460,
     "numbers": [
       4,
@@ -695,17 +519,6 @@
     "min_steps": 3,
     "has_exact_solution": false,
     "closest_possible": 175
-  },
-  {
-    "target": 36,
-    "numbers": [
-      9,
-      4
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 36
   },
   {
     "target": 615,
@@ -805,28 +618,6 @@
     "closest_possible": 500
   },
   {
-    "target": 6,
-    "numbers": [
-      2,
-      4
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 6
-  },
-  {
-    "target": 13,
-    "numbers": [
-      7,
-      6
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 13
-  },
-  {
     "target": 328,
     "numbers": [
       3,
@@ -838,17 +629,6 @@
     "min_steps": 3,
     "has_exact_solution": false,
     "closest_possible": 318
-  },
-  {
-    "target": 63,
-    "numbers": [
-      9,
-      7
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 63
   },
   {
     "target": 435,
@@ -877,17 +657,6 @@
     "min_steps": 3,
     "has_exact_solution": false,
     "closest_possible": 213
-  },
-  {
-    "target": 17,
-    "numbers": [
-      8,
-      9
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 17
   },
   {
     "target": 167,
@@ -942,28 +711,6 @@
     "min_steps": 4,
     "has_exact_solution": true,
     "closest_possible": 585
-  },
-  {
-    "target": 6,
-    "numbers": [
-      4,
-      2
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 6
-  },
-  {
-    "target": 45,
-    "numbers": [
-      9,
-      5
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 45
   },
   {
     "target": 216,
@@ -1061,39 +808,6 @@
     "closest_possible": 846
   },
   {
-    "target": 3,
-    "numbers": [
-      6,
-      3
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 3
-  },
-  {
-    "target": 20,
-    "numbers": [
-      2,
-      10
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 20
-  },
-  {
-    "target": 45,
-    "numbers": [
-      5,
-      9
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 45
-  },
-  {
     "target": 317,
     "numbers": [
       75,
@@ -1146,17 +860,6 @@
     "min_steps": 3,
     "has_exact_solution": true,
     "closest_possible": 380
-  },
-  {
-    "target": 20,
-    "numbers": [
-      2,
-      10
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 20
   },
   {
     "target": 146,
@@ -1241,17 +944,6 @@
     "closest_possible": 581
   },
   {
-    "target": 1,
-    "numbers": [
-      7,
-      6
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 1
-  },
-  {
     "target": 143,
     "numbers": [
       7,
@@ -1263,17 +955,6 @@
     "min_steps": 3,
     "has_exact_solution": false,
     "closest_possible": 145
-  },
-  {
-    "target": 7,
-    "numbers": [
-      1,
-      6
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 7
   },
   {
     "target": 405,
@@ -1345,17 +1026,6 @@
     "closest_possible": 415
   },
   {
-    "target": 6,
-    "numbers": [
-      2,
-      4
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 6
-  },
-  {
     "target": 574,
     "numbers": [
       4,
@@ -1412,17 +1082,6 @@
     "closest_possible": 270
   },
   {
-    "target": 15,
-    "numbers": [
-      5,
-      3
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 15
-  },
-  {
     "target": 447,
     "numbers": [
       25,
@@ -1447,39 +1106,6 @@
     "min_steps": 3,
     "has_exact_solution": false,
     "closest_possible": 180
-  },
-  {
-    "target": 2,
-    "numbers": [
-      8,
-      6
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 2
-  },
-  {
-    "target": 10,
-    "numbers": [
-      1,
-      9
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 10
-  },
-  {
-    "target": 1,
-    "numbers": [
-      3,
-      2
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 1
   },
   {
     "target": 474,
@@ -1510,28 +1136,6 @@
     "min_steps": 4,
     "has_exact_solution": true,
     "closest_possible": 663
-  },
-  {
-    "target": 3,
-    "numbers": [
-      2,
-      1
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 3
-  },
-  {
-    "target": 12,
-    "numbers": [
-      9,
-      3
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 12
   },
   {
     "target": 392,
@@ -1573,17 +1177,6 @@
     "min_steps": 3,
     "has_exact_solution": true,
     "closest_possible": 917
-  },
-  {
-    "target": 2,
-    "numbers": [
-      4,
-      2
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 2
   },
   {
     "target": 199,
@@ -1651,17 +1244,6 @@
     "min_steps": 3,
     "has_exact_solution": false,
     "closest_possible": 250
-  },
-  {
-    "target": 4,
-    "numbers": [
-      6,
-      2
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 4
   },
   {
     "target": 119,
@@ -1750,17 +1332,6 @@
     "closest_possible": 749
   },
   {
-    "target": 1,
-    "numbers": [
-      2,
-      1
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 1
-  },
-  {
     "target": 141,
     "numbers": [
       75,
@@ -1787,17 +1358,6 @@
     "min_steps": 4,
     "has_exact_solution": false,
     "closest_possible": 770
-  },
-  {
-    "target": 56,
-    "numbers": [
-      7,
-      8
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 56
   },
   {
     "target": 170,
@@ -1839,17 +1399,6 @@
     "closest_possible": 375
   },
   {
-    "target": 24,
-    "numbers": [
-      6,
-      4
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 24
-  },
-  {
     "target": 448,
     "numbers": [
       5,
@@ -1861,17 +1410,6 @@
     "min_steps": 3,
     "has_exact_solution": false,
     "closest_possible": 450
-  },
-  {
-    "target": 27,
-    "numbers": [
-      3,
-      9
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 27
   },
   {
     "target": 595,
@@ -1887,17 +1425,6 @@
     "min_steps": 3,
     "has_exact_solution": true,
     "closest_possible": 595
-  },
-  {
-    "target": 16,
-    "numbers": [
-      7,
-      9
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 16
   },
   {
     "target": 564,
@@ -1943,17 +1470,6 @@
     "closest_possible": 564
   },
   {
-    "target": 2,
-    "numbers": [
-      7,
-      5
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 2
-  },
-  {
     "target": 484,
     "numbers": [
       50,
@@ -1993,28 +1509,6 @@
     "min_steps": 3,
     "has_exact_solution": true,
     "closest_possible": 154
-  },
-  {
-    "target": 70,
-    "numbers": [
-      10,
-      7
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 70
-  },
-  {
-    "target": 24,
-    "numbers": [
-      6,
-      4
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 24
   },
   {
     "target": 405,
@@ -2058,17 +1552,6 @@
     "closest_possible": 319
   },
   {
-    "target": 1,
-    "numbers": [
-      4,
-      3
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 1
-  },
-  {
     "target": 462,
     "numbers": [
       3,
@@ -2082,17 +1565,6 @@
     "closest_possible": 425
   },
   {
-    "target": 27,
-    "numbers": [
-      3,
-      9
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 27
-  },
-  {
     "target": 493,
     "numbers": [
       2,
@@ -2104,17 +1576,6 @@
     "min_steps": 3,
     "has_exact_solution": false,
     "closest_possible": 498
-  },
-  {
-    "target": 7,
-    "numbers": [
-      5,
-      2
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 7
   },
   {
     "target": 196,
@@ -2156,17 +1617,6 @@
     "min_steps": 3,
     "has_exact_solution": true,
     "closest_possible": 107
-  },
-  {
-    "target": 14,
-    "numbers": [
-      7,
-      2
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 14
   },
   {
     "target": 202,
@@ -2214,28 +1664,6 @@
     "closest_possible": 190
   },
   {
-    "target": 6,
-    "numbers": [
-      9,
-      3
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 6
-  },
-  {
-    "target": 17,
-    "numbers": [
-      8,
-      9
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 17
-  },
-  {
     "target": 270,
     "numbers": [
       25,
@@ -2249,17 +1677,6 @@
     "min_steps": 3,
     "has_exact_solution": true,
     "closest_possible": 270
-  },
-  {
-    "target": 12,
-    "numbers": [
-      3,
-      9
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 12
   },
   {
     "target": 439,
@@ -2303,28 +1720,6 @@
     "closest_possible": 974
   },
   {
-    "target": 45,
-    "numbers": [
-      5,
-      9
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 45
-  },
-  {
-    "target": 1,
-    "numbers": [
-      7,
-      6
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 1
-  },
-  {
     "target": 996,
     "numbers": [
       100,
@@ -2338,17 +1733,6 @@
     "min_steps": 4,
     "has_exact_solution": false,
     "closest_possible": 994
-  },
-  {
-    "target": 4,
-    "numbers": [
-      9,
-      5
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 4
   },
   {
     "target": 529,
@@ -2409,17 +1793,6 @@
     "closest_possible": 192
   },
   {
-    "target": 3,
-    "numbers": [
-      8,
-      5
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 3
-  },
-  {
     "target": 827,
     "numbers": [
       25,
@@ -2448,17 +1821,6 @@
     "closest_possible": 175
   },
   {
-    "target": 5,
-    "numbers": [
-      6,
-      1
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 5
-  },
-  {
     "target": 473,
     "numbers": [
       100,
@@ -2485,17 +1847,6 @@
     "closest_possible": 357
   },
   {
-    "target": 30,
-    "numbers": [
-      3,
-      10
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 30
-  },
-  {
     "target": 156,
     "numbers": [
       25,
@@ -2507,17 +1858,6 @@
     "min_steps": 3,
     "has_exact_solution": false,
     "closest_possible": 155
-  },
-  {
-    "target": 1,
-    "numbers": [
-      10,
-      9
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 1
   },
   {
     "target": 146,
@@ -2533,17 +1873,6 @@
     "closest_possible": 150
   },
   {
-    "target": 16,
-    "numbers": [
-      10,
-      6
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 16
-  },
-  {
     "target": 387,
     "numbers": [
       50,
@@ -2555,17 +1884,6 @@
     "min_steps": 3,
     "has_exact_solution": false,
     "closest_possible": 383
-  },
-  {
-    "target": 5,
-    "numbers": [
-      6,
-      1
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 5
   },
   {
     "target": 845,
@@ -2581,28 +1899,6 @@
     "min_steps": 5,
     "has_exact_solution": true,
     "closest_possible": 845
-  },
-  {
-    "target": 5,
-    "numbers": [
-      9,
-      4
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 5
-  },
-  {
-    "target": 56,
-    "numbers": [
-      7,
-      8
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 56
   },
   {
     "target": 185,
@@ -2717,17 +2013,6 @@
     "closest_possible": 440
   },
   {
-    "target": 17,
-    "numbers": [
-      9,
-      8
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 17
-  },
-  {
     "target": 466,
     "numbers": [
       2,
@@ -2771,28 +2056,6 @@
     "closest_possible": 138
   },
   {
-    "target": 24,
-    "numbers": [
-      6,
-      4
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 24
-  },
-  {
-    "target": 8,
-    "numbers": [
-      7,
-      1
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 8
-  },
-  {
     "target": 523,
     "numbers": [
       25,
@@ -2832,28 +2095,6 @@
     "min_steps": 3,
     "has_exact_solution": false,
     "closest_possible": 260
-  },
-  {
-    "target": 9,
-    "numbers": [
-      4,
-      5
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 9
-  },
-  {
-    "target": 45,
-    "numbers": [
-      9,
-      5
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 45
   },
   {
     "target": 189,
@@ -2953,17 +2194,6 @@
     "closest_possible": 300
   },
   {
-    "target": 2,
-    "numbers": [
-      4,
-      2
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 2
-  },
-  {
     "target": 340,
     "numbers": [
       3,
@@ -3035,17 +2265,6 @@
     "closest_possible": 633
   },
   {
-    "target": 12,
-    "numbers": [
-      8,
-      4
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 12
-  },
-  {
     "target": 939,
     "numbers": [
       8,
@@ -3102,28 +2321,6 @@
     "closest_possible": 223
   },
   {
-    "target": 6,
-    "numbers": [
-      4,
-      2
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 6
-  },
-  {
-    "target": 72,
-    "numbers": [
-      8,
-      9
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 72
-  },
-  {
     "target": 245,
     "numbers": [
       100,
@@ -3135,39 +2332,6 @@
     "min_steps": 2,
     "has_exact_solution": true,
     "closest_possible": 245
-  },
-  {
-    "target": 9,
-    "numbers": [
-      5,
-      4
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 9
-  },
-  {
-    "target": 1,
-    "numbers": [
-      4,
-      3
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 1
-  },
-  {
-    "target": 30,
-    "numbers": [
-      3,
-      10
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 30
   },
   {
     "target": 108,
@@ -3198,17 +2362,6 @@
     "closest_possible": 300
   },
   {
-    "target": 1,
-    "numbers": [
-      8,
-      7
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 1
-  },
-  {
     "target": 155,
     "numbers": [
       3,
@@ -3222,17 +2375,6 @@
     "min_steps": 3,
     "has_exact_solution": true,
     "closest_possible": 155
-  },
-  {
-    "target": 6,
-    "numbers": [
-      5,
-      1
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 6
   },
   {
     "target": 400,
@@ -3261,17 +2403,6 @@
     "closest_possible": 466
   },
   {
-    "target": 27,
-    "numbers": [
-      9,
-      3
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 27
-  },
-  {
     "target": 450,
     "numbers": [
       50,
@@ -3283,17 +2414,6 @@
     "min_steps": 2,
     "has_exact_solution": true,
     "closest_possible": 450
-  },
-  {
-    "target": 12,
-    "numbers": [
-      3,
-      4
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 12
   },
   {
     "target": 131,
@@ -3339,17 +2459,6 @@
     "closest_possible": 808
   },
   {
-    "target": 12,
-    "numbers": [
-      3,
-      9
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 12
-  },
-  {
     "target": 424,
     "numbers": [
       4,
@@ -3361,17 +2470,6 @@
     "min_steps": 3,
     "has_exact_solution": false,
     "closest_possible": 425
-  },
-  {
-    "target": 7,
-    "numbers": [
-      3,
-      4
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 7
   },
   {
     "target": 365,
@@ -3428,17 +2526,6 @@
     "closest_possible": 280
   },
   {
-    "target": 5,
-    "numbers": [
-      1,
-      5
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 5
-  },
-  {
     "target": 280,
     "numbers": [
       50,
@@ -3480,28 +2567,6 @@
     "min_steps": 3,
     "has_exact_solution": false,
     "closest_possible": 440
-  },
-  {
-    "target": 6,
-    "numbers": [
-      9,
-      3
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 6
-  },
-  {
-    "target": 15,
-    "numbers": [
-      9,
-      6
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 15
   },
   {
     "target": 159,
@@ -3586,17 +2651,6 @@
     "closest_possible": 183
   },
   {
-    "target": 35,
-    "numbers": [
-      7,
-      5
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 35
-  },
-  {
     "target": 100,
     "numbers": [
       9,
@@ -3623,17 +2677,6 @@
     "min_steps": 5,
     "has_exact_solution": true,
     "closest_possible": 510
-  },
-  {
-    "target": 1,
-    "numbers": [
-      2,
-      1
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 1
   },
   {
     "target": 288,
@@ -3679,17 +2722,6 @@
     "closest_possible": 536
   },
   {
-    "target": 7,
-    "numbers": [
-      6,
-      1
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 7
-  },
-  {
     "target": 666,
     "numbers": [
       1,
@@ -3716,17 +2748,6 @@
     "min_steps": 3,
     "has_exact_solution": false,
     "closest_possible": 173
-  },
-  {
-    "target": 32,
-    "numbers": [
-      4,
-      8
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 32
   },
   {
     "target": 638,
@@ -3785,17 +2806,6 @@
     "closest_possible": 756
   },
   {
-    "target": 15,
-    "numbers": [
-      6,
-      9
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 15
-  },
-  {
     "target": 219,
     "numbers": [
       3,
@@ -3850,17 +2860,6 @@
     "closest_possible": 150
   },
   {
-    "target": 5,
-    "numbers": [
-      8,
-      3
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 5
-  },
-  {
     "target": 364,
     "numbers": [
       25,
@@ -3876,50 +2875,6 @@
     "closest_possible": 364
   },
   {
-    "target": 9,
-    "numbers": [
-      4,
-      5
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 9
-  },
-  {
-    "target": 28,
-    "numbers": [
-      7,
-      4
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 28
-  },
-  {
-    "target": 15,
-    "numbers": [
-      10,
-      5
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 15
-  },
-  {
-    "target": 12,
-    "numbers": [
-      7,
-      5
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 12
-  },
-  {
     "target": 130,
     "numbers": [
       7,
@@ -3931,17 +2886,6 @@
     "min_steps": 3,
     "has_exact_solution": false,
     "closest_possible": 133
-  },
-  {
-    "target": 35,
-    "numbers": [
-      5,
-      7
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 35
   },
   {
     "target": 110,
@@ -3972,17 +2916,6 @@
     "closest_possible": 188
   },
   {
-    "target": 48,
-    "numbers": [
-      6,
-      8
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 48
-  },
-  {
     "target": 369,
     "numbers": [
       50,
@@ -4009,17 +2942,6 @@
     "closest_possible": 371
   },
   {
-    "target": 11,
-    "numbers": [
-      5,
-      6
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 11
-  },
-  {
     "target": 217,
     "numbers": [
       100,
@@ -4033,39 +2955,6 @@
     "min_steps": 3,
     "has_exact_solution": true,
     "closest_possible": 217
-  },
-  {
-    "target": 9,
-    "numbers": [
-      5,
-      4
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 9
-  },
-  {
-    "target": 4,
-    "numbers": [
-      6,
-      2
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 4
-  },
-  {
-    "target": 2,
-    "numbers": [
-      5,
-      3
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 2
   },
   {
     "target": 393,
@@ -4219,39 +3108,6 @@
     "closest_possible": 343
   },
   {
-    "target": 7,
-    "numbers": [
-      6,
-      1
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 7
-  },
-  {
-    "target": 10,
-    "numbers": [
-      10,
-      1
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 10
-  },
-  {
-    "target": 11,
-    "numbers": [
-      2,
-      9
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 11
-  },
-  {
     "target": 113,
     "numbers": [
       50,
@@ -4321,17 +3177,6 @@
     "closest_possible": 537
   },
   {
-    "target": 10,
-    "numbers": [
-      3,
-      7
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 10
-  },
-  {
     "target": 313,
     "numbers": [
       4,
@@ -4358,28 +3203,6 @@
     "closest_possible": 189
   },
   {
-    "target": 18,
-    "numbers": [
-      9,
-      2
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 18
-  },
-  {
-    "target": 7,
-    "numbers": [
-      9,
-      2
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 7
-  },
-  {
     "target": 421,
     "numbers": [
       25,
@@ -4404,17 +3227,6 @@
     "min_steps": 3,
     "has_exact_solution": false,
     "closest_possible": 385
-  },
-  {
-    "target": 56,
-    "numbers": [
-      8,
-      7
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 56
   },
   {
     "target": 345,
@@ -4467,28 +3279,6 @@
     "min_steps": 2,
     "has_exact_solution": true,
     "closest_possible": 125
-  },
-  {
-    "target": 2,
-    "numbers": [
-      6,
-      4
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 2
-  },
-  {
-    "target": 18,
-    "numbers": [
-      10,
-      8
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 18
   },
   {
     "target": 700,
@@ -4646,17 +3436,6 @@
     "closest_possible": 109
   },
   {
-    "target": 12,
-    "numbers": [
-      10,
-      2
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 12
-  },
-  {
     "target": 674,
     "numbers": [
       2,
@@ -4758,17 +3537,6 @@
     "min_steps": 3,
     "has_exact_solution": true,
     "closest_possible": 582
-  },
-  {
-    "target": 9,
-    "numbers": [
-      9,
-      1
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 9
   },
   {
     "target": 537,
@@ -5021,17 +3789,6 @@
     "closest_possible": 180
   },
   {
-    "target": 14,
-    "numbers": [
-      5,
-      9
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 14
-  },
-  {
     "target": 369,
     "numbers": [
       8,
@@ -5086,50 +3843,6 @@
     "closest_possible": 229
   },
   {
-    "target": 5,
-    "numbers": [
-      7,
-      2
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 5
-  },
-  {
-    "target": 1,
-    "numbers": [
-      4,
-      3
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 1
-  },
-  {
-    "target": 11,
-    "numbers": [
-      4,
-      7
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 11
-  },
-  {
-    "target": 9,
-    "numbers": [
-      2,
-      7
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 9
-  },
-  {
     "target": 237,
     "numbers": [
       25,
@@ -5143,17 +3856,6 @@
     "min_steps": 4,
     "has_exact_solution": true,
     "closest_possible": 237
-  },
-  {
-    "target": 2,
-    "numbers": [
-      4,
-      2
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 2
   },
   {
     "target": 108,
@@ -5182,17 +3884,6 @@
     "closest_possible": 253
   },
   {
-    "target": 20,
-    "numbers": [
-      2,
-      10
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 20
-  },
-  {
     "target": 338,
     "numbers": [
       50,
@@ -5219,17 +3910,6 @@
     "closest_possible": 350
   },
   {
-    "target": 36,
-    "numbers": [
-      9,
-      4
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 36
-  },
-  {
     "target": 468,
     "numbers": [
       6,
@@ -5241,17 +3921,6 @@
     "min_steps": 3,
     "has_exact_solution": true,
     "closest_possible": 468
-  },
-  {
-    "target": 4,
-    "numbers": [
-      7,
-      3
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 4
   },
   {
     "target": 355,
@@ -5278,17 +3947,6 @@
     "min_steps": 3,
     "has_exact_solution": false,
     "closest_possible": 425
-  },
-  {
-    "target": 2,
-    "numbers": [
-      5,
-      3
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 2
   },
   {
     "target": 456,
@@ -5388,28 +4046,6 @@
     "closest_possible": 173
   },
   {
-    "target": 13,
-    "numbers": [
-      5,
-      8
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 13
-  },
-  {
-    "target": 2,
-    "numbers": [
-      4,
-      2
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 2
-  },
-  {
     "target": 150,
     "numbers": [
       25,
@@ -5436,17 +4072,6 @@
     "min_steps": 4,
     "has_exact_solution": false,
     "closest_possible": 540
-  },
-  {
-    "target": 16,
-    "numbers": [
-      8,
-      2
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 16
   },
   {
     "target": 607,
@@ -5591,17 +4216,6 @@
     "closest_possible": 144
   },
   {
-    "target": 3,
-    "numbers": [
-      9,
-      6
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 3
-  },
-  {
     "target": 357,
     "numbers": [
       10,
@@ -5710,28 +4324,6 @@
     "closest_possible": 610
   },
   {
-    "target": 6,
-    "numbers": [
-      3,
-      2
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 6
-  },
-  {
-    "target": 13,
-    "numbers": [
-      7,
-      6
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 13
-  },
-  {
     "target": 396,
     "numbers": [
       25,
@@ -5756,17 +4348,6 @@
     "min_steps": 3,
     "has_exact_solution": false,
     "closest_possible": 150
-  },
-  {
-    "target": 15,
-    "numbers": [
-      8,
-      7
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 15
   },
   {
     "target": 887,
@@ -5810,28 +4391,6 @@
     "closest_possible": 407
   },
   {
-    "target": 8,
-    "numbers": [
-      10,
-      2
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 8
-  },
-  {
-    "target": 1,
-    "numbers": [
-      5,
-      4
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 1
-  },
-  {
     "target": 312,
     "numbers": [
       5,
@@ -5856,17 +4415,6 @@
     "min_steps": 3,
     "has_exact_solution": false,
     "closest_possible": 164
-  },
-  {
-    "target": 12,
-    "numbers": [
-      8,
-      4
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 12
   },
   {
     "target": 106,
@@ -5966,17 +4514,6 @@
     "closest_possible": 264
   },
   {
-    "target": 30,
-    "numbers": [
-      5,
-      6
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 30
-  },
-  {
     "target": 497,
     "numbers": [
       3,
@@ -6005,28 +4542,6 @@
     "closest_possible": 215
   },
   {
-    "target": 20,
-    "numbers": [
-      5,
-      4
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 20
-  },
-  {
-    "target": 10,
-    "numbers": [
-      1,
-      9
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 10
-  },
-  {
     "target": 426,
     "numbers": [
       3,
@@ -6040,17 +4555,6 @@
     "closest_possible": 425
   },
   {
-    "target": 10,
-    "numbers": [
-      7,
-      3
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 10
-  },
-  {
     "target": 213,
     "numbers": [
       9,
@@ -6062,17 +4566,6 @@
     "min_steps": 3,
     "has_exact_solution": false,
     "closest_possible": 209
-  },
-  {
-    "target": 10,
-    "numbers": [
-      8,
-      2
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 10
   },
   {
     "target": 301,
@@ -6101,39 +4594,6 @@
     "closest_possible": 416
   },
   {
-    "target": 40,
-    "numbers": [
-      5,
-      8
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 40
-  },
-  {
-    "target": 17,
-    "numbers": [
-      8,
-      9
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 17
-  },
-  {
-    "target": 20,
-    "numbers": [
-      5,
-      4
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 20
-  },
-  {
     "target": 647,
     "numbers": [
       7,
@@ -6147,17 +4607,6 @@
     "min_steps": 3,
     "has_exact_solution": true,
     "closest_possible": 647
-  },
-  {
-    "target": 3,
-    "numbers": [
-      1,
-      2
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 3
   },
   {
     "target": 279,
@@ -6248,39 +4697,6 @@
     "closest_possible": 475
   },
   {
-    "target": 10,
-    "numbers": [
-      3,
-      7
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 10
-  },
-  {
-    "target": 9,
-    "numbers": [
-      4,
-      5
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 9
-  },
-  {
-    "target": 3,
-    "numbers": [
-      7,
-      4
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 3
-  },
-  {
     "target": 100,
     "numbers": [
       100,
@@ -6307,17 +4723,6 @@
     "min_steps": 3,
     "has_exact_solution": true,
     "closest_possible": 612
-  },
-  {
-    "target": 4,
-    "numbers": [
-      7,
-      3
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 4
   },
   {
     "target": 285,
@@ -6348,17 +4753,6 @@
     "closest_possible": 208
   },
   {
-    "target": 10,
-    "numbers": [
-      1,
-      9
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 10
-  },
-  {
     "target": 454,
     "numbers": [
       6,
@@ -6372,17 +4766,6 @@
     "closest_possible": 456
   },
   {
-    "target": 14,
-    "numbers": [
-      4,
-      10
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 14
-  },
-  {
     "target": 365,
     "numbers": [
       8,
@@ -6394,28 +4777,6 @@
     "min_steps": 3,
     "has_exact_solution": false,
     "closest_possible": 425
-  },
-  {
-    "target": 20,
-    "numbers": [
-      2,
-      10
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 20
-  },
-  {
-    "target": 10,
-    "numbers": [
-      5,
-      2
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 10
   },
   {
     "target": 558,
@@ -6446,17 +4807,6 @@
     "min_steps": 5,
     "has_exact_solution": true,
     "closest_possible": 968
-  },
-  {
-    "target": 3,
-    "numbers": [
-      5,
-      2
-    ],
-    "difficulty": "easy",
-    "min_steps": 1,
-    "has_exact_solution": true,
-    "closest_possible": 3
   },
   {
     "target": 568,
