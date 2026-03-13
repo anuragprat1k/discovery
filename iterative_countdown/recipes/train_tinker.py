@@ -34,6 +34,7 @@ import tinker
 from tinker import ServiceClient
 
 from ..environment.countdown_env import CountdownMessageEnv
+from ..environment.expression_parser import strip_think_tags
 
 
 # ---------------------------------------------------------------------------
@@ -46,13 +47,14 @@ def parse_args() -> argparse.Namespace:
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument("--reward", required=True, choices=["binary", "dense", "prime"])
-    parser.add_argument("--model", type=str, default="Qwen/Qwen3-4B-Instruct-2507")
+    parser.add_argument("--model", type=str, default="Qwen/Qwen3-8B")
+    parser.add_argument("--no_thinking", action="store_true", help="Disable thinking mode (adds empty think block to suppress reasoning)")
     parser.add_argument("--max_steps", type=int, default=200)
     parser.add_argument("--group_size", type=int, default=16)
     parser.add_argument("--batch_size", type=int, default=8)
     parser.add_argument("--lora_rank", type=int, default=32)
     parser.add_argument("--lr", type=float, default=3e-5)
-    parser.add_argument("--max_tokens", type=int, default=256, help="Max tokens per turn")
+    parser.add_argument("--max_tokens", type=int, default=512, help="Max tokens per turn")
     parser.add_argument("--max_turns", type=int, default=5)
     parser.add_argument("--temperature", type=float, default=1.0)
     parser.add_argument("--save_steps", type=int, default=50)
@@ -68,6 +70,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--wandb_group", type=str, default=None, help="W&B group for grouping related runs")
     return parser.parse_args()
 
+
+# Chat template kwargs — set from args in main(), used by all template calls.
+# enable_thinking=False inserts empty <think></think> to suppress thinking.
+_TEMPLATE_KWARGS: dict = {}
 
 # ---------------------------------------------------------------------------
 # Reward functions
@@ -117,13 +123,14 @@ def run_periodic_eval(
     sampling_params = tinker.SamplingParams(max_tokens=max_tokens, temperature=temperature)
 
     async def sample_fn(messages):
-        prompt_text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+        prompt_text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True, **_TEMPLATE_KWARGS)
         prompt_tokens = tokenizer.encode(prompt_text, add_special_tokens=False)
         prompt_input = tinker.ModelInput.from_ints(prompt_tokens)
         result = sampling_client.sample(
             prompt=prompt_input, num_samples=1, sampling_params=sampling_params,
         ).result()
-        return tokenizer.decode(result.sequences[0].tokens, skip_special_tokens=True)
+        decoded = tokenizer.decode(result.sequences[0].tokens, skip_special_tokens=False)
+        return strip_think_tags(decoded)
 
     loop = asyncio.new_event_loop()
     out_dir = Path(output_dir)
@@ -230,7 +237,8 @@ def run_episode(
         ).result()
 
         seq = result.sequences[0]
-        completion_text = tokenizer.decode(seq.tokens, skip_special_tokens=True)
+        completion_text = tokenizer.decode(seq.tokens, skip_special_tokens=False)
+        answer_text = strip_think_tags(completion_text)
         model_outputs.append(completion_text)
         all_prompt_tokens.append(prompt_tokens)
         all_completion_tokens.append(list(seq.tokens))
@@ -240,7 +248,7 @@ def run_episode(
         )
 
         step_result = _loop.run_until_complete(
-            env.step({"role": "assistant", "content": completion_text})
+            env.step({"role": "assistant", "content": answer_text})
         )
 
         if step_result.episode_done:
@@ -364,7 +372,9 @@ def grpo_step(
             ep = episodes_state[i]
             result = future.result()
             seq = result.sequences[0]
-            completion_text = tokenizer.decode(seq.tokens, skip_special_tokens=True)
+            completion_text = tokenizer.decode(seq.tokens, skip_special_tokens=False)
+            # Strip thinking content — only pass the answer to env/rewards
+            answer_text = strip_think_tags(completion_text)
 
             ep["model_outputs"].append(completion_text)
             ep["all_prompt_tokens"].append(prompt_tokens)
@@ -375,7 +385,7 @@ def grpo_step(
             )
 
             step_result = loop.run_until_complete(
-                ep["env"].step({"role": "assistant", "content": completion_text})
+                ep["env"].step({"role": "assistant", "content": answer_text})
             )
 
             # Compute turn reward from our reward module
@@ -404,7 +414,7 @@ def grpo_step(
             if "prev_distance" in sig.parameters:
                 turn_kwargs["prev_distance"] = ep["prev_distance"]
             if "model_text" in sig.parameters:
-                turn_kwargs["model_text"] = completion_text
+                turn_kwargs["model_text"] = answer_text
             if "weights" in sig.parameters:
                 turn_kwargs["weights"] = None
             # Fix result: use actual result from env history if available
@@ -572,7 +582,10 @@ def grpo_step(
 # ---------------------------------------------------------------------------
 
 def main() -> None:
+    global _TEMPLATE_KWARGS
     args = parse_args()
+    if args.no_thinking:
+        _TEMPLATE_KWARGS = {"enable_thinking": False}
     output_dir = args.output_dir or f"checkpoints/countdown_{args.reward}"
     os.makedirs(output_dir, exist_ok=True)
 
