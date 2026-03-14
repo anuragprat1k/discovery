@@ -322,6 +322,8 @@ def grpo_step(
         if not active:
             break
 
+        t_turn_start = time.time()
+
         # Fire all sample requests as futures (parallel)
         futures = []
         for i in active:
@@ -339,6 +341,13 @@ def grpo_step(
                 sampling_params=sampling_params,
             )
             futures.append((i, future, prompt_tokens))
+
+        t_fired = time.time()
+        print(
+            f"  [step {step} turn {turn}] fired {len(futures)} requests "
+            f"in {t_fired - t_turn_start:.1f}s, waiting...",
+            flush=True,
+        )
 
         # Collect all results and process feedback
         for i, future, prompt_tokens in futures:
@@ -387,6 +396,14 @@ def grpo_step(
 
             if ep["target_reached"] or turn >= args.max_turns:
                 ep["done"] = True
+
+        n_done = sum(1 for ep in episodes_state if ep["done"])
+        print(
+            f"  [step {step} turn {turn}] collected {len(futures)} results "
+            f"in {time.time() - t_fired:.1f}s  "
+            f"({n_done}/{n_total} episodes done)",
+            flush=True,
+        )
 
     # Convert episode states to the format expected by reward computation
     all_episodes = []
@@ -561,8 +578,12 @@ def save_trajectories(
     traj_dir = os.path.join(output_dir, "trajectories")
     os.makedirs(traj_dir, exist_ok=True)
 
+    print(f"[wordle] Saving trajectories for step {step} ({len(probe_words)} probe words)...", flush=True)
+    t_trace_start = time.time()
+
     episodes_data = []
-    for target in probe_words:
+    for pi, target in enumerate(probe_words):
+        t_ep = time.time()
         episode = run_episode(
             target=target,
             valid_guesses=valid_guesses,
@@ -599,6 +620,13 @@ def save_trajectories(
                 )
             messages.append({"role": "user", "content": fb_text})
 
+        solved_str = "solved" if episode["target_reached"] else "failed"
+        print(
+            f"  [trace {pi+1}/{len(probe_words)}] {target.upper()} → "
+            f"{episode['total_turns']} turns, {solved_str} ({time.time() - t_ep:.1f}s)",
+            flush=True,
+        )
+
         episodes_data.append({
             "target": target.upper(),
             "solved": episode["target_reached"],
@@ -609,7 +637,7 @@ def save_trajectories(
     trace_path = os.path.join(traj_dir, f"step_{step:04d}.json")
     with open(trace_path, "w") as f:
         json.dump({"step": step, "episodes": episodes_data}, f, indent=2, ensure_ascii=False)
-    print(f"[wordle] Trajectories saved: {trace_path}")
+    print(f"[wordle] Trajectories saved: {trace_path} ({time.time() - t_trace_start:.1f}s total)", flush=True)
 
 
 # ---------------------------------------------------------------------------
