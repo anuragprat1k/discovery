@@ -74,7 +74,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--lr", type=float, default=1e-4)
     parser.add_argument("--beta", type=float, default=0.04,
                         help="KL penalty coefficient.")
-    parser.add_argument("--max_completion_tokens", type=int, default=256,
+    parser.add_argument("--max_completion_tokens", type=int, default=512,
                         help="Max tokens per turn (brief reasoning + guess).")
     parser.add_argument("--temperature", type=float, default=1.0)
     parser.add_argument("--save_steps", type=int, default=50)
@@ -82,8 +82,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--guesses_path", type=str, default=None)
     parser.add_argument("--output_dir", type=str, default=None)
     parser.add_argument("--log_file", type=str, default=None)
-    parser.add_argument("--loss_fn", type=str, default="importance_sampling",
+    parser.add_argument("--loss_fn", type=str, default="cispo",
                         choices=["importance_sampling", "ppo", "cispo"])
+    parser.add_argument("--grad_clip_norm", type=float, default=1.0,
+                        help="Max gradient norm for clipping (0 = disabled).")
+    parser.add_argument("--refresh_steps", type=int, default=5,
+                        help="Refresh sampling client every N steps for near-on-policy rollouts.")
     parser.add_argument("--no_wandb", action="store_true")
     parser.add_argument("--wandb_project", type=str, default="discovery-wordle")
     parser.add_argument("--seed", type=int, default=42)
@@ -136,11 +140,12 @@ def run_episode(
     """
     messages = [
         {"role": "system", "content": SYSTEM_PROMPT},
-        {"role": "user", "content": "Guess a 5-letter word. Reply with <guess>WORD</guess>."},
+        {"role": "user", "content": "Guess a 5-letter word."},
     ]
 
     history: list[tuple[str, list[TileColor]]] = []
     completion_tokens_per_turn: list[list[int]] = []
+    completion_texts: list[str] = []
     logprobs_per_turn: list[list[float]] = []
     prompt_tokens_per_turn: list[list[int]] = []
     target_reached = False
@@ -171,8 +176,9 @@ def run_episode(
 
         prompt_tokens_per_turn.append(prompt_tokens)
         completion_tokens_per_turn.append(list(seq.tokens))
+        completion_texts.append(completion_text)
         logprobs_per_turn.append(
-            [lp if lp is not None else 0.0 for lp in (seq.logprobs or [])]
+            [lp if lp is not None else -100.0 for lp in (seq.logprobs or [])]
         )
 
         # Extract guess
@@ -213,6 +219,7 @@ def run_episode(
     return {
         "prompt_tokens_per_turn": prompt_tokens_per_turn,
         "completion_tokens_per_turn": completion_tokens_per_turn,
+        "completion_texts": completion_texts,
         "logprobs_per_turn": logprobs_per_turn,
         "history": history,
         "target_reached": target_reached,
@@ -228,17 +235,19 @@ def compute_episode_rewards(
     episode: dict,
     reward_type: str,
     max_turns: int,
-) -> list[float]:
+) -> tuple[list[float], dict[str, float]]:
     """Compute per-turn rewards for an episode.
 
-    Returns a list of rewards, one per turn.
+    Returns a tuple of (per-turn reward list, aggregated metrics).
     """
     history = episode["history"]
     target_reached = episode["target_reached"]
     total_turns = episode["total_turns"]
+    completion_texts = episode.get("completion_texts", [""] * total_turns)
 
     reward_mod = dense_reward if reward_type == "dense" else sparse_reward
     per_turn_rewards = []
+    format_compliant_turns = 0
 
     for turn_idx, (guess, feedback) in enumerate(history):
         turn = turn_idx + 1
@@ -248,7 +257,9 @@ def compute_episode_rewards(
         is_final_turn = (turn == total_turns)
         turn_target_reached = target_reached and is_final_turn
 
-        tr, _ = reward_mod.compute_turn_reward(
+        completion_text = completion_texts[turn_idx] if turn_idx < len(completion_texts) else ""
+
+        tr, turn_metrics = reward_mod.compute_turn_reward(
             guess=guess,
             feedback=feedback,
             prev_feedbacks=prev_feedbacks,
@@ -256,8 +267,11 @@ def compute_episode_rewards(
             turn=turn,
             max_turns=max_turns,
             target_reached=turn_target_reached,
+            completion_text=completion_text,
         )
         per_turn_rewards.append(tr)
+        if turn_metrics.get("format_compliance", 0.0) > 0:
+            format_compliant_turns += 1
 
     # Add episode reward to last turn
     ep_reward, _ = reward_mod.compute_episode_reward(
@@ -267,7 +281,11 @@ def compute_episode_rewards(
     )
     per_turn_rewards[-1] += ep_reward
 
-    return per_turn_rewards
+    ep_metrics = {
+        "format_compliant_turns": format_compliant_turns,
+        "total_turns": total_turns,
+    }
+    return per_turn_rewards, ep_metrics
 
 
 # ---------------------------------------------------------------------------
@@ -306,11 +324,12 @@ def grpo_step(
                 "target": target,
                 "messages": [
                     {"role": "system", "content": SYSTEM_PROMPT},
-                    {"role": "user", "content": "Guess a 5-letter word. Reply with <guess>WORD</guess>."},
+                    {"role": "user", "content": "Guess a 5-letter word."},
                 ],
                 "history": [],
                 "prompt_tokens_per_turn": [],
                 "completion_tokens_per_turn": [],
+                "completion_texts": [],
                 "logprobs_per_turn": [],
                 "target_reached": False,
                 "done": False,
@@ -360,8 +379,9 @@ def grpo_step(
 
             ep["prompt_tokens_per_turn"].append(prompt_tokens)
             ep["completion_tokens_per_turn"].append(list(seq.tokens))
+            ep["completion_texts"].append(completion_text)
             ep["logprobs_per_turn"].append(
-                [lp if lp is not None else 0.0 for lp in (seq.logprobs or [])]
+                [lp if lp is not None else -100.0 for lp in (seq.logprobs or [])]
             )
 
             # Extract guess and compute feedback
@@ -412,6 +432,7 @@ def grpo_step(
         all_episodes.append({
             "prompt_tokens_per_turn": ep["prompt_tokens_per_turn"],
             "completion_tokens_per_turn": ep["completion_tokens_per_turn"],
+            "completion_texts": ep["completion_texts"],
             "logprobs_per_turn": ep["logprobs_per_turn"],
             "history": ep["history"],
             "target_reached": ep["target_reached"],
@@ -428,10 +449,14 @@ def grpo_step(
     # Compute total reward per episode (sum of per-turn rewards)
     episode_total_rewards = []
     all_per_turn_rewards = []
+    total_format_compliant = 0
+    total_episode_turns = 0
     for ep in all_episodes:
-        per_turn = compute_episode_rewards(ep, args.reward, args.max_turns)
+        per_turn, ep_metrics = compute_episode_rewards(ep, args.reward, args.max_turns)
         all_per_turn_rewards.append(per_turn)
         episode_total_rewards.append(sum(per_turn))
+        total_format_compliant += ep_metrics["format_compliant_turns"]
+        total_episode_turns += ep_metrics["total_turns"]
 
     rewards = np.array(episode_total_rewards, dtype=np.float32)
 
@@ -477,10 +502,10 @@ def grpo_step(
             )
 
             # Pad logprobs for prompt positions
-            lp_list = [0.0] * n_prompt + sample_logprobs
+            lp_list = [-100.0] * n_prompt + sample_logprobs
             # Ensure length matches
             if len(lp_list) < len(full_tokens):
-                lp_list.extend([0.0] * (len(full_tokens) - len(lp_list)))
+                lp_list.extend([-100.0] * (len(full_tokens) - len(lp_list)))
             lp_list = lp_list[:len(full_tokens)]
 
             logprobs_tensor = tinker.TensorData(
@@ -502,6 +527,7 @@ def grpo_step(
     avg_turns = np.mean([ep["total_turns"] for ep in all_episodes])
     episode_histories = [ep["history"] for ep in all_episodes]
     violation_rate = compute_constraint_violation_rate(episode_histories)
+    format_compliance_rate = total_format_compliant / total_episode_turns if total_episode_turns > 0 else 0.0
 
     if not data:
         return {
@@ -514,6 +540,7 @@ def grpo_step(
             "win_rate": float(win_rate),
             "avg_turns": float(avg_turns),
             "constraint_violation_rate": float(violation_rate),
+            "format_compliance_rate": float(format_compliance_rate),
             "time_gen": round(t_gen, 2),
             "time_total": round(time.time() - t0, 2),
         }
@@ -521,11 +548,15 @@ def grpo_step(
     # Forward-backward + optimizer step
     t_train_start = time.time()
 
+    # Note: CISPO handles KL implicitly via clipping (clip_low/high_threshold).
+    # Explicit kl_coef is NOT supported by Tinker's CISPOLoss.
+    # The --beta arg is kept for documentation but not passed to the loss.
     fwdbwd_future = training_client.forward_backward(
         data=data, loss_fn=args.loss_fn,
+        loss_fn_config={"clip_low_threshold": 0.8, "clip_high_threshold": 1.2},
     )
     optim_future = training_client.optim_step(
-        tinker.AdamParams(learning_rate=args.lr)
+        tinker.AdamParams(learning_rate=args.lr, grad_clip_norm=args.grad_clip_norm)
     )
 
     fwdbwd_result = fwdbwd_future.result()
@@ -533,13 +564,43 @@ def grpo_step(
 
     t_train = time.time() - t_train_start
 
-    loss = fwdbwd_result.metrics.get("loss", None)
-    if loss is None:
-        all_logprobs = []
-        for output in fwdbwd_result.loss_fn_outputs:
-            if "logprobs" in output:
-                all_logprobs.extend(output["logprobs"].data)
-        loss = -np.mean(all_logprobs) if all_logprobs else 0.0
+    # Diagnostic logging at step 1: dump all metric keys to verify config
+    if step == 1:
+        print(f"[wordle] [DIAG step 1] fwdbwd metrics keys: {sorted(fwdbwd_result.metrics.keys())}")
+        print(f"[wordle] [DIAG step 1] fwdbwd metrics: {dict(fwdbwd_result.metrics)}")
+        clip_keys = [k for k in fwdbwd_result.metrics if "clip" in k.lower() or "kl" in k.lower()]
+        if clip_keys:
+            print(f"[wordle] [DIAG step 1] clip/kl keys found: {clip_keys}")
+        else:
+            print(f"[wordle] [DIAG step 1] WARNING: no clip/kl keys in metrics — CISPO config may be ignored")
+
+    # Tinker returns "loss:sum" (summed over all tokens); normalize to per-token mean
+    loss_sum = fwdbwd_result.metrics.get("loss:sum", fwdbwd_result.metrics.get("loss", None))
+    if loss_sum is not None:
+        # Count completion tokens from datums actually trained on (non-zero advantage)
+        total_completion_tokens = sum(
+            len(ep["completion_tokens_per_turn"][t])
+            for ep_idx, ep in enumerate(all_episodes)
+            if abs(advantages[ep_idx]) >= 1e-8
+            for t in range(ep["total_turns"])
+        )
+        loss = loss_sum / total_completion_tokens if total_completion_tokens > 0 else 0.0
+    else:
+        if step <= 2:
+            print(f"[wordle] fwdbwd metrics keys: {list(fwdbwd_result.metrics.keys())}")
+        loss = float('nan')
+
+    # Diagnostic metrics
+    abs_advs = [abs(float(advantages[i])) for i in range(len(advantages))]
+    pos_advs = [1 for i in range(len(advantages)) if float(advantages[i]) > 0]
+    mean_abs_advantage = float(np.mean(abs_advs)) if abs_advs else 0.0
+    frac_positive_adv = len(pos_advs) / len(advantages) if len(advantages) > 0 else 0.0
+
+    completion_lens = []
+    for ep in all_episodes:
+        for toks in ep["completion_tokens_per_turn"]:
+            completion_lens.append(len(toks))
+    mean_completion_len = float(np.mean(completion_lens)) if completion_lens else 0.0
 
     metrics = {
         "step": step,
@@ -554,6 +615,10 @@ def grpo_step(
         "win_rate": float(win_rate),
         "avg_turns": float(avg_turns),
         "constraint_violation_rate": float(violation_rate),
+        "format_compliance_rate": float(format_compliance_rate),
+        "mean_abs_advantage": mean_abs_advantage,
+        "frac_positive_adv": frac_positive_adv,
+        "mean_completion_len": mean_completion_len,
         "time_gen": round(t_gen, 2),
         "time_train": round(t_train, 2),
         "time_total": round(time.time() - t0, 2),
@@ -596,7 +661,7 @@ def save_trajectories(
         # Reconstruct readable messages from the episode
         messages = [
             {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": "Guess a 5-letter word. Reply with <guess>WORD</guess>."},
+            {"role": "user", "content": "Guess a 5-letter word."},
         ]
         for turn_idx, (guess, feedback) in enumerate(episode["history"]):
             completion_tokens = episode["completion_tokens_per_turn"][turn_idx]
@@ -658,6 +723,8 @@ def main() -> None:
     print(f"[wordle] LoRA rank    : {args.lora_rank}")
     print(f"[wordle] LR           : {args.lr}")
     print(f"[wordle] Loss fn      : {args.loss_fn}")
+    print(f"[wordle] KL coef      : {args.beta}")
+    print(f"[wordle] Grad clip    : {args.grad_clip_norm}")
     print(f"[wordle] Batch size   : {args.batch_size} words x {args.group_size} episodes")
     print(f"[wordle] Max steps    : {args.max_steps}")
     print(f"[wordle] Output dir   : {output_dir}")
@@ -723,11 +790,12 @@ def main() -> None:
         loss_str = f"{metrics['loss']:.4f}"
         win_str = f"{metrics['win_rate']:.1%}"
         viol_str = f"{metrics['constraint_violation_rate']:.1%}"
+        fmt_str = f"{metrics['format_compliance_rate']:.1%}"
         time_str = f"{metrics['time_total']:.1f}s"
         print(
             f"[step {step:4d}/{args.max_steps}] "
             f"reward={reward_str}  loss={loss_str}  "
-            f"win={win_str}  violations={viol_str}  time={time_str}"
+            f"win={win_str}  violations={viol_str}  format={fmt_str}  time={time_str}"
         )
 
         with open(log_file, "a") as f:
@@ -736,7 +804,13 @@ def main() -> None:
         if use_wandb:
             wandb.log(metrics, step=step)
 
-        # Save checkpoint + refresh sampling client
+        # Refresh sampling client periodically for near-on-policy rollouts
+        if step % args.refresh_steps == 0:
+            sampling_client = training_client.save_weights_and_get_sampling_client(
+                name=f"step_{step:04d}"
+            )
+
+        # Save checkpoint at save_steps intervals
         if step % args.save_steps == 0:
             ckpt_name = f"step_{step:04d}"
             print(f"[wordle] Saving checkpoint: {ckpt_name} ...")
@@ -747,11 +821,6 @@ def main() -> None:
             manifest_path = os.path.join(output_dir, "checkpoints.jsonl")
             with open(manifest_path, "a") as f:
                 f.write(json.dumps({"step": step, "name": ckpt_name, "path": ckpt_path}) + "\n")
-
-            sampling_client = training_client.save_weights_and_get_sampling_client(
-                name=ckpt_name
-            )
-            print(f"[wordle] Sampling client refreshed.")
 
             # Save probe word trajectories at this checkpoint
             save_trajectories(
