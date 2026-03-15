@@ -12,6 +12,7 @@ def compute_turn_reward(
     turn: int,
     max_turns: int,
     target_reached: bool,
+    completion_text: str = "",
 ) -> tuple[float, dict[str, float]]:
     """Per-turn reward: always 0.0 for sparse."""
     return 0.0, {"turn": float(turn)}

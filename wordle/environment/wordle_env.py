@@ -31,28 +31,13 @@ def _get_text_content(message: dict) -> str:
 def _extract_guess(text: str) -> str | None:
     """Extract a 5-letter guess from model output.
 
-    Priority order:
-    1. <guess>WORD</guess> tag (canonical format requested in system prompt)
-    2. After stripping <think> blocks, first 5-letter alphabetic word
-    3. Fallback: last 5-letter word in full text
+    Only accepts <guess>WORD</guess> tags — no fallback parsing.
+    This prevents the model's reasoning text from being mistaken for a guess.
     """
-    # 1. Look for <guess> tag
     tag_match = re.search(r"<guess>\s*([a-zA-Z]{5})\s*</guess>", text, re.IGNORECASE)
     if tag_match:
         return tag_match.group(1).lower()
-
-    # 2. Strip think blocks (closed and unclosed), take first 5-letter word
-    stripped = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL)
-    stripped = re.sub(r"<think>.*", "", stripped, flags=re.DOTALL)
-    stripped = stripped.strip()
-    if stripped:
-        matches = re.findall(r"\b([a-zA-Z]{5})\b", stripped)
-        if matches:
-            return matches[0].lower()
-
-    # 3. Fallback: last 5-letter word in full text
-    matches = re.findall(r"\b([a-zA-Z]{5})\b", text)
-    return matches[-1].lower() if matches else None
+    return None
 
 
 def load_word_list(path: Path) -> list[str]:
@@ -78,8 +63,9 @@ After each guess, you receive feedback:
 \U0001f7e8 = correct letter, wrong position
 \u2b1c = letter not in the word
 
-You have 6 attempts. Use the feedback to narrow down the answer.
-Before each guess, briefly state what you know (confirmed letters, eliminated letters), then reply with your guess in tags: <guess>WORD</guess>\
+You have 6 attempts. Before each guess, track eliminated letters in tags, then guess:
+<eliminated>A, B, C</eliminated>
+<guess>WORD</guess>\
 """
 
 
@@ -105,7 +91,7 @@ class WordleMessageEnv:
         """Return system + user messages for turn 1."""
         return [
             {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": "Guess a 5-letter word. Reply with <guess>WORD</guess>."},
+            {"role": "user", "content": "Guess a 5-letter word."},
         ]
 
     async def step(self, message: dict) -> MessageStepResult:
@@ -231,7 +217,7 @@ class WordleMessageEnv:
 
         next_messages = [
             {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": "Guess a 5-letter word. Reply with <guess>WORD</guess>."},
+            {"role": "user", "content": "Guess a 5-letter word."},
         ]
         # Replay previous turns
         for i, (h_guess, h_feedback) in enumerate(self.history):
@@ -261,7 +247,7 @@ def _sync_initial_messages() -> list[dict]:
     """Return initial messages without async."""
     return [
         {"role": "system", "content": SYSTEM_PROMPT},
-        {"role": "user", "content": "Guess a 5-letter word. Reply with <guess>WORD</guess>."},
+        {"role": "user", "content": "Guess a 5-letter word."},
     ]
 
 
