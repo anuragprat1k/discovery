@@ -27,7 +27,7 @@ def compute_turn_reward(
     Components (positive-only per-turn):
     - +0.4 per new green tile
     - +0.2 per new yellow tile
-    - +0.5 if completion contains valid <guess>WORD</guess> tag
+    - +0.1 if completion contains valid <guess>WORD</guess> tag
     - No penalties for constraint violations or missing format
     """
     reward = 0.0
@@ -48,9 +48,9 @@ def compute_turn_reward(
     else:
         metrics["constraint_violation"] = 0.0
 
-    # Format compliance reward — dominant to prevent format collapse
+    # Format compliance reward (positive only)
     if completion_text and _has_guess_tag(completion_text):
-        reward += 0.5
+        reward += 0.1
         metrics["format_compliance"] = 1.0
     else:
         metrics["format_compliance"] = 0.0
