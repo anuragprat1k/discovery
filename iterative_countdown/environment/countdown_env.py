@@ -50,8 +50,9 @@ You are playing the Countdown numbers game.
 
 Goal: Reach the target number by combining available numbers with +, -, *, /.
 
-How it works:
+Rules:
 - Each turn, pick SOME (not necessarily all) available numbers and write one arithmetic expression.
+- You may only use numbers currently in the available pool, each at most once.
 - The numbers you use are REMOVED from the pool. The result is ADDED as a new available number.
 - Division must be exact (no remainders). Parentheses are fine.
 - You have a limited number of turns. Try to reach the target exactly.
@@ -61,7 +62,8 @@ Example:
   Turn 1 → Expression: 2 + 3   (result: 5, pool becomes [10, 5])
   Turn 2 → Expression: 10 + 5  (result: 15 ✓ target reached!)
 
-Write your expression as: Expression: <your expression>\
+Think step-by-step inside <think>...</think> tags, then write your final expression as:
+Expression: <your expression>\
 """
 
 

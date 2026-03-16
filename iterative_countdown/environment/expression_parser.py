@@ -12,6 +12,23 @@ import re
 from collections import Counter
 
 
+def strip_think_tags(text: str) -> str:
+    """Remove <think>...</think> blocks and special tokens from model output.
+
+    Works whether the tags are present as literal text (skip_special_tokens=False)
+    or stripped by the tokenizer (skip_special_tokens=True). When tags are stripped,
+    we can't recover the boundary, so callers should decode with
+    skip_special_tokens=False for best results.
+    """
+    # Remove <think>...</think> blocks (handles multiple)
+    text = re.sub(r'<think>.*?</think>\s*', '', text, flags=re.DOTALL)
+    # Remove unclosed <think> block (model hit token limit mid-thinking)
+    text = re.sub(r'<think>.*', '', text, flags=re.DOTALL)
+    # Remove any leftover special tokens from Qwen chat format
+    text = re.sub(r'<\|[^>]+\|>', '', text)
+    return text.strip()
+
+
 def parse_expression(expr: str, available: list[int]) -> tuple[int, list[int]]:
     """Parse and evaluate an arithmetic expression using available numbers.
 
@@ -153,9 +170,10 @@ def extract_expression(text: str) -> str | None:
     if not text:
         return None
 
-    # Pattern 1: "Expression: <expr>"
-    match = re.search(r"[Ee]xpression:\s*(.+)", text)
-    if match:
+    # Pattern 1: "Expression: <expr>" — take the LAST match (safety net for think-tag leaks)
+    matches = list(re.finditer(r"[Ee]xpression:\s*(.+)", text))
+    if matches:
+        match = matches[-1]
         expr = match.group(1).strip()
         # Remove trailing punctuation or explanation
         expr = re.split(r"\s*[=;,]?\s*$", expr)[0].strip()
