@@ -19,6 +19,7 @@ from pathlib import Path
 import mlx.core as mx
 import mlx.nn as nn
 import mlx.optimizers as optim
+from mlx.utils import tree_flatten, tree_unflatten
 import numpy as np
 from dotenv import load_dotenv
 
@@ -31,12 +32,13 @@ except ImportError:
     _WANDB_AVAILABLE = False
 
 from wordle.environment.feedback import TileColor, compute_feedback, feedback_to_emoji
-from wordle.environment.constraints import compute_constraint_violation_rate
-from wordle.environment.wordle_env import load_word_list, _extract_guess, SYSTEM_PROMPT
+from wordle.environment.constraints import compute_constraint_violation_rate, RevealedConstraints
+from wordle.environment.wordle_env import load_word_list, _extract_guess, SYSTEM_PROMPT, SYSTEM_PROMPT_ENV_ELIMINATED, SYSTEM_PROMPT_THINKING
 from wordle.rewards import dense_reward, sparse_reward
 from wordle.recipes.mlx_utils import (
     load_model_with_lora,
     generate_with_logprobs,
+    generate_batch_with_logprobs,
     compute_logprobs_for_sequence,
     save_checkpoint,
     load_checkpoint,
@@ -44,6 +46,7 @@ from wordle.recipes.mlx_utils import (
     get_memory_stats,
 )
 from wordle.recipes.mlx_grpo import compute_advantages, grpo_step
+from wordle.recipes.sft_data import generate_sft_examples
 
 
 # ---------------------------------------------------------------------------
@@ -59,7 +62,7 @@ def parse_args() -> argparse.Namespace:
         "--reward", required=True, choices=["dense", "sparse"],
         help="Reward function: 'dense' for per-turn shaping, 'sparse' for terminal-only.",
     )
-    parser.add_argument("--model", type=str, default="mlx-community/Qwen3-0.6B")
+    parser.add_argument("--model", type=str, default="mlx-community/Qwen3-4B-bf16")
     parser.add_argument("--max_steps", type=int, default=200)
     parser.add_argument("--max_turns", type=int, default=6)
     parser.add_argument("--group_size", type=int, default=4)
@@ -89,7 +92,37 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--trace_words", type=str, nargs="*", default=None)
     parser.add_argument("--n_trace_words", type=int, default=5)
+    parser.add_argument("--no_batch_inference", action="store_true",
+                        help="Disable batched inference (use sequential rollouts).")
+    parser.add_argument("--inference_batch_size", type=int, default=0,
+                        help="Max sequences per batch call (0 = all at once).")
+    parser.add_argument("--sft_warmup_steps", type=int, default=0,
+                        help="SFT warmup steps for eliminated-letter tracking before GRPO.")
+    parser.add_argument("--sft_batch_size", type=int, default=8,
+                        help="Batch size for SFT warmup (can be larger than GRPO batch).")
+    parser.add_argument("--env_eliminated", action="store_true",
+                        help="Environment provides eliminated letters in feedback (model just guesses).")
+    parser.add_argument("--thinking", action="store_true",
+                        help="Enable Qwen3 thinking mode (<think>...</think> before answer).")
     return parser.parse_args()
+
+
+# ---------------------------------------------------------------------------
+# Prompt / thinking mode helpers
+# ---------------------------------------------------------------------------
+
+def get_system_prompt(args) -> str:
+    """Select system prompt based on flags."""
+    if getattr(args, "thinking", False):
+        return SYSTEM_PROMPT_THINKING
+    if getattr(args, "env_eliminated", False):
+        return SYSTEM_PROMPT_ENV_ELIMINATED
+    return SYSTEM_PROMPT
+
+
+def use_thinking(args) -> bool:
+    """Whether to enable Qwen3 thinking mode in chat template."""
+    return getattr(args, "thinking", False)
 
 
 # ---------------------------------------------------------------------------
@@ -126,8 +159,10 @@ def run_episode_mlx(
 
     Returns dict matching the format from train.py's run_episode.
     """
+    env_eliminated = getattr(args, "env_eliminated", False)
+    sys_prompt = get_system_prompt(args)
     messages = [
-        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "system", "content": sys_prompt},
         {"role": "user", "content": "Guess a 5-letter word."},
     ]
 
@@ -142,7 +177,7 @@ def run_episode_mlx(
         # Encode current conversation as prompt
         prompt_text = tokenizer.apply_chat_template(
             messages, add_generation_prompt=True, tokenize=False,
-            enable_thinking=False,
+            enable_thinking=use_thinking(args),
         )
         prompt_tokens = tokenizer.encode(prompt_text, add_special_tokens=False)
 
@@ -186,6 +221,13 @@ def run_episode_mlx(
                 f"Turn {turn}: {guess.upper()} → {emoji}  "
                 f"({remaining} turn(s) remaining)"
             )
+            # Append eliminated letters from env
+            if env_eliminated:
+                constraints = RevealedConstraints.from_history(
+                    [g for g, _ in history], [f for _, f in history],
+                )
+                elim_str = ", ".join(c.upper() for c in sorted(constraints.grey))
+                feedback_text += f"\nEliminated letters: {elim_str}"
 
         messages.append({"role": "assistant", "content": completion_text})
         messages.append({"role": "user", "content": feedback_text})
@@ -205,6 +247,148 @@ def run_episode_mlx(
         "target_reached": target_reached,
         "total_turns": len(history),
     }
+
+
+# ---------------------------------------------------------------------------
+# Batched multi-turn episode rollout (turn-level parallelism)
+# ---------------------------------------------------------------------------
+
+def run_episodes_batched_mlx(
+    batch_targets: list[str],
+    valid_guesses: set[str],
+    model,
+    tokenizer,
+    args,
+    inference_batch_size: int = 0,
+) -> list[dict]:
+    """Run batch_size * group_size episodes with turn-level batched generation.
+
+    Mirrors the Tinker turn-level batching pattern: at each turn depth, all
+    active (not yet done) episodes generate in parallel via BatchKVCache.
+
+    Returns list of episode dicts with same format as run_episode_mlx().
+    """
+    max_turns = args.max_turns
+    N = len(batch_targets) * args.group_size
+    env_eliminated = getattr(args, "env_eliminated", False)
+    sys_prompt = get_system_prompt(args)
+
+    # Initialize episode states
+    episodes = []
+    for target in batch_targets:
+        for _ in range(args.group_size):
+            episodes.append({
+                "target": target,
+                "messages": [
+                    {"role": "system", "content": sys_prompt},
+                    {"role": "user", "content": "Guess a 5-letter word."},
+                ],
+                "history": [],
+                "completion_tokens_per_turn": [],
+                "completion_texts": [],
+                "logprobs_per_turn": [],
+                "prompt_tokens_per_turn": [],
+                "target_reached": False,
+                "done": False,
+            })
+
+    for turn in range(1, max_turns + 1):
+        # Collect active episode indices
+        active_indices = [i for i in range(N) if not episodes[i]["done"]]
+        if not active_indices:
+            break
+
+        # Build prompt tokens for each active episode
+        active_prompts = []
+        for i in active_indices:
+            ep = episodes[i]
+            prompt_text = tokenizer.apply_chat_template(
+                ep["messages"], add_generation_prompt=True, tokenize=False,
+                enable_thinking=use_thinking(args),
+            )
+            prompt_tokens = tokenizer.encode(prompt_text, add_special_tokens=False)
+            ep["prompt_tokens_per_turn"].append(prompt_tokens)
+            active_prompts.append(prompt_tokens)
+
+        # Batched generation (split into chunks if inference_batch_size > 0)
+        ibs = inference_batch_size if inference_batch_size > 0 else len(active_prompts)
+        all_results = []
+        for chunk_start in range(0, len(active_prompts), ibs):
+            chunk = active_prompts[chunk_start:chunk_start + ibs]
+            chunk_results = generate_batch_with_logprobs(
+                model=model,
+                tokenizer=tokenizer,
+                prompt_tokens_list=chunk,
+                max_tokens=args.max_completion_tokens,
+                temperature=args.temperature,
+            )
+            all_results.extend(chunk_results)
+
+        # Process results for each active episode
+        for result_idx, ep_idx in enumerate(active_indices):
+            ep = episodes[ep_idx]
+            gen_tokens, gen_logprobs, completion_text = all_results[result_idx]
+
+            ep["completion_tokens_per_turn"].append(gen_tokens)
+            ep["completion_texts"].append(completion_text)
+            ep["logprobs_per_turn"].append(gen_logprobs)
+
+            # Extract guess and compute feedback
+            guess = _extract_guess(completion_text)
+            target = ep["target"]
+
+            if guess is None or guess not in valid_guesses:
+                guess = guess or "?????"
+                feedback = [TileColor.GREY] * 5
+                ep["history"].append((guess, feedback))
+            else:
+                feedback = compute_feedback(guess, target)
+                ep["history"].append((guess, feedback))
+                if guess == target:
+                    ep["target_reached"] = True
+
+            # Build feedback message
+            emoji = feedback_to_emoji(feedback)
+            remaining = max_turns - turn
+            if ep["target_reached"]:
+                feedback_text = (
+                    f"Turn {turn}: {guess.upper()} → {emoji}  "
+                    f"Correct! You got it in {turn} guess(es)!"
+                )
+            else:
+                feedback_text = (
+                    f"Turn {turn}: {guess.upper()} → {emoji}  "
+                    f"({remaining} turn(s) remaining)"
+                )
+                # Append eliminated letters from env
+                if env_eliminated:
+                    constraints = RevealedConstraints.from_history(
+                        [g for g, _ in ep["history"]], [f for _, f in ep["history"]],
+                    )
+                    elim_str = ", ".join(c.upper() for c in sorted(constraints.grey))
+                    feedback_text += f"\nEliminated letters: {elim_str}"
+
+            ep["messages"].append({"role": "assistant", "content": completion_text})
+            ep["messages"].append({"role": "user", "content": feedback_text})
+
+            if ep["target_reached"] or turn >= max_turns:
+                ep["done"] = True
+
+        clear_cache()
+
+    # Build return dicts (same format as run_episode_mlx)
+    results = []
+    for ep in episodes:
+        results.append({
+            "prompt_tokens_per_turn": ep["prompt_tokens_per_turn"],
+            "completion_tokens_per_turn": ep["completion_tokens_per_turn"],
+            "completion_texts": ep["completion_texts"],
+            "logprobs_per_turn": ep["logprobs_per_turn"],
+            "history": ep["history"],
+            "target_reached": ep["target_reached"],
+            "total_turns": len(ep["history"]),
+        })
+    return results
 
 
 # ---------------------------------------------------------------------------
@@ -266,6 +450,86 @@ def compute_episode_rewards(
 
 
 # ---------------------------------------------------------------------------
+# SFT warmup step
+# ---------------------------------------------------------------------------
+
+def sft_step(
+    model,
+    tokenizer,
+    batch: list[dict],
+    optimizer,
+    grad_clip_norm: float = 1.0,
+) -> float:
+    """One SFT gradient step: cross-entropy loss on completion tokens only.
+
+    Each item in batch has 'messages' (prompt) and 'completion' (target text).
+    Returns scalar loss value.
+    """
+
+    # Pre-tokenize batch outside the loss function
+    tokenized_batch = []
+    for example in batch:
+        prompt_text = tokenizer.apply_chat_template(
+            example["messages"], add_generation_prompt=True,
+            tokenize=False, enable_thinking=False,
+        )
+        prompt_tokens = tokenizer.encode(prompt_text, add_special_tokens=False)
+        completion_tokens = tokenizer.encode(example["completion"], add_special_tokens=False)
+        if len(completion_tokens) == 0:
+            continue
+        tokenized_batch.append({
+            "full_tokens": prompt_tokens + completion_tokens,
+            "prompt_len": len(prompt_tokens),
+        })
+
+    if not tokenized_batch:
+        return 0.0
+
+    # Use closure form matching grpo_step pattern — avoids gradient tree
+    # structure mismatch with optimizer state for frozen parameters
+    def _sft_loss():
+        total_loss = mx.array(0.0)
+        n_tokens = 0
+        for item in tokenized_batch:
+            logprobs = compute_logprobs_for_sequence(
+                model, item["full_tokens"], item["prompt_len"],
+            )
+            total_loss = total_loss - mx.sum(logprobs)
+            n_tokens += logprobs.size
+        if n_tokens == 0:
+            return mx.array(0.0)
+        return total_loss / n_tokens
+
+    loss_and_grad_fn = nn.value_and_grad(model, _sft_loss)
+    loss, grads = loss_and_grad_fn()
+    mx.eval(loss, grads)
+
+    # Gradient clipping — scale in-place to preserve tree structure
+    grad_norm_sq = sum(
+        mx.sum(g * g).item()
+        for _, g in tree_flatten(grads)
+        if isinstance(g, mx.array)
+    )
+    grad_norm = grad_norm_sq ** 0.5
+    if grad_clip_norm > 0 and grad_norm > grad_clip_norm:
+        scale = grad_clip_norm / grad_norm
+        def _scale_tree(node):
+            if isinstance(node, dict):
+                return {k: _scale_tree(v) for k, v in node.items()}
+            elif isinstance(node, list):
+                return [_scale_tree(v) for v in node]
+            elif isinstance(node, mx.array):
+                return node * scale
+            return node
+        grads = _scale_tree(grads)
+
+    model.update(optimizer.apply_gradients(grads, model))
+    mx.eval(model.parameters(), optimizer.state)
+
+    return loss.item()
+
+
+# ---------------------------------------------------------------------------
 # Trajectory saving
 # ---------------------------------------------------------------------------
 
@@ -285,21 +549,47 @@ def save_trajectories(
     print(f"[wordle] Saving trajectories for step {step} ({len(probe_words)} probe words)...", flush=True)
     t_start = time.time()
 
-    episodes_data = []
-    for pi, target in enumerate(probe_words):
-        t_ep = time.time()
-        episode = run_episode_mlx(
-            target=target,
+    # Use batched inference for probe words (group_size=1 per target)
+    # Create a temporary args with group_size=1 for trajectory probes
+    class _ProbeArgs:
+        pass
+    probe_args = _ProbeArgs()
+    for k, v in vars(args).items():
+        setattr(probe_args, k, v)
+    probe_args.group_size = 1
+
+    use_batch = not getattr(args, "no_batch_inference", False)
+    if use_batch:
+        all_probe_episodes = run_episodes_batched_mlx(
+            batch_targets=probe_words,
             valid_guesses=valid_guesses,
             model=model,
             tokenizer=tokenizer,
-            args=args,
-            max_turns=args.max_turns,
+            args=probe_args,
+            inference_batch_size=getattr(args, "inference_batch_size", 0),
         )
+    else:
+        all_probe_episodes = []
+        for target in probe_words:
+            episode = run_episode_mlx(
+                target=target,
+                valid_guesses=valid_guesses,
+                model=model,
+                tokenizer=tokenizer,
+                args=args,
+                max_turns=args.max_turns,
+            )
+            all_probe_episodes.append(episode)
+            clear_cache()
 
+    env_eliminated = getattr(args, "env_eliminated", False)
+    sys_prompt = get_system_prompt(args)
+
+    episodes_data = []
+    for pi, (target, episode) in enumerate(zip(probe_words, all_probe_episodes)):
         # Reconstruct readable messages
         messages = [
-            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": sys_prompt},
             {"role": "user", "content": "Guess a 5-letter word."},
         ]
         for turn_idx, (guess, feedback) in enumerate(episode["history"]):
@@ -321,12 +611,18 @@ def save_trajectories(
                     f"Turn {turn_idx + 1}: {guess.upper()} → {emoji}  "
                     f"({remaining} turn(s) remaining)"
                 )
+                if env_eliminated:
+                    all_guesses = [g for g, _ in episode["history"][:turn_idx + 1]]
+                    all_fbs = [f for _, f in episode["history"][:turn_idx + 1]]
+                    constraints = RevealedConstraints.from_history(all_guesses, all_fbs)
+                    elim_str = ", ".join(c.upper() for c in sorted(constraints.grey))
+                    fb_text += f"\nEliminated letters: {elim_str}"
             messages.append({"role": "user", "content": fb_text})
 
         solved_str = "solved" if episode["target_reached"] else "failed"
         print(
             f"  [trace {pi+1}/{len(probe_words)}] {target.upper()} → "
-            f"{episode['total_turns']} turns, {solved_str} ({time.time() - t_ep:.1f}s)",
+            f"{episode['total_turns']} turns, {solved_str}",
             flush=True,
         )
 
@@ -368,7 +664,17 @@ def main() -> None:
     print(f"[wordle] Grad clip    : {args.grad_clip_norm}")
     print(f"[wordle] Batch size   : {args.batch_size} words x {args.group_size} episodes")
     print(f"[wordle] Micro-batch  : {args.micro_batch_size}")
+    batch_inf_str = "off" if args.no_batch_inference else (
+        f"on (max {args.inference_batch_size})" if args.inference_batch_size > 0 else "on (all)"
+    )
+    print(f"[wordle] Batch infer  : {batch_inf_str}")
     print(f"[wordle] Max steps    : {args.max_steps}")
+    if args.sft_warmup_steps > 0:
+        print(f"[wordle] SFT warmup   : {args.sft_warmup_steps} steps (batch={args.sft_batch_size})")
+    if args.env_eliminated:
+        print(f"[wordle] Env elim     : ON (env provides eliminated letters)")
+    if args.thinking:
+        print(f"[wordle] Thinking     : ON (Qwen3 <think> mode)")
     print(f"[wordle] Output dir   : {output_dir}")
 
     # Load model with LoRA
@@ -410,7 +716,7 @@ def main() -> None:
             args=args, output_dir=output_dir,
         )
 
-    # W&B
+    # W&B (init before SFT so warmup is logged too)
     use_wandb = _WANDB_AVAILABLE and not args.no_wandb
     if use_wandb:
         wandb.init(
@@ -419,7 +725,53 @@ def main() -> None:
             config=vars(args),
             resume="allow" if args.resume_from else None,
         )
-        print(f"[wordle] W&B run: {wandb.run.url}")
+        print(f"[wordle] W&B run: {wandb.run.url}", flush=True)
+
+    # SFT warmup phase (eliminated-letter tracking)
+    if args.sft_warmup_steps > 0 and start_step == 0:
+        print(f"\n[sft] === SFT Warmup: {args.sft_warmup_steps} steps, batch_size={args.sft_batch_size} ===", flush=True)
+        valid_guesses_list = list(valid_guesses)
+        n_sft_examples = args.sft_warmup_steps * args.sft_batch_size
+        sft_examples = generate_sft_examples(
+            answers, valid_guesses_list, n_examples=n_sft_examples, seed=args.seed,
+        )
+        print(f"[sft] Generated {len(sft_examples)} synthetic examples", flush=True)
+        t_sft_start = time.time()
+        for sft_step_idx in range(args.sft_warmup_steps):
+            t_sft_step = time.time()
+            batch = sft_examples[
+                sft_step_idx * args.sft_batch_size : (sft_step_idx + 1) * args.sft_batch_size
+            ]
+            loss = sft_step(model, tokenizer, batch, optimizer, grad_clip_norm=args.grad_clip_norm)
+            sft_time = time.time() - t_sft_step
+            mem = get_memory_stats()
+
+            sft_metrics = {
+                "sft_step": sft_step_idx + 1,
+                "sft_loss": loss,
+                "sft_time": round(sft_time, 2),
+                "memory_active_gb": mem["active_gb"],
+                "memory_peak_gb": mem["peak_gb"],
+                "phase": "sft_warmup",
+            }
+
+            # Log every step to JSONL
+            with open(log_file, "a") as f:
+                f.write(json.dumps(sft_metrics) + "\n")
+                f.flush()
+
+            if use_wandb:
+                wandb.log(sft_metrics)
+
+            if (sft_step_idx + 1) % 5 == 0 or sft_step_idx == 0:
+                print(
+                    f"[sft] step {sft_step_idx+1}/{args.sft_warmup_steps}  "
+                    f"loss={loss:.4f}  time={sft_time:.1f}s  mem={mem['active_gb']:.1f}GB",
+                    flush=True,
+                )
+            clear_cache()
+        t_sft_elapsed = time.time() - t_sft_start
+        print(f"[sft] Warmup complete in {t_sft_elapsed:.1f}s\n", flush=True)
 
     # Training loop
     rng = random.Random(args.seed)
@@ -437,25 +789,40 @@ def main() -> None:
 
         # --- ROLLOUT ---
         t_gen_start = time.time()
-        all_episodes = []
-        group_indices = []
 
-        for i, target in enumerate(batch_targets):
-            start_idx = len(all_episodes)
-            for _ in range(args.group_size):
-                episode = run_episode_mlx(
-                    target=target,
-                    valid_guesses=valid_guesses,
-                    model=model,
-                    tokenizer=tokenizer,
-                    args=args,
-                    max_turns=args.max_turns,
-                )
-                all_episodes.append(episode)
-                clear_cache()
-
-            end_idx = len(all_episodes)
-            group_indices.append((start_idx, end_idx))
+        if args.no_batch_inference:
+            # Sequential fallback
+            all_episodes = []
+            group_indices = []
+            for i, target in enumerate(batch_targets):
+                start_idx = len(all_episodes)
+                for _ in range(args.group_size):
+                    episode = run_episode_mlx(
+                        target=target,
+                        valid_guesses=valid_guesses,
+                        model=model,
+                        tokenizer=tokenizer,
+                        args=args,
+                        max_turns=args.max_turns,
+                    )
+                    all_episodes.append(episode)
+                    clear_cache()
+                end_idx = len(all_episodes)
+                group_indices.append((start_idx, end_idx))
+        else:
+            # Batched turn-level inference
+            all_episodes = run_episodes_batched_mlx(
+                batch_targets=batch_targets,
+                valid_guesses=valid_guesses,
+                model=model,
+                tokenizer=tokenizer,
+                args=args,
+                inference_batch_size=args.inference_batch_size,
+            )
+            group_indices = [
+                (i * args.group_size, (i + 1) * args.group_size)
+                for i in range(len(batch_targets))
+            ]
 
         t_gen = time.time() - t_gen_start
         n_total = len(all_episodes)
@@ -595,7 +962,7 @@ def main() -> None:
             f.flush()
 
         if use_wandb:
-            wandb.log(metrics, step=step)
+            wandb.log(metrics)
 
         # Memory warning
         if mem["active_gb"] > 6.0:

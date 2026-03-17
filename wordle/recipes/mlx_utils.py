@@ -30,7 +30,11 @@ def load_model_with_lora(
     lora_config = {"rank": lora_rank, "alpha": float(lora_rank), "dropout": 0.0, "scale": 1.0}
     linear_to_lora_layers(model, num_layers=lora_layers, config=lora_config)
 
-    # linear_to_lora_layers already freezes base params and keeps LoRA trainable
+    # Freeze all, then unfreeze only LoRA params
+    model.freeze()
+    for _, module in model.named_modules():
+        if hasattr(module, "lora_a"):
+            module.unfreeze(keys=["lora_a", "lora_b"])
     n_total = sum(p.size for _, p in tree_flatten(model.parameters()))
     n_trainable = sum(p.size for _, p in tree_flatten(model.trainable_parameters()))
     print(
@@ -94,6 +98,112 @@ def generate_with_logprobs(
 
     text = tokenizer.decode(generated, skip_special_tokens=True)
     return generated, logprobs, text
+
+
+def generate_batch_with_logprobs(
+    model,
+    tokenizer,
+    prompt_tokens_list: list[list[int]],
+    max_tokens: int = 512,
+    temperature: float = 1.0,
+) -> list[tuple[list[int], list[float], str]]:
+    """Batched generation with logprobs using MLX BatchKVCache.
+
+    Generates completions for N prompts simultaneously using left-padded
+    batching and BatchKVCache. Completed sequences are filtered out early
+    to avoid wasting compute.
+
+    Returns list of (generated_tokens, logprobs, decoded_text) per prompt.
+    """
+    from mlx_lm.generate import _left_pad_prompts, _make_cache
+
+    N = len(prompt_tokens_list)
+    if N == 0:
+        return []
+    if N == 1:
+        # Fall back to single-sequence path (no batch overhead)
+        tokens, lps, text = generate_with_logprobs(
+            model, tokenizer, prompt_tokens_list[0], max_tokens, temperature,
+        )
+        return [(tokens, lps, text)]
+
+    eos_token_id = getattr(tokenizer, "eos_token_id", None)
+
+    # Left-pad prompts and create batch cache
+    padded = _left_pad_prompts(prompt_tokens_list)  # (N, max_len)
+    left_padding = [padded.shape[1] - len(p) for p in prompt_tokens_list]
+    batch_cache = _make_cache(model, left_padding)
+
+    # Prefill
+    logits = model(padded, cache=batch_cache)  # (N, max_len, vocab)
+    next_logits = logits[:, -1, :]  # (N, vocab)
+
+    # Per-sequence accumulators
+    all_generated: list[list[int]] = [[] for _ in range(N)]
+    all_logprobs: list[list[float]] = [[] for _ in range(N)]
+    active_indices = list(range(N))  # maps batch-pos → original index
+
+    for _ in range(max_tokens):
+        log_probs = nn.log_softmax(next_logits, axis=-1)  # (B, vocab)
+        B = next_logits.shape[0]
+
+        # Sample
+        if temperature <= 0:
+            next_ids = mx.argmax(next_logits, axis=-1)  # (B,)
+        else:
+            next_ids = mx.random.categorical(next_logits / temperature)  # (B,)
+
+        # Gather per-token logprobs
+        token_lps = log_probs[mx.arange(B), next_ids]  # (B,)
+
+        # Force eval so we can read values
+        mx.eval(next_ids, token_lps)
+
+        # Distribute results and check for completion
+        keep_mask = []
+        for batch_pos in range(B):
+            orig_idx = active_indices[batch_pos]
+            tid = next_ids[batch_pos].item()
+            lp = token_lps[batch_pos].item()
+            all_generated[orig_idx].append(tid)
+            all_logprobs[orig_idx].append(lp)
+
+            done = (eos_token_id is not None and tid == eos_token_id)
+            keep_mask.append(not done)
+
+        # Filter completed sequences
+        if not any(keep_mask):
+            break
+
+        new_active = []
+        keep_indices = []
+        kept_ids = []
+        for batch_pos in range(B):
+            if keep_mask[batch_pos]:
+                keep_indices.append(batch_pos)
+                new_active.append(active_indices[batch_pos])
+                kept_ids.append(next_ids[batch_pos])
+
+        if len(keep_indices) < B:
+            keep_arr = mx.array(keep_indices)
+            for c in batch_cache:
+                if hasattr(c, "filter"):
+                    c.filter(keep_arr)
+            active_indices = new_active
+            next_input = mx.array([[tid.item()] for tid in kept_ids])
+        else:
+            next_input = next_ids.reshape(-1, 1)
+
+        # Decode next step
+        logits = model(next_input, cache=batch_cache)
+        next_logits = logits[:, -1, :]
+
+    # Decode texts
+    results = []
+    for i in range(N):
+        text = tokenizer.decode(all_generated[i], skip_special_tokens=True)
+        results.append((all_generated[i], all_logprobs[i], text))
+    return results
 
 
 def compute_logprobs_for_sequence(
