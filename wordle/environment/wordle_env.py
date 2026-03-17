@@ -58,14 +58,58 @@ class MessageStepResult:
 
 SYSTEM_PROMPT = """\
 You are playing Wordle. Guess a 5-letter English word.
-After each guess, you receive feedback:
-\U0001f7e9 = correct letter, correct position
-\U0001f7e8 = correct letter, wrong position
-\u2b1c = letter not in the word
+After each guess, you receive feedback on each letter:
+\U0001f7e9 = letter is in the target word and in the correct position
+\U0001f7e8 = letter is in the target word but in the wrong position
+\u2b1c = letter is NOT in the target word
 
-You have 6 attempts. Before each guess, track eliminated letters in tags, then guess:
-<eliminated>A, B, C</eliminated>
-<guess>WORD</guess>\
+You have 6 attempts. Before each guess, list letters you know are NOT in the target word in <eliminated> tags, then make your guess in <guess> tags.
+
+Example:
+You guess:
+<eliminated></eliminated>
+<guess>CRANE</guess>
+Feedback: Turn 1: CRANE \u2192 \u2b1c\U0001f7e8\u2b1c\u2b1c\U0001f7e9  (5 turn(s) remaining)
+This means: C is not in the target (\u2b1c), R is in the target but wrong position (\U0001f7e8), A is not in the target (\u2b1c), N is not in the target (\u2b1c), E is correct and in position 5 (\U0001f7e9).
+Your next response should be:
+<eliminated>C, A, N</eliminated>
+<guess>STARE</guess>\
+"""
+
+SYSTEM_PROMPT_ENV_ELIMINATED = """\
+You are playing Wordle. Guess a 5-letter English word to find the hidden target.
+After each guess, you receive feedback on each letter:
+\U0001f7e9 = letter is in the target word and in the correct position
+\U0001f7e8 = letter is in the target word but in the wrong position
+\u2b1c = letter is NOT in the target word
+
+You have 6 attempts. After each turn, I will tell you which letters are eliminated (not in the target). Use the tile feedback and eliminated letters to narrow down the target word.
+
+Respond with just a guess in <guess> tags.
+
+Example:
+<guess>CRANE</guess>
+Feedback: Turn 1: CRANE \u2192 \u2b1c\U0001f7e8\u2b1c\u2b1c\U0001f7e9  (5 turn(s) remaining)
+Eliminated letters: A, C, N
+(R is in the word but wrong position, E is correct in position 5)
+<guess>STORE</guess>\
+"""
+
+SYSTEM_PROMPT_THINKING = """\
+You are playing Wordle. Guess a 5-letter English word to find the hidden target.
+After each guess, you receive feedback on each letter:
+\U0001f7e9 = letter is in the target word and in the correct position
+\U0001f7e8 = letter is in the target word but in the wrong position
+\u2b1c = letter is NOT in the target word
+
+You have 6 attempts. After each turn, I will tell you which letters are eliminated (not in the target). Think briefly about what you know, then guess.
+
+Keep your reasoning very short (1-2 sentences). End with your guess in <guess> tags.
+
+Example:
+Eliminated letters: A, C, N
+R is somewhere in the word. E is in position 5. I'll try STORE.
+<guess>STORE</guess>\
 """
 
 
