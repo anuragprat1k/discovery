@@ -12,10 +12,12 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import json
 import logging
 import os
 import random
 import sys
+import time
 from pathlib import Path
 
 os.environ.setdefault("TRL_EXPERIMENTAL_SILENCE", "1")
@@ -30,9 +32,16 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from trl import GRPOConfig, GRPOTrainer
 from trl.experimental.openenv import generate_rollout_completions
 
+from wordle.environment.feedback import feedback_to_emoji
 from wordle.environment.wordle_env import _extract_guess, SYSTEM_PROMPT
 from wordle.environment.wordle_gym import WordleGymEnv, load_default_word_lists
 from wordle.rewards.registry import get_reward_module
+
+try:
+    import wandb
+    _WANDB_AVAILABLE = True
+except ImportError:
+    _WANDB_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
 
@@ -87,6 +96,11 @@ def parse_args() -> argparse.Namespace:
         help="W&B project name (set to '' to disable).",
     )
     parser.add_argument("--run_name", type=str, default=None)
+    parser.add_argument("--trace_words", type=str, nargs="*", default=None,
+                        help="Probe words for trajectory saving. Random if not set.")
+    parser.add_argument("--n_trace_words", type=int, default=5)
+    parser.add_argument("--trace_steps", type=int, default=25,
+                        help="Save trajectories every N steps.")
     return parser.parse_args()
 
 
@@ -227,16 +241,31 @@ def make_wordle_rollout_func(
                         all_logprobs[i].extend([0.0] * len(new_env_ids))
                         all_env_mask[i].extend([0] * len(new_env_ids))
 
-        # Compute rewards for each episode
+        # Compute rewards and behavioral metrics for each episode
         episode_rewards = []
+        wins = 0
+        total_turns = 0
         for i in range(n):
             reward = _compute_total_episode_reward(envs[i], reward_module, max_turns)
             episode_rewards.append(reward)
+            if envs[i].target_reached:
+                wins += 1
+            total_turns += len(envs[i].guesses)
+
+        win_rate = wins / max(n, 1)
+        avg_turns = total_turns / max(n, 1)
+
+        # Log behavioral metrics to wandb (TRL only logs reward/loss/KL)
+        if _WANDB_AVAILABLE and wandb.run is not None:
+            wandb.log({
+                "wordle/win_rate": win_rate,
+                "wordle/avg_turns": avg_turns,
+                "wordle/avg_reward": sum(episode_rewards) / max(n, 1),
+            }, commit=False)
 
         logger.info(
             f"Rollout: {n} episodes, "
-            f"avg completion len: {sum(len(c) for c in all_completion_ids) / max(n, 1):.0f}, "
-            f"avg env tokens: {sum(sum(1 for m in mask if m == 0) for mask in all_env_mask) / max(n, 1):.0f}, "
+            f"win_rate={win_rate:.1%}, avg_turns={avg_turns:.1f}, "
             f"avg reward: {sum(episode_rewards) / max(n, 1):.2f}"
         )
 
@@ -331,6 +360,111 @@ def make_reward_func(reward_module, max_turns: int = 6):
         return [0.0] * len(completions)
 
     return reward_fn
+
+
+# ---------------------------------------------------------------------------
+# Trajectory saving (matches MLX script format)
+# ---------------------------------------------------------------------------
+
+
+def save_trajectories(
+    step: int,
+    probe_words: list[str],
+    valid_guesses: set[str],
+    rollout_func,
+    trainer,
+    output_dir: str,
+    max_turns: int = 6,
+) -> None:
+    """Run one episode per probe word and save conversation traces."""
+    traj_dir = os.path.join(output_dir, "trajectories")
+    os.makedirs(traj_dir, exist_ok=True)
+
+    logger.info(f"Saving trajectories for step {step} ({len(probe_words)} probe words)...")
+
+    # Create envs with fixed targets for probe words
+    from wordle.environment.wordle_gym import WordleGymEnv
+
+    episodes_data = []
+    for target in probe_words:
+        env = WordleGymEnv(
+            word_list=[target], valid_guesses=valid_guesses,
+            max_turns=max_turns, target=target,
+        )
+        env.reset()
+
+        # Build conversation and run through env manually
+        # (We don't use vLLM here — just record what the current model would do
+        #  by using generate_rollout_completions for one episode at a time)
+        conversation = [
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": "Guess a 5-letter word."},
+        ]
+
+        for turn in range(max_turns):
+            # Generate one completion
+            gen_results = generate_rollout_completions(
+                trainer=trainer,
+                prompts=[conversation],
+            )
+            text = gen_results[0]["text"]
+            conversation.append({"role": "assistant", "content": text})
+
+            obs, _, episode_done, info = env.step(text)
+
+            if episode_done:
+                # Add final feedback
+                conversation.append({"role": "user", "content": obs["messages"][0]["content"] if obs["messages"] else ""})
+                break
+            else:
+                feedback_text = obs["messages"][0]["content"]
+                conversation.append({"role": "user", "content": feedback_text})
+
+        solved = env.target_reached
+        turns = len(env.guesses)
+        logger.info(f"  [trace] {target.upper()} → {turns} turns, {'solved' if solved else 'failed'}")
+
+        episodes_data.append({
+            "target": target.upper(),
+            "solved": solved,
+            "turns": turns,
+            "messages": conversation,
+        })
+
+    trace_path = os.path.join(traj_dir, f"step_{step:04d}.json")
+    with open(trace_path, "w") as f:
+        json.dump({"step": step, "episodes": episodes_data}, f, indent=2, ensure_ascii=False)
+    logger.info(f"Trajectories saved: {trace_path}")
+
+
+# ---------------------------------------------------------------------------
+# TRL Callback for periodic trajectory saving
+# ---------------------------------------------------------------------------
+
+
+class TrajectoryCallback:
+    """Save probe word trajectories at regular intervals during training."""
+
+    def __init__(self, probe_words, valid_guesses, rollout_func, output_dir,
+                 trace_steps=25, max_turns=6):
+        self.probe_words = probe_words
+        self.valid_guesses = valid_guesses
+        self.rollout_func = rollout_func
+        self.output_dir = output_dir
+        self.trace_steps = trace_steps
+        self.max_turns = max_turns
+
+    def on_step_end(self, trainer, step):
+        if step % self.trace_steps == 0:
+            save_trajectories(
+                step=step,
+                probe_words=self.probe_words,
+                valid_guesses=self.valid_guesses,
+                rollout_func=self.rollout_func,
+                trainer=trainer,
+                output_dir=self.output_dir,
+                max_turns=self.max_turns,
+            )
 
 
 # ---------------------------------------------------------------------------
@@ -431,6 +565,33 @@ def main():
         rollout_func=rollout_func,
     )
 
+    # Select probe words for trajectory saving
+    probe_rng = random.Random(args.seed)
+    if args.trace_words:
+        probe_words = [w.lower() for w in args.trace_words]
+    else:
+        probe_words = probe_rng.sample(answers, min(args.n_trace_words, len(answers)))
+    logger.info(f"Probe words: {[w.upper() for w in probe_words]}")
+
+    # Register trajectory callback
+    from transformers import TrainerCallback
+
+    class _TrajectoryCallback(TrainerCallback):
+        def on_step_end(self, _args, state, control, **kwargs):
+            step = state.global_step
+            if step % args.trace_steps == 0 or step == 1:
+                save_trajectories(
+                    step=step,
+                    probe_words=probe_words,
+                    valid_guesses=valid_guesses,
+                    rollout_func=rollout_func,
+                    trainer=trainer,
+                    output_dir=args.output_dir,
+                    max_turns=args.max_turns,
+                )
+
+    trainer.add_callback(_TrajectoryCallback())
+
     logger.info("Starting training...")
     logger.info(f"  Reward: {args.reward}")
     logger.info(f"  Model: {args.model}")
@@ -438,6 +599,7 @@ def main():
     logger.info(f"  Group size: {args.num_generations}")
     logger.info(f"  Max steps: {args.max_steps}")
     logger.info(f"  vLLM mode: colocate (gpu_mem={args.vllm_gpu_memory_utilization})")
+    logger.info(f"  Trajectories every {args.trace_steps} steps")
 
     trainer.train()
 
