@@ -80,8 +80,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--max_completion_length",
         type=int,
-        default=512,
-        help="Max tokens per turn.",
+        default=200,
+        help="Max tokens per turn (200 is plenty without thinking mode).",
     )
     parser.add_argument("--vllm_gpu_memory_utilization", type=float, default=0.5,
                         help="Fraction of GPU memory for vLLM KV cache (rest for training).")
@@ -169,7 +169,7 @@ def make_wordle_rollout_func(
 
         # Tokenize prompts (initial conversation)
         prompt_texts = [
-            tokenizer.apply_chat_template(conv, tokenize=False, add_generation_prompt=True)
+            tokenizer.apply_chat_template(conv, tokenize=False, add_generation_prompt=True, enable_thinking=False)
             for conv in conversations
         ]
         all_prompt_ids = [tokenizer.encode(t) for t in prompt_texts]
@@ -230,7 +230,7 @@ def make_wordle_rollout_func(
                     # Tokenize the feedback + generation prompt for next turn.
                     # These env tokens get mask=0 (not trained on).
                     feedback_with_prompt = tokenizer.apply_chat_template(
-                        conversations[i], tokenize=False, add_generation_prompt=True
+                        conversations[i], tokenize=False, add_generation_prompt=True, enable_thinking=False
                     )
                     full_ids = tokenizer.encode(feedback_with_prompt)
                     existing_len = len(all_prompt_ids[i]) + len(all_completion_ids[i])
@@ -520,6 +520,7 @@ def main():
         vllm_mode="colocate",
         vllm_gpu_memory_utilization=args.vllm_gpu_memory_utilization,
         vllm_enable_sleep_mode=False,
+        chat_template_kwargs={"enable_thinking": False},
         # GRPO hyperparameters
         num_generations=args.num_generations,
         max_completion_length=args.max_completion_length,
