@@ -1,0 +1,350 @@
+{
+  "step": 180,
+  "episodes": [
+    {
+      "target": "CRAFT",
+      "solved": false,
+      "turns": 6,
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are playing Wordle. Guess a 5-letter English word to find the hidden target.\nAfter each guess, you receive feedback on each letter:\n🟩 = letter is in the target word and in the correct position\n🟨 = letter is in the target word but in the wrong position\n⬜ = letter is NOT in the target word\n\nYou have 6 attempts. After each turn, I will tell you which letters are eliminated (not in the target). Use the tile feedback and eliminated letters to narrow down the target word.\n\nRespond with just a guess in <guess> tags.\n\nExample:\n<guess>CRANE</guess>\nFeedback: Turn 1: CRANE → ⬜🟨⬜⬜🟩  (5 turn(s) remaining)\nEliminated letters: A, C, N\n(R is in the word but wrong position, E is correct in position 5)\n<guess>STORE</guess>"
+        },
+        {
+          "role": "user",
+          "content": "Guess a 5-letter word."
+        },
+        {
+          "role": "assistant",
+          "content": "<guess>CRANE</guess>",
+          "tokens": 9
+        },
+        {
+          "role": "user",
+          "content": "Turn 1: CRANE → 🟩🟩🟩⬜⬜  (5 turn(s) remaining)\nEliminated letters: E, N"
+        },
+        {
+          "role": "assistant",
+          "content": "<guess>PACER</guess>",
+          "tokens": 10
+        },
+        {
+          "role": "user",
+          "content": "Turn 2: PACER → ⬜🟨🟨⬜🟨  (4 turn(s) remaining)\nEliminated letters: E, N, P"
+        },
+        {
+          "role": "assistant",
+          "content": "<guess>CARBS</guess>",
+          "tokens": 9
+        },
+        {
+          "role": "user",
+          "content": "Turn 3: CARBS → 🟩🟨🟨⬜⬜  (3 turn(s) remaining)\nEliminated letters: B, E, N, P, S"
+        },
+        {
+          "role": "assistant",
+          "content": "<guess>TACIT</guess>",
+          "tokens": 9
+        },
+        {
+          "role": "user",
+          "content": "Turn 4: TACIT → ⬜🟨🟨⬜🟩  (2 turn(s) remaining)\nEliminated letters: B, E, I, N, P, S"
+        },
+        {
+          "role": "assistant",
+          "content": "<guess>TACRE</guess>",
+          "tokens": 10
+        },
+        {
+          "role": "user",
+          "content": "Turn 5: TACRE → ⬜⬜⬜⬜⬜  (1 turn(s) remaining)\nEliminated letters: B, E, I, N, P, S"
+        },
+        {
+          "role": "assistant",
+          "content": "<guess>ACTOR</guess>",
+          "tokens": 9
+        },
+        {
+          "role": "user",
+          "content": "Turn 6: ACTOR → 🟨🟨🟨⬜🟨  (0 turn(s) remaining)\nEliminated letters: B, E, I, N, O, P, S"
+        }
+      ]
+    },
+    {
+      "target": "ARDOR",
+      "solved": false,
+      "turns": 6,
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are playing Wordle. Guess a 5-letter English word to find the hidden target.\nAfter each guess, you receive feedback on each letter:\n🟩 = letter is in the target word and in the correct position\n🟨 = letter is in the target word but in the wrong position\n⬜ = letter is NOT in the target word\n\nYou have 6 attempts. After each turn, I will tell you which letters are eliminated (not in the target). Use the tile feedback and eliminated letters to narrow down the target word.\n\nRespond with just a guess in <guess> tags.\n\nExample:\n<guess>CRANE</guess>\nFeedback: Turn 1: CRANE → ⬜🟨⬜⬜🟩  (5 turn(s) remaining)\nEliminated letters: A, C, N\n(R is in the word but wrong position, E is correct in position 5)\n<guess>STORE</guess>"
+        },
+        {
+          "role": "user",
+          "content": "Guess a 5-letter word."
+        },
+        {
+          "role": "assistant",
+          "content": "<guess>CRANE</guess>",
+          "tokens": 9
+        },
+        {
+          "role": "user",
+          "content": "Turn 1: CRANE → ⬜🟩🟨⬜⬜  (5 turn(s) remaining)\nEliminated letters: C, E, N"
+        },
+        {
+          "role": "assistant",
+          "content": "<guess>TAROT</guess>",
+          "tokens": 10
+        },
+        {
+          "role": "user",
+          "content": "Turn 2: TAROT → ⬜🟨🟨🟩⬜  (4 turn(s) remaining)\nEliminated letters: C, E, N, T"
+        },
+        {
+          "role": "assistant",
+          "content": "<guess>PROSE</guess>",
+          "tokens": 9
+        },
+        {
+          "role": "user",
+          "content": "Turn 3: PROSE → ⬜🟩🟨⬜⬜  (3 turn(s) remaining)\nEliminated letters: C, E, N, P, S, T"
+        },
+        {
+          "role": "assistant",
+          "content": "<guess>ORALs</guess>",
+          "tokens": 10
+        },
+        {
+          "role": "user",
+          "content": "Turn 4: ORALS → 🟨🟩🟨⬜⬜  (2 turn(s) remaining)\nEliminated letters: C, E, L, N, P, S, T"
+        },
+        {
+          "role": "assistant",
+          "content": "<guess>BORAL</guess>",
+          "tokens": 10
+        },
+        {
+          "role": "user",
+          "content": "Turn 5: BORAL → ⬜🟨🟨🟨⬜  (1 turn(s) remaining)\nEliminated letters: B, C, E, L, N, P, S, T"
+        },
+        {
+          "role": "assistant",
+          "content": "<guess>ROWED</guess>",
+          "tokens": 9
+        },
+        {
+          "role": "user",
+          "content": "Turn 6: ROWED → 🟨🟨⬜⬜🟨  (0 turn(s) remaining)\nEliminated letters: B, C, E, L, N, P, S, T, W"
+        }
+      ]
+    },
+    {
+      "target": "LEVEL",
+      "solved": false,
+      "turns": 6,
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are playing Wordle. Guess a 5-letter English word to find the hidden target.\nAfter each guess, you receive feedback on each letter:\n🟩 = letter is in the target word and in the correct position\n🟨 = letter is in the target word but in the wrong position\n⬜ = letter is NOT in the target word\n\nYou have 6 attempts. After each turn, I will tell you which letters are eliminated (not in the target). Use the tile feedback and eliminated letters to narrow down the target word.\n\nRespond with just a guess in <guess> tags.\n\nExample:\n<guess>CRANE</guess>\nFeedback: Turn 1: CRANE → ⬜🟨⬜⬜🟩  (5 turn(s) remaining)\nEliminated letters: A, C, N\n(R is in the word but wrong position, E is correct in position 5)\n<guess>STORE</guess>"
+        },
+        {
+          "role": "user",
+          "content": "Guess a 5-letter word."
+        },
+        {
+          "role": "assistant",
+          "content": "<guess>CRANE</guess>",
+          "tokens": 9
+        },
+        {
+          "role": "user",
+          "content": "Turn 1: CRANE → ⬜⬜⬜⬜🟨  (5 turn(s) remaining)\nEliminated letters: A, C, N, R"
+        },
+        {
+          "role": "assistant",
+          "content": "<guess>TONES</guess>",
+          "tokens": 9
+        },
+        {
+          "role": "user",
+          "content": "Turn 2: TONES → ⬜⬜⬜🟩⬜  (4 turn(s) remaining)\nEliminated letters: A, C, N, O, R, S, T"
+        },
+        {
+          "role": "assistant",
+          "content": "<guess>PILER</guess>",
+          "tokens": 9
+        },
+        {
+          "role": "user",
+          "content": "Turn 3: PILER → ⬜⬜🟨🟩⬜  (3 turn(s) remaining)\nEliminated letters: A, C, I, N, O, P, R, S, T"
+        },
+        {
+          "role": "assistant",
+          "content": "<guess>BLEED</guess>",
+          "tokens": 9
+        },
+        {
+          "role": "user",
+          "content": "Turn 4: BLEED → ⬜🟨🟨🟩⬜  (2 turn(s) remaining)\nEliminated letters: A, B, C, D, I, N, O, P, R, S, T"
+        },
+        {
+          "role": "assistant",
+          "content": "<guess>LEADS</guess>",
+          "tokens": 9
+        },
+        {
+          "role": "user",
+          "content": "Turn 5: LEADS → 🟩🟩⬜⬜⬜  (1 turn(s) remaining)\nEliminated letters: A, B, C, D, I, N, O, P, R, S, T"
+        },
+        {
+          "role": "assistant",
+          "content": "<guess>ELVES</guess>",
+          "tokens": 9
+        },
+        {
+          "role": "user",
+          "content": "Turn 6: ELVES → 🟨🟨🟩🟩⬜  (0 turn(s) remaining)\nEliminated letters: A, B, C, D, I, N, O, P, R, S, T"
+        }
+      ]
+    },
+    {
+      "target": "HUMPH",
+      "solved": false,
+      "turns": 6,
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are playing Wordle. Guess a 5-letter English word to find the hidden target.\nAfter each guess, you receive feedback on each letter:\n🟩 = letter is in the target word and in the correct position\n🟨 = letter is in the target word but in the wrong position\n⬜ = letter is NOT in the target word\n\nYou have 6 attempts. After each turn, I will tell you which letters are eliminated (not in the target). Use the tile feedback and eliminated letters to narrow down the target word.\n\nRespond with just a guess in <guess> tags.\n\nExample:\n<guess>CRANE</guess>\nFeedback: Turn 1: CRANE → ⬜🟨⬜⬜🟩  (5 turn(s) remaining)\nEliminated letters: A, C, N\n(R is in the word but wrong position, E is correct in position 5)\n<guess>STORE</guess>"
+        },
+        {
+          "role": "user",
+          "content": "Guess a 5-letter word."
+        },
+        {
+          "role": "assistant",
+          "content": "<guess>CRANE</guess>",
+          "tokens": 9
+        },
+        {
+          "role": "user",
+          "content": "Turn 1: CRANE → ⬜⬜⬜⬜⬜  (5 turn(s) remaining)\nEliminated letters: A, C, E, N, R"
+        },
+        {
+          "role": "assistant",
+          "content": "<guess>TOPIC</guess>",
+          "tokens": 9
+        },
+        {
+          "role": "user",
+          "content": "Turn 2: TOPIC → ⬜⬜🟨⬜⬜  (4 turn(s) remaining)\nEliminated letters: A, C, E, I, N, O, R, T"
+        },
+        {
+          "role": "assistant",
+          "content": "<guess>PILLS</guess>",
+          "tokens": 9
+        },
+        {
+          "role": "user",
+          "content": "Turn 3: PILLS → 🟨⬜⬜⬜⬜  (3 turn(s) remaining)\nEliminated letters: A, C, E, I, L, N, O, R, S, T"
+        },
+        {
+          "role": "assistant",
+          "content": "<guess>PHONY</guess>",
+          "tokens": 9
+        },
+        {
+          "role": "user",
+          "content": "Turn 4: PHONY → 🟨🟨⬜⬜⬜  (2 turn(s) remaining)\nEliminated letters: A, C, E, I, L, N, O, R, S, T, Y"
+        },
+        {
+          "role": "assistant",
+          "content": "<guess>PUPPY</guess>",
+          "tokens": 10
+        },
+        {
+          "role": "user",
+          "content": "Turn 5: PUPPY → ⬜🟩⬜🟩⬜  (1 turn(s) remaining)\nEliminated letters: A, C, E, I, L, N, O, R, S, T, Y"
+        },
+        {
+          "role": "assistant",
+          "content": "<guess>UPPER</guess>",
+          "tokens": 9
+        },
+        {
+          "role": "user",
+          "content": "Turn 6: UPPER → 🟨🟨⬜⬜⬜  (0 turn(s) remaining)\nEliminated letters: A, C, E, I, L, N, O, R, S, T, Y"
+        }
+      ]
+    },
+    {
+      "target": "GRIND",
+      "solved": false,
+      "turns": 6,
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are playing Wordle. Guess a 5-letter English word to find the hidden target.\nAfter each guess, you receive feedback on each letter:\n🟩 = letter is in the target word and in the correct position\n🟨 = letter is in the target word but in the wrong position\n⬜ = letter is NOT in the target word\n\nYou have 6 attempts. After each turn, I will tell you which letters are eliminated (not in the target). Use the tile feedback and eliminated letters to narrow down the target word.\n\nRespond with just a guess in <guess> tags.\n\nExample:\n<guess>CRANE</guess>\nFeedback: Turn 1: CRANE → ⬜🟨⬜⬜🟩  (5 turn(s) remaining)\nEliminated letters: A, C, N\n(R is in the word but wrong position, E is correct in position 5)\n<guess>STORE</guess>"
+        },
+        {
+          "role": "user",
+          "content": "Guess a 5-letter word."
+        },
+        {
+          "role": "assistant",
+          "content": "<guess>CRANE</guess>",
+          "tokens": 9
+        },
+        {
+          "role": "user",
+          "content": "Turn 1: CRANE → ⬜🟩⬜🟩⬜  (5 turn(s) remaining)\nEliminated letters: A, C, E"
+        },
+        {
+          "role": "assistant",
+          "content": "<guess>ONERS</guess>",
+          "tokens": 9
+        },
+        {
+          "role": "user",
+          "content": "Turn 2: ONERS → ⬜🟨⬜🟨⬜  (4 turn(s) remaining)\nEliminated letters: A, C, E, O, S"
+        },
+        {
+          "role": "assistant",
+          "content": "<guess>PURNS</guess>",
+          "tokens": 8
+        },
+        {
+          "role": "user",
+          "content": "Turn 3: PURNS → ⬜⬜⬜⬜⬜  (3 turn(s) remaining)\nEliminated letters: A, C, E, O, P, S, U"
+        },
+        {
+          "role": "assistant",
+          "content": "<guess>TONIC</guess>",
+          "tokens": 10
+        },
+        {
+          "role": "user",
+          "content": "Turn 4: TONIC → ⬜⬜🟨🟨⬜  (2 turn(s) remaining)\nEliminated letters: A, C, E, O, P, S, T, U"
+        },
+        {
+          "role": "assistant",
+          "content": "<guess>INLAY</guess>",
+          "tokens": 9
+        },
+        {
+          "role": "user",
+          "content": "Turn 5: INLAY → 🟨🟨⬜⬜⬜  (1 turn(s) remaining)\nEliminated letters: A, C, E, L, O, P, S, T, U, Y"
+        },
+        {
+          "role": "assistant",
+          "content": "<guess>BRAIN</guess>",
+          "tokens": 9
+        },
+        {
+          "role": "user",
+          "content": "Turn 6: BRAIN → ⬜🟩⬜🟨🟨  (0 turn(s) remaining)\nEliminated letters: A, B, C, E, L, O, P, S, T, U, Y"
+        }
+      ]
+    }
+  ]
+}

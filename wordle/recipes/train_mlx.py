@@ -100,10 +100,18 @@ def parse_args() -> argparse.Namespace:
                         help="SFT warmup steps for eliminated-letter tracking before GRPO.")
     parser.add_argument("--sft_batch_size", type=int, default=8,
                         help="Batch size for SFT warmup (can be larger than GRPO batch).")
+    parser.add_argument("--sft_warmup_data", type=str, default=None,
+                        help="JSONL file for SFT warmup data (default: None = use synthetic).")
+    parser.add_argument("--expert_buffer_path", type=str, default=None,
+                        help="Path to JSONL expert replay buffer (enables SFT replay).")
+    parser.add_argument("--sft_replay_batch_size", type=int, default=4,
+                        help="Examples per SFT replay step.")
     parser.add_argument("--env_eliminated", action="store_true",
                         help="Environment provides eliminated letters in feedback (model just guesses).")
     parser.add_argument("--thinking", action="store_true",
                         help="Enable Qwen3 thinking mode (<think>...</think> before answer).")
+    parser.add_argument("--max_step_time", type=int, default=600,
+                        help="Abort training if a single step exceeds this many seconds (swap thrashing guard).")
     return parser.parse_args()
 
 
@@ -419,6 +427,8 @@ def compute_episode_rewards(
         turn_target_reached = target_reached and is_final_turn
 
         completion_text = completion_texts[turn_idx] if turn_idx < len(completion_texts) else ""
+        completion_tokens_list = episode.get("completion_tokens_per_turn", [])
+        n_completion_tokens = len(completion_tokens_list[turn_idx]) if turn_idx < len(completion_tokens_list) else None
 
         tr, turn_metrics = reward_mod.compute_turn_reward(
             guess=guess,
@@ -429,6 +439,7 @@ def compute_episode_rewards(
             max_turns=max_turns,
             target_reached=turn_target_reached,
             completion_text=completion_text,
+            completion_tokens=n_completion_tokens,
         )
         per_turn_rewards.append(tr)
         if turn_metrics.get("format_compliance", 0.0) > 0:
@@ -527,6 +538,75 @@ def sft_step(
     mx.eval(model.parameters(), optimizer.state)
 
     return loss.item()
+
+
+# ---------------------------------------------------------------------------
+# Expert replay buffer helpers
+# ---------------------------------------------------------------------------
+
+def load_replay_buffer(path: str) -> list[dict]:
+    """Load SFT examples from a JSONL replay buffer file."""
+    examples = []
+    with open(path) as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                examples.append(json.loads(line))
+    return examples
+
+
+def episode_to_sft_examples(episode: dict, args) -> list[dict]:
+    """Convert a winning episode to multi-turn SFT examples.
+
+    For each turn, creates {"messages": [...], "completion": "..."} where
+    the completion is the model's actual output that led to a win.
+    """
+    sys_prompt = get_system_prompt(args)
+    history = episode["history"]
+    completion_texts = episode["completion_texts"]
+    max_turns = args.max_turns
+    env_eliminated = getattr(args, "env_eliminated", False)
+
+    examples = []
+    messages = [
+        {"role": "system", "content": sys_prompt},
+        {"role": "user", "content": "Guess a 5-letter word."},
+    ]
+
+    for turn_idx, (guess, feedback) in enumerate(history):
+        turn = turn_idx + 1
+        completion_text = completion_texts[turn_idx]
+
+        # Save SFT example: current messages as prompt, model output as completion
+        examples.append({
+            "messages": [dict(m) for m in messages],
+            "completion": completion_text,
+        })
+
+        # Advance conversation
+        messages.append({"role": "assistant", "content": completion_text})
+        emoji = feedback_to_emoji(feedback)
+        remaining = max_turns - turn
+        if episode["target_reached"] and turn_idx == len(history) - 1:
+            fb_text = (
+                f"Turn {turn}: {guess.upper()} → {emoji}  "
+                f"Correct! You got it in {turn} guess(es)!"
+            )
+        else:
+            fb_text = (
+                f"Turn {turn}: {guess.upper()} → {emoji}  "
+                f"({remaining} turn(s) remaining)"
+            )
+            if env_eliminated:
+                constraints = RevealedConstraints.from_history(
+                    [g for g, _ in history[:turn_idx + 1]],
+                    [f for _, f in history[:turn_idx + 1]],
+                )
+                elim_str = ", ".join(c.upper() for c in sorted(constraints.grey))
+                fb_text += f"\nEliminated letters: {elim_str}"
+        messages.append({"role": "user", "content": fb_text})
+
+    return examples
 
 
 # ---------------------------------------------------------------------------
@@ -664,6 +744,7 @@ def main() -> None:
     print(f"[wordle] Grad clip    : {args.grad_clip_norm}")
     print(f"[wordle] Batch size   : {args.batch_size} words x {args.group_size} episodes")
     print(f"[wordle] Micro-batch  : {args.micro_batch_size}")
+    print(f"[wordle] Max step time: {args.max_step_time}s")
     batch_inf_str = "off" if args.no_batch_inference else (
         f"on (max {args.inference_batch_size})" if args.inference_batch_size > 0 else "on (all)"
     )
@@ -671,6 +752,8 @@ def main() -> None:
     print(f"[wordle] Max steps    : {args.max_steps}")
     if args.sft_warmup_steps > 0:
         print(f"[wordle] SFT warmup   : {args.sft_warmup_steps} steps (batch={args.sft_batch_size})")
+    if args.expert_buffer_path:
+        print(f"[wordle] Expert replay: {args.expert_buffer_path} (batch={args.sft_replay_batch_size})")
     if args.env_eliminated:
         print(f"[wordle] Env elim     : ON (env provides eliminated letters)")
     if args.thinking:
@@ -732,10 +815,18 @@ def main() -> None:
         print(f"\n[sft] === SFT Warmup: {args.sft_warmup_steps} steps, batch_size={args.sft_batch_size} ===", flush=True)
         valid_guesses_list = list(valid_guesses)
         n_sft_examples = args.sft_warmup_steps * args.sft_batch_size
-        sft_examples = generate_sft_examples(
-            answers, valid_guesses_list, n_examples=n_sft_examples, seed=args.seed,
-        )
-        print(f"[sft] Generated {len(sft_examples)} synthetic examples", flush=True)
+        if args.sft_warmup_data:
+            sft_examples = load_replay_buffer(args.sft_warmup_data)
+            if len(sft_examples) < n_sft_examples:
+                sft_examples = sft_examples * (n_sft_examples // len(sft_examples) + 1)
+            random.Random(args.seed).shuffle(sft_examples)
+            sft_examples = sft_examples[:n_sft_examples]
+            print(f"[sft] Loaded {n_sft_examples} examples from {args.sft_warmup_data}", flush=True)
+        else:
+            sft_examples = generate_sft_examples(
+                answers, valid_guesses_list, n_examples=n_sft_examples, seed=args.seed,
+            )
+            print(f"[sft] Generated {len(sft_examples)} synthetic examples", flush=True)
         t_sft_start = time.time()
         for sft_step_idx in range(args.sft_warmup_steps):
             t_sft_step = time.time()
@@ -772,6 +863,20 @@ def main() -> None:
             clear_cache()
         t_sft_elapsed = time.time() - t_sft_start
         print(f"[sft] Warmup complete in {t_sft_elapsed:.1f}s\n", flush=True)
+        sft_ckpt_path = os.path.join(output_dir, "sft_checkpoint")
+        save_checkpoint(model, optimizer, 0, sft_ckpt_path, {"phase": "post_sft_warmup"})
+        print(f"[sft] Saved post-warmup checkpoint to {sft_ckpt_path}", flush=True)
+
+    # Load expert replay buffer
+    replay_buffer: list[dict] = []
+    replay_buffer_path = None
+    if args.expert_buffer_path:
+        replay_buffer = load_replay_buffer(args.expert_buffer_path)
+        replay_buffer_path = os.path.join(output_dir, "replay_buffer.jsonl")
+        # Copy initial buffer to output dir so it grows alongside training
+        import shutil
+        shutil.copy2(args.expert_buffer_path, replay_buffer_path)
+        print(f"[replay] Loaded {len(replay_buffer)} expert examples from {args.expert_buffer_path}")
 
     # Training loop
     rng = random.Random(args.seed)
@@ -789,6 +894,12 @@ def main() -> None:
 
         # --- ROLLOUT ---
         t_gen_start = time.time()
+        n_episodes = args.batch_size * args.group_size
+        print(
+            f"[step {step:4d}] ROLLOUT: generating {n_episodes} episodes "
+            f"({args.batch_size} words x {args.group_size} group) ...",
+            flush=True,
+        )
 
         if args.no_batch_inference:
             # Sequential fallback
@@ -826,6 +937,13 @@ def main() -> None:
 
         t_gen = time.time() - t_gen_start
         n_total = len(all_episodes)
+        wins_in_batch = sum(1 for ep in all_episodes if ep["target_reached"])
+        print(
+            f"[step {step:4d}] ROLLOUT done: {t_gen:.1f}s, "
+            f"{wins_in_batch}/{n_total} wins, "
+            f"targets={[t.upper() for t in batch_targets]}",
+            flush=True,
+        )
 
         # --- REWARD ---
         episode_total_rewards = []
@@ -868,6 +986,12 @@ def main() -> None:
 
         # --- TRAIN ---
         t_train_start = time.time()
+        print(
+            f"[step {step:4d}] TRAIN: reward={float(rewards.mean()):.3f} "
+            f"(±{float(rewards.std()):.3f}), "
+            f"win={float(win_rate):.1%}, viol={float(violation_rate):.1%} ...",
+            flush=True,
+        )
 
         # Filter to episodes with non-zero advantage
         train_episodes = []
@@ -899,7 +1023,52 @@ def main() -> None:
             grad_norm = 0.0
 
         t_train = time.time() - t_train_start
+        print(
+            f"[step {step:4d}] TRAIN done: {t_train:.1f}s, "
+            f"loss={float(loss):.4f}, grad_norm={float(grad_norm):.4f}, "
+            f"{len(train_episodes)}/{n_total} samples used",
+            flush=True,
+        )
         clear_cache()
+
+        # --- SFT REPLAY ---
+        replay_loss = 0.0
+        replay_new_examples = 0
+        if args.expert_buffer_path is not None:
+            # Collect winning episodes into replay buffer
+            new_replay = 0
+            for ep in all_episodes:
+                if ep["target_reached"]:
+                    sft_examples = episode_to_sft_examples(ep, args)
+                    replay_buffer.extend(sft_examples)
+                    new_replay += len(sft_examples)
+                    # Persist to disk
+                    if replay_buffer_path:
+                        with open(replay_buffer_path, "a") as f:
+                            for ex in sft_examples:
+                                f.write(json.dumps(ex) + "\n")
+            replay_new_examples = new_replay
+            if new_replay > 0:
+                print(
+                    f"[step {step:4d}] REPLAY: +{new_replay} examples from wins "
+                    f"(buffer={len(replay_buffer)} total)",
+                    flush=True,
+                )
+
+            # SFT replay step
+            if replay_buffer:
+                batch = random.sample(
+                    replay_buffer,
+                    min(args.sft_replay_batch_size, len(replay_buffer)),
+                )
+                replay_loss = sft_step(
+                    model, tokenizer, batch, optimizer, args.grad_clip_norm,
+                )
+                print(
+                    f"[step {step:4d}] REPLAY: sft_loss={replay_loss:.4f}",
+                    flush=True,
+                )
+                clear_cache()
 
         # --- METRICS ---
         mem = get_memory_stats()
@@ -935,6 +1104,9 @@ def main() -> None:
             "mean_completion_len": mean_completion_len,
             "memory_active_gb": mem["active_gb"],
             "memory_peak_gb": mem["peak_gb"],
+            "sft_replay_loss": float(replay_loss),
+            "replay_new_examples": replay_new_examples,
+            "replay_buffer_size": len(replay_buffer),
             "time_gen": round(t_gen, 2),
             "time_train": round(t_train, 2),
             "time_total": round(time.time() - t0, 2),
@@ -970,6 +1142,22 @@ def main() -> None:
                 f"[wordle] WARNING: Active memory {mem['active_gb']:.2f} GB "
                 f"exceeds 6 GB threshold. Consider reducing batch/group size."
             )
+
+        # Step-time watchdog (swap thrashing guard)
+        step_time = metrics["time_total"]
+        if args.max_step_time > 0 and step_time > args.max_step_time:
+            print(
+                f"\n[wordle] ABORT: Step {step} took {step_time:.0f}s "
+                f"(limit: {args.max_step_time}s). Likely swap thrashing. "
+                f"Try --micro_batch_size 2 or reduce --group_size.",
+                flush=True,
+            )
+            # Save emergency checkpoint before aborting
+            ckpt_path = os.path.join(output_dir, f"step_{step:04d}")
+            if not os.path.exists(ckpt_path):
+                save_checkpoint(model, optimizer, step, ckpt_path, metrics)
+                print(f"[wordle] Emergency checkpoint saved to {ckpt_path}")
+            break
 
         # --- CHECKPOINT ---
         if step % args.save_steps == 0:

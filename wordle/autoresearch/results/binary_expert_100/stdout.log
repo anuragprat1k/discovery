@@ -1,0 +1,556 @@
+/Users/anurag/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+[wordle] === MLX Multi-turn Wordle GRPO Training ===
+[wordle] Reward       : sparse
+[wordle] Model        : mlx-community/Qwen3-4B-bf16
+[wordle] Max turns    : 6
+[wordle] LoRA rank    : 16
+[wordle] LoRA layers  : 16
+[wordle] LR           : 0.0001
+[wordle] KL coef      : 0.04
+[wordle] CISPO clip   : [0.8, 1.2]
+[wordle] Grad clip    : 1.0
+[wordle] Batch size   : 4 words x 16 episodes
+[wordle] Micro-batch  : 4
+[wordle] Batch infer  : on (all)
+[wordle] Max steps    : 200
+[wordle] SFT warmup   : 100 steps (batch=8)
+[wordle] Expert replay: expert_buffer.jsonl (batch=4)
+[wordle] Env elim     : ON (env provides eliminated letters)
+[wordle] Output dir   : /Users/anurag/repos/discovery/wordle/autoresearch/results/binary_expert_100
+[wordle] Loading model with LoRA ...
+Fetching 10 files:   0%|          | 0/10 [00:00<?, ?it/s]Fetching 10 files: 100%|██████████| 10/10 [00:00<00:00, 199728.76it/s]
+[mlx] Model loaded: mlx-community/Qwen3-4B-bf16
+[mlx] Total params: 4,037,148,160  Trainable: 14,680,064 (0.36%)
+[wordle] Memory after load: 7.49 GB active, 7.49 GB peak
+[wordle] Loaded 2315 answers, 12972 total valid guesses
+[wordle] Probe words   : ['CRAFT', 'ARDOR', 'LEVEL', 'HUMPH', 'GRIND']
+[wordle] Saving trajectories for step 0 (5 probe words)...
+  [trace 1/5] CRAFT → 6 turns, failed
+  [trace 2/5] ARDOR → 6 turns, failed
+  [trace 3/5] LEVEL → 6 turns, failed
+  [trace 4/5] HUMPH → 6 turns, failed
+  [trace 5/5] GRIND → 6 turns, failed
+[wordle] Trajectories saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/binary_expert_100/trajectories/step_0000.json (16.6s total)
+wandb: [wandb.login()] Loaded credentials for https://api.wandb.ai from WANDB_API_KEY.
+wandb: Currently logged in as: anuragprateek to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run n1cuebk6
+wandb: Tracking run with wandb version 0.25.1
+wandb: Run data is saved locally in /Users/anurag/repos/discovery/wandb/run-20260319_180058-n1cuebk6
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run wordle_mlx_sparse
+wandb: ⭐️ View project at https://wandb.ai/anuragprateek/discovery-wordle-autoresearch
+wandb: 🚀 View run at https://wandb.ai/anuragprateek/discovery-wordle-autoresearch/runs/n1cuebk6
+[wordle] W&B run: https://wandb.ai/anuragprateek/discovery-wordle-autoresearch/runs/n1cuebk6
+
+[sft] === SFT Warmup: 100 steps, batch_size=8 ===
+[sft] Loaded 800 examples from expert_buffer.jsonl
+[sft] step 1/100  loss=1.1892  time=8.2s  mem=7.7GB
+[sft] step 5/100  loss=0.4353  time=8.4s  mem=7.7GB
+[sft] step 10/100  loss=0.4425  time=7.2s  mem=7.7GB
+[sft] step 15/100  loss=0.4319  time=7.1s  mem=7.7GB
+[sft] step 20/100  loss=0.4659  time=7.4s  mem=7.7GB
+[sft] step 25/100  loss=0.4527  time=7.7s  mem=7.7GB
+[sft] step 30/100  loss=0.4656  time=7.3s  mem=7.7GB
+[sft] step 35/100  loss=0.4020  time=6.9s  mem=7.7GB
+[sft] step 40/100  loss=0.3941  time=8.2s  mem=7.7GB
+[sft] step 45/100  loss=0.2396  time=9.2s  mem=7.7GB
+[sft] step 50/100  loss=0.2486  time=7.4s  mem=7.7GB
+[sft] step 55/100  loss=0.3453  time=8.5s  mem=7.7GB
+[sft] step 60/100  loss=0.3952  time=9.1s  mem=7.7GB
+[sft] step 65/100  loss=0.2765  time=7.4s  mem=7.7GB
+[sft] step 70/100  loss=0.4501  time=8.9s  mem=7.7GB
+[sft] step 75/100  loss=0.3090  time=8.7s  mem=7.7GB
+[sft] step 80/100  loss=0.2542  time=8.0s  mem=7.7GB
+[sft] step 85/100  loss=0.2305  time=9.6s  mem=7.7GB
+[sft] step 90/100  loss=0.3602  time=8.1s  mem=7.7GB
+[sft] step 95/100  loss=0.3539  time=7.4s  mem=7.7GB
+[sft] step 100/100  loss=0.3730  time=7.7s  mem=7.7GB
+[sft] Warmup complete in 803.6s
+
+[mlx] Checkpoint saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/binary_expert_100/sft_checkpoint (step 0)
+[sft] Saved post-warmup checkpoint to /Users/anurag/repos/discovery/wordle/autoresearch/results/binary_expert_100/sft_checkpoint
+[replay] Loaded 1940 expert examples from expert_buffer.jsonl
+[step    1] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step    1] ROLLOUT done: 527.6s, 0/64 wins, targets=['CRAFT', 'ARDOR', 'LEVEL', 'HUMPH']
+[step    1] TRAIN: reward=-1.000 (±0.000), win=0.0%, viol=88.4% ...
+[step    1] TRAIN done: 0.0s, loss=0.0000, grad_norm=0.0000, 0/64 samples used
+[step    1] REPLAY: sft_loss=0.3001
+[step    1/200] reward=-1.000  loss=0.0000  win=0.0%  violations=88.4%  format=0.0%  mem=7.7GB  time=532.0s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step    2] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step    2] ROLLOUT done: 211.9s, 1/64 wins, targets=['GRIND', 'DONOR', 'CLOUT', 'WATER']
+[step    2] TRAIN: reward=-0.938 (±0.496), win=1.6%, viol=88.8% ...
+[step    2] TRAIN done: 102.4s, loss=0.0192, grad_norm=0.2377, 16/64 samples used
+[step    2] REPLAY: +6 examples from wins (buffer=1946 total)
+[step    2] REPLAY: sft_loss=0.1860
+[step    2/200] reward=-0.938  loss=0.0192  win=1.6%  violations=88.8%  format=0.0%  mem=7.7GB  time=318.0s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step    3] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step    3] ROLLOUT done: 206.7s, 3/64 wins, targets=['CHAOS', 'SHIRE', 'AWAIT', 'AUDIO']
+[step    3] TRAIN: reward=-0.797 (±0.916), win=4.7%, viol=88.1% ...
+[step    3] TRAIN done: 190.6s, loss=0.1575, grad_norm=0.1840, 32/64 samples used
+[step    3] REPLAY: +8 examples from wins (buffer=1954 total)
+[step    3] REPLAY: sft_loss=0.2230
+[step    3/200] reward=-0.797  loss=0.1575  win=4.7%  violations=88.1%  format=0.0%  mem=7.7GB  time=401.2s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step    4] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step    4] ROLLOUT done: 188.9s, 2/64 wins, targets=['CHOSE', 'GRAIN', 'HAREM', 'TITAN']
+[step    4] TRAIN: reward=-0.864 (±0.757), win=3.1%, viol=86.9% ...
+[step    4] TRAIN done: 50.2s, loss=0.1538, grad_norm=0.1923, 16/64 samples used
+[step    4] REPLAY: +5 examples from wins (buffer=1959 total)
+[step    4] REPLAY: sft_loss=0.2233
+[step    4/200] reward=-0.864  loss=0.1538  win=3.1%  violations=86.9%  format=0.0%  mem=7.7GB  time=241.2s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step    5] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step    5] ROLLOUT done: 142.9s, 0/64 wins, targets=['AROSE', 'WREST', 'FROND', 'WATCH']
+[step    5] TRAIN: reward=-1.000 (±0.000), win=0.0%, viol=88.8% ...
+[step    5] TRAIN done: 0.0s, loss=0.0000, grad_norm=0.0000, 0/64 samples used
+[step    5] REPLAY: sft_loss=0.3008
+[step    5/200] reward=-1.000  loss=0.0000  win=0.0%  violations=88.8%  format=0.0%  mem=7.7GB  time=145.2s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[mlx] Checkpoint saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/binary_expert_100/step_0005 (step 5)
+[wordle] Saving trajectories for step 5 (5 probe words)...
+  [trace 1/5] CRAFT → 6 turns, failed
+  [trace 2/5] ARDOR → 6 turns, failed
+  [trace 3/5] LEVEL → 6 turns, failed
+  [trace 4/5] HUMPH → 6 turns, failed
+  [trace 5/5] GRIND → 6 turns, failed
+[wordle] Trajectories saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/binary_expert_100/trajectories/step_0005.json (14.9s total)
+[step    6] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step    6] ROLLOUT done: 153.9s, 1/64 wins, targets=['SHEEP', 'GRATE', 'SONAR', 'LITHE']
+[step    6] TRAIN: reward=-0.931 (±0.546), win=1.6%, viol=84.8% ...
+[step    6] TRAIN done: 51.8s, loss=0.1547, grad_norm=0.1234, 16/64 samples used
+[step    6] REPLAY: +2 examples from wins (buffer=1961 total)
+[step    6] REPLAY: sft_loss=0.2778
+[step    6/200] reward=-0.931  loss=0.1547  win=1.6%  violations=84.8%  format=0.0%  mem=7.7GB  time=208.3s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step    7] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step    7] ROLLOUT done: 188.6s, 0/64 wins, targets=['ADORN', 'EMPTY', 'SHOAL', 'PENCE']
+[step    7] TRAIN: reward=-1.000 (±0.000), win=0.0%, viol=84.4% ...
+[step    7] TRAIN done: 0.0s, loss=0.0000, grad_norm=0.0000, 0/64 samples used
+[step    7] REPLAY: sft_loss=0.1816
+[step    7/200] reward=-1.000  loss=0.0000  win=0.0%  violations=84.4%  format=0.0%  mem=7.7GB  time=192.1s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step    8] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step    8] ROLLOUT done: 193.5s, 1/64 wins, targets=['LIPID', 'EIGHT', 'GOLLY', 'PASTE']
+[step    8] TRAIN: reward=-0.936 (±0.508), win=1.6%, viol=81.8% ...
+[step    8] TRAIN done: 67.9s, loss=0.2002, grad_norm=0.0797, 16/64 samples used
+[step    8] REPLAY: +5 examples from wins (buffer=1966 total)
+[step    8] REPLAY: sft_loss=0.3081
+[step    8/200] reward=-0.936  loss=0.2002  win=1.6%  violations=81.8%  format=0.0%  mem=7.7GB  time=264.1s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step    9] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step    9] ROLLOUT done: 178.6s, 2/64 wins, targets=['CLOUD', 'CHOIR', 'REBEL', 'CLAIM']
+[step    9] TRAIN: reward=-0.864 (±0.757), win=3.1%, viol=89.8% ...
+[step    9] TRAIN done: 67.1s, loss=0.3287, grad_norm=0.0745, 16/64 samples used
+[step    9] REPLAY: +5 examples from wins (buffer=1971 total)
+[step    9] REPLAY: sft_loss=0.2307
+[step    9/200] reward=-0.864  loss=0.3287  win=3.1%  violations=89.8%  format=0.0%  mem=7.7GB  time=248.0s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   10] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   10] ROLLOUT done: 190.1s, 0/64 wins, targets=['PRIMO', 'PICKY', 'KNIFE', 'BEING']
+[step   10] TRAIN: reward=-1.000 (±0.000), win=0.0%, viol=92.8% ...
+[step   10] TRAIN done: 0.0s, loss=0.0000, grad_norm=0.0000, 0/64 samples used
+[step   10] REPLAY: sft_loss=0.0000
+[step   10/200] reward=-1.000  loss=0.0000  win=0.0%  violations=92.8%  format=0.0%  mem=7.7GB  time=192.3s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[mlx] Checkpoint saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/binary_expert_100/step_0010 (step 10)
+[wordle] Saving trajectories for step 10 (5 probe words)...
+  [trace 1/5] CRAFT → 3 turns, solved
+  [trace 2/5] ARDOR → 6 turns, failed
+  [trace 3/5] LEVEL → 6 turns, failed
+  [trace 4/5] HUMPH → 6 turns, failed
+  [trace 5/5] GRIND → 6 turns, failed
+[wordle] Trajectories saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/binary_expert_100/trajectories/step_0010.json (20.4s total)
+[step   11] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   11] ROLLOUT done: 197.7s, 0/64 wins, targets=['SPOOL', 'VERVE', 'CYNIC', 'REACH']
+[step   11] TRAIN: reward=-1.000 (±0.000), win=0.0%, viol=89.1% ...
+[step   11] TRAIN done: 0.0s, loss=0.0000, grad_norm=0.0000, 0/64 samples used
+[step   11] REPLAY: sft_loss=0.2867
+[step   11/200] reward=-1.000  loss=0.0000  win=0.0%  violations=89.1%  format=0.0%  mem=7.7GB  time=200.5s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   12] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   12] ROLLOUT done: 180.6s, 0/64 wins, targets=['CADET', 'WHOOP', 'MARCH', 'PROUD']
+[step   12] TRAIN: reward=-1.000 (±0.000), win=0.0%, viol=94.1% ...
+[step   12] TRAIN done: 0.0s, loss=0.0000, grad_norm=0.0000, 0/64 samples used
+[step   12] REPLAY: sft_loss=0.1989
+[step   12/200] reward=-1.000  loss=0.0000  win=0.0%  violations=94.1%  format=0.0%  mem=7.7GB  time=183.3s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   13] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   13] ROLLOUT done: 178.7s, 0/64 wins, targets=['FOIST', 'BROKE', 'BESET', 'GUIDE']
+[step   13] TRAIN: reward=-1.000 (±0.000), win=0.0%, viol=85.6% ...
+[step   13] TRAIN done: 0.0s, loss=0.0000, grad_norm=0.0000, 0/64 samples used
+[step   13] REPLAY: sft_loss=0.4988
+[step   13/200] reward=-1.000  loss=0.0000  win=0.0%  violations=85.6%  format=0.0%  mem=7.7GB  time=181.7s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   14] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   14] ROLLOUT done: 211.0s, 0/64 wins, targets=['MAIZE', 'CAMEO', 'HARPY', 'CLOAK']
+[step   14] TRAIN: reward=-1.000 (±0.000), win=0.0%, viol=90.3% ...
+[step   14] TRAIN done: 0.0s, loss=0.0000, grad_norm=0.0000, 0/64 samples used
+[step   14] REPLAY: sft_loss=0.4599
+[step   14/200] reward=-1.000  loss=0.0000  win=0.0%  violations=90.3%  format=0.0%  mem=7.7GB  time=213.9s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   15] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   15] ROLLOUT done: 195.3s, 0/64 wins, targets=['REBEL', 'LIPID', 'SPEED', 'PUPAL']
+[step   15] TRAIN: reward=-1.000 (±0.000), win=0.0%, viol=85.6% ...
+[step   15] TRAIN done: 0.0s, loss=0.0000, grad_norm=0.0000, 0/64 samples used
+[step   15] REPLAY: sft_loss=0.4288
+[step   15/200] reward=-1.000  loss=0.0000  win=0.0%  violations=85.6%  format=0.0%  mem=7.7GB  time=198.6s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[mlx] Checkpoint saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/binary_expert_100/step_0015 (step 15)
+[wordle] Saving trajectories for step 15 (5 probe words)...
+  [trace 1/5] CRAFT → 6 turns, failed
+  [trace 2/5] ARDOR → 6 turns, failed
+  [trace 3/5] LEVEL → 6 turns, failed
+  [trace 4/5] HUMPH → 6 turns, failed
+  [trace 5/5] GRIND → 6 turns, failed
+[wordle] Trajectories saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/binary_expert_100/trajectories/step_0015.json (27.3s total)
+[step   16] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   16] ROLLOUT done: 208.8s, 0/64 wins, targets=['EQUAL', 'QUEST', 'POSIT', 'GIVEN']
+[step   16] TRAIN: reward=-1.000 (±0.000), win=0.0%, viol=88.4% ...
+[step   16] TRAIN done: 0.0s, loss=0.0000, grad_norm=0.0000, 0/64 samples used
+[step   16] REPLAY: sft_loss=0.2448
+[step   16/200] reward=-1.000  loss=0.0000  win=0.0%  violations=88.4%  format=0.0%  mem=7.7GB  time=211.6s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   17] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   17] ROLLOUT done: 205.7s, 0/64 wins, targets=['LAGER', 'BRUTE', 'FALSE', 'VAPOR']
+[step   17] TRAIN: reward=-1.000 (±0.000), win=0.0%, viol=95.6% ...
+[step   17] TRAIN done: 0.0s, loss=0.0000, grad_norm=0.0000, 0/64 samples used
+[step   17] REPLAY: sft_loss=0.3610
+[step   17/200] reward=-1.000  loss=0.0000  win=0.0%  violations=95.6%  format=0.0%  mem=7.7GB  time=208.4s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   18] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   18] ROLLOUT done: 218.3s, 0/64 wins, targets=['HUMOR', 'ERECT', 'SQUAT', 'REARM']
+[step   18] TRAIN: reward=-1.000 (±0.000), win=0.0%, viol=90.0% ...
+[step   18] TRAIN done: 0.0s, loss=0.0000, grad_norm=0.0000, 0/64 samples used
+[step   18] REPLAY: sft_loss=0.3038
+[step   18/200] reward=-1.000  loss=0.0000  win=0.0%  violations=90.0%  format=0.0%  mem=7.7GB  time=221.4s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   19] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   19] ROLLOUT done: 210.4s, 0/64 wins, targets=['LAUGH', 'WOODY', 'GRAPH', 'ODDLY']
+[step   19] TRAIN: reward=-1.000 (±0.000), win=0.0%, viol=83.1% ...
+[step   19] TRAIN done: 0.0s, loss=0.0000, grad_norm=0.0000, 0/64 samples used
+[step   19] REPLAY: sft_loss=0.2861
+[step   19/200] reward=-1.000  loss=0.0000  win=0.0%  violations=83.1%  format=0.0%  mem=7.7GB  time=213.2s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   20] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   20] ROLLOUT done: 208.4s, 0/64 wins, targets=['BLOWN', 'GULCH', 'AWAKE', 'NEEDY']
+[step   20] TRAIN: reward=-1.000 (±0.000), win=0.0%, viol=85.6% ...
+[step   20] TRAIN done: 0.0s, loss=0.0000, grad_norm=0.0000, 0/64 samples used
+[step   20] REPLAY: sft_loss=0.2776
+[step   20/200] reward=-1.000  loss=0.0000  win=0.0%  violations=85.6%  format=0.0%  mem=7.7GB  time=211.4s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[mlx] Checkpoint saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/binary_expert_100/step_0020 (step 20)
+[wordle] Saving trajectories for step 20 (5 probe words)...
+  [trace 1/5] CRAFT → 6 turns, failed
+  [trace 2/5] ARDOR → 6 turns, failed
+  [trace 3/5] LEVEL → 6 turns, failed
+  [trace 4/5] HUMPH → 6 turns, failed
+  [trace 5/5] GRIND → 6 turns, failed
+[wordle] Trajectories saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/binary_expert_100/trajectories/step_0020.json (29.1s total)
+[step   21] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   21] ROLLOUT done: 218.1s, 0/64 wins, targets=['SANER', 'LAPEL', 'BREED', 'GLAZE']
+[step   21] TRAIN: reward=-1.000 (±0.000), win=0.0%, viol=87.5% ...
+[step   21] TRAIN done: 0.0s, loss=0.0000, grad_norm=0.0000, 0/64 samples used
+[step   21] REPLAY: sft_loss=0.3958
+[step   21/200] reward=-1.000  loss=0.0000  win=0.0%  violations=87.5%  format=0.0%  mem=7.7GB  time=220.7s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   22] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   22] ROLLOUT done: 178.3s, 0/64 wins, targets=['NASTY', 'GLOBE', 'THIEF', 'ROWDY']
+[step   22] TRAIN: reward=-1.000 (±0.000), win=0.0%, viol=87.2% ...
+[step   22] TRAIN done: 0.0s, loss=0.0000, grad_norm=0.0000, 0/64 samples used
+[step   22] REPLAY: sft_loss=0.3542
+[step   22/200] reward=-1.000  loss=0.0000  win=0.0%  violations=87.2%  format=0.0%  mem=7.7GB  time=180.8s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   23] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   23] ROLLOUT done: 153.0s, 0/64 wins, targets=['SPOOF', 'DRANK', 'KNOCK', 'DONOR']
+[step   23] TRAIN: reward=-1.000 (±0.000), win=0.0%, viol=86.6% ...
+[step   23] TRAIN done: 0.0s, loss=0.0000, grad_norm=0.0000, 0/64 samples used
+[step   23] REPLAY: sft_loss=0.3378
+[step   23/200] reward=-1.000  loss=0.0000  win=0.0%  violations=86.6%  format=0.0%  mem=7.7GB  time=155.5s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   24] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   24] ROLLOUT done: 128.6s, 0/64 wins, targets=['HUTCH', 'WRING', 'VISIT', 'KITTY']
+[step   24] TRAIN: reward=-1.000 (±0.000), win=0.0%, viol=84.1% ...
+[step   24] TRAIN done: 0.0s, loss=0.0000, grad_norm=0.0000, 0/64 samples used
+[step   24] REPLAY: sft_loss=0.2579
+[step   24/200] reward=-1.000  loss=0.0000  win=0.0%  violations=84.1%  format=0.0%  mem=7.7GB  time=131.0s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   25] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   25] ROLLOUT done: 125.0s, 0/64 wins, targets=['SILKY', 'SALAD', 'PROVE', 'GRAPE']
+[step   25] TRAIN: reward=-1.000 (±0.000), win=0.0%, viol=86.6% ...
+[step   25] TRAIN done: 0.0s, loss=0.0000, grad_norm=0.0000, 0/64 samples used
+[step   25] REPLAY: sft_loss=0.1755
+[step   25/200] reward=-1.000  loss=0.0000  win=0.0%  violations=86.6%  format=0.0%  mem=7.7GB  time=127.7s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[mlx] Checkpoint saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/binary_expert_100/step_0025 (step 25)
+[wordle] Saving trajectories for step 25 (5 probe words)...
+  [trace 1/5] CRAFT → 6 turns, failed
+  [trace 2/5] ARDOR → 6 turns, failed
+  [trace 3/5] LEVEL → 6 turns, failed
+  [trace 4/5] HUMPH → 6 turns, failed
+  [trace 5/5] GRIND → 6 turns, failed
+[wordle] Trajectories saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/binary_expert_100/trajectories/step_0025.json (12.0s total)
+[step   26] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   26] ROLLOUT done: 123.0s, 0/64 wins, targets=['DODGE', 'TOUCH', 'TEACH', 'CHILD']
+[step   26] TRAIN: reward=-1.000 (±0.000), win=0.0%, viol=83.8% ...
+[step   26] TRAIN done: 0.0s, loss=0.0000, grad_norm=0.0000, 0/64 samples used
+[step   26] REPLAY: sft_loss=0.2780
+[step   26/200] reward=-1.000  loss=0.0000  win=0.0%  violations=83.8%  format=0.0%  mem=7.7GB  time=126.1s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   27] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   27] ROLLOUT done: 122.6s, 1/64 wins, targets=['BICEP', 'COVEN', 'EARTH', 'ENDOW']
+[step   27] TRAIN: reward=-0.933 (±0.533), win=1.6%, viol=87.4% ...
+[step   27] TRAIN done: 60.1s, loss=0.1427, grad_norm=0.2066, 16/64 samples used
+[step   27] REPLAY: +3 examples from wins (buffer=1974 total)
+[step   27] REPLAY: sft_loss=0.3113
+[step   27/200] reward=-0.933  loss=0.1427  win=1.6%  violations=87.4%  format=0.0%  mem=7.7GB  time=185.3s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   28] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   28] ROLLOUT done: 120.3s, 1/64 wins, targets=['SHIRK', 'BRAIN', 'REPLY', 'REFER']
+[step   28] TRAIN: reward=-0.933 (±0.533), win=1.6%, viol=91.2% ...
+[step   28] TRAIN done: 58.0s, loss=0.1094, grad_norm=0.1838, 16/64 samples used
+[step   28] REPLAY: +3 examples from wins (buffer=1977 total)
+[step   28] REPLAY: sft_loss=0.0381
+[step   28/200] reward=-0.933  loss=0.1094  win=1.6%  violations=91.2%  format=0.0%  mem=7.7GB  time=180.7s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   29] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   29] ROLLOUT done: 118.8s, 0/64 wins, targets=['STEAM', 'UNWED', 'INBOX', 'WIDTH']
+[step   29] TRAIN: reward=-1.000 (±0.000), win=0.0%, viol=79.4% ...
+[step   29] TRAIN done: 0.0s, loss=0.0000, grad_norm=0.0000, 0/64 samples used
+[step   29] REPLAY: sft_loss=0.3594
+[step   29/200] reward=-1.000  loss=0.0000  win=0.0%  violations=79.4%  format=0.0%  mem=7.7GB  time=121.2s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   30] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   30] ROLLOUT done: 119.5s, 3/64 wins, targets=['ALBUM', 'CREDO', 'VIGIL', 'LADLE']
+[step   30] TRAIN: reward=-0.805 (±0.881), win=4.7%, viol=79.0% ...
+[step   30] TRAIN done: 122.9s, loss=0.0839, grad_norm=0.1957, 32/64 samples used
+[step   30] REPLAY: +13 examples from wins (buffer=1990 total)
+[step   30] REPLAY: sft_loss=0.2962
+[step   30/200] reward=-0.805  loss=0.0839  win=4.7%  violations=79.0%  format=0.0%  mem=7.7GB  time=245.2s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[mlx] Checkpoint saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/binary_expert_100/step_0030 (step 30)
+[wordle] Saving trajectories for step 30 (5 probe words)...
+  [trace 1/5] CRAFT → 6 turns, failed
+  [trace 2/5] ARDOR → 6 turns, failed
+  [trace 3/5] LEVEL → 6 turns, failed
+  [trace 4/5] HUMPH → 6 turns, failed
+  [trace 5/5] GRIND → 6 turns, failed
+[wordle] Trajectories saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/binary_expert_100/trajectories/step_0030.json (11.4s total)
+[step   31] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   31] ROLLOUT done: 116.4s, 2/64 wins, targets=['PENCE', 'CRAFT', 'MARSH', 'SLEEP']
+[step   31] TRAIN: reward=-0.873 (±0.705), win=3.1%, viol=91.2% ...
+[step   31] TRAIN done: 60.3s, loss=0.0292, grad_norm=0.3091, 16/64 samples used
+[step   31] REPLAY: +11 examples from wins (buffer=2001 total)
+[step   31] REPLAY: sft_loss=0.5103
+[step   31/200] reward=-0.873  loss=0.0292  win=3.1%  violations=91.2%  format=0.0%  mem=7.7GB  time=179.1s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   32] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   32] ROLLOUT done: 123.3s, 0/64 wins, targets=['ELOPE', 'SPELL', 'ABYSS', 'KNAVE']
+[step   32] TRAIN: reward=-1.000 (±0.000), win=0.0%, viol=88.4% ...
+[step   32] TRAIN done: 0.0s, loss=0.0000, grad_norm=0.0000, 0/64 samples used
+[step   32] REPLAY: sft_loss=0.1804
+[step   32/200] reward=-1.000  loss=0.0000  win=0.0%  violations=88.4%  format=0.0%  mem=7.7GB  time=126.3s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   33] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   33] ROLLOUT done: 119.9s, 1/64 wins, targets=['THORN', 'FIFTH', 'TOOTH', 'COMMA']
+[step   33] TRAIN: reward=-0.938 (±0.496), win=1.6%, viol=83.1% ...
+[step   33] TRAIN done: 66.3s, loss=-0.0042, grad_norm=0.3205, 16/64 samples used
+[step   33] REPLAY: +6 examples from wins (buffer=2007 total)
+[step   33] REPLAY: sft_loss=0.2039
+[step   33/200] reward=-0.938  loss=-0.0042  win=1.6%  violations=83.1%  format=0.0%  mem=7.7GB  time=188.8s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   34] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   34] ROLLOUT done: 133.6s, 0/64 wins, targets=['MERIT', 'TOOTH', 'FROND', 'EARTH']
+[step   34] TRAIN: reward=-1.000 (±0.000), win=0.0%, viol=88.4% ...
+[step   34] TRAIN done: 0.0s, loss=0.0000, grad_norm=0.0000, 0/64 samples used
+[step   34] REPLAY: sft_loss=0.3741
+[step   34/200] reward=-1.000  loss=0.0000  win=0.0%  violations=88.4%  format=0.0%  mem=7.7GB  time=135.6s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   35] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   35] ROLLOUT done: 119.9s, 0/64 wins, targets=['RADII', 'ENTER', 'VISTA', 'URINE']
+[step   35] TRAIN: reward=-1.000 (±0.000), win=0.0%, viol=86.9% ...
+[step   35] TRAIN done: 0.0s, loss=0.0000, grad_norm=0.0000, 0/64 samples used
+[step   35] REPLAY: sft_loss=0.1992
+[step   35/200] reward=-1.000  loss=0.0000  win=0.0%  violations=86.9%  format=0.0%  mem=7.7GB  time=122.2s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[mlx] Checkpoint saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/binary_expert_100/step_0035 (step 35)
+[wordle] Saving trajectories for step 35 (5 probe words)...
+  [trace 1/5] CRAFT → 2 turns, solved
+  [trace 2/5] ARDOR → 6 turns, failed
+  [trace 3/5] LEVEL → 6 turns, failed
+  [trace 4/5] HUMPH → 6 turns, failed
+  [trace 5/5] GRIND → 6 turns, failed
+[wordle] Trajectories saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/binary_expert_100/trajectories/step_0035.json (10.0s total)
+[step   36] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   36] ROLLOUT done: 118.6s, 1/64 wins, targets=['ABATE', 'ODDER', 'TACIT', 'ANGEL']
+[step   36] TRAIN: reward=-0.936 (±0.508), win=1.6%, viol=88.7% ...
+[step   36] TRAIN done: 56.9s, loss=0.0347, grad_norm=0.4015, 16/64 samples used
+[step   36] REPLAY: +5 examples from wins (buffer=2012 total)
+[step   36] REPLAY: sft_loss=0.3576
+[step   36/200] reward=-0.936  loss=0.0347  win=1.6%  violations=88.7%  format=0.0%  mem=7.7GB  time=177.8s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   37] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   37] ROLLOUT done: 97.9s, 13/64 wins, targets=['CRANE', 'PRUNE', 'MOTIF', 'HIPPO']
+[step   37] TRAIN: reward=-0.116 (±1.753), win=20.3%, viol=88.7% ...
+[step   37] TRAIN done: 78.0s, loss=0.3494, grad_norm=0.2907, 32/64 samples used
+[step   37] REPLAY: +32 examples from wins (buffer=2044 total)
+[step   37] REPLAY: sft_loss=0.2689
+[step   37/200] reward=-0.116  loss=0.3494  win=20.3%  violations=88.7%  format=0.0%  mem=7.7GB  time=178.3s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   38] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   38] ROLLOUT done: 112.4s, 0/64 wins, targets=['BOAST', 'HOLLY', 'CADET', 'CHAFF']
+[step   38] TRAIN: reward=-1.000 (±0.000), win=0.0%, viol=89.7% ...
+[step   38] TRAIN done: 0.0s, loss=0.0000, grad_norm=0.0000, 0/64 samples used
+[step   38] REPLAY: sft_loss=0.4954
+[step   38/200] reward=-1.000  loss=0.0000  win=0.0%  violations=89.7%  format=0.0%  mem=7.7GB  time=114.6s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   39] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   39] ROLLOUT done: 171.5s, 0/64 wins, targets=['SWOON', 'BROIL', 'VALET', 'DAISY']
+[step   39] TRAIN: reward=-1.000 (±0.000), win=0.0%, viol=91.6% ...
+[step   39] TRAIN done: 0.0s, loss=0.0000, grad_norm=0.0000, 0/64 samples used
+[step   39] REPLAY: sft_loss=0.2403
+[step   39/200] reward=-1.000  loss=0.0000  win=0.0%  violations=91.6%  format=0.0%  mem=7.7GB  time=175.1s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   40] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   40] ROLLOUT done: 182.4s, 3/64 wins, targets=['DEBUG', 'STOVE', 'WHERE', 'ETHIC']
+[step   40] TRAIN: reward=-0.800 (±0.902), win=4.7%, viol=86.5% ...
+[step   40] TRAIN done: 89.7s, loss=0.1485, grad_norm=0.2614, 16/64 samples used
+[step   40] REPLAY: +10 examples from wins (buffer=2054 total)
+[step   40] REPLAY: sft_loss=0.3099
+[step   40/200] reward=-0.800  loss=0.1485  win=4.7%  violations=86.5%  format=0.0%  mem=7.7GB  time=275.7s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[mlx] Checkpoint saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/binary_expert_100/step_0040 (step 40)
+[wordle] Saving trajectories for step 40 (5 probe words)...
+  [trace 1/5] CRAFT → 6 turns, failed
+  [trace 2/5] ARDOR → 6 turns, failed
+  [trace 3/5] LEVEL → 6 turns, failed
+  [trace 4/5] HUMPH → 6 turns, failed
+  [trace 5/5] GRIND → 6 turns, failed
+[wordle] Trajectories saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/binary_expert_100/trajectories/step_0040.json (17.9s total)
+[step   41] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   41] ROLLOUT done: 317.4s, 0/64 wins, targets=['KNOLL', 'UNITY', 'SHONE', 'GLIDE']
+[step   41] TRAIN: reward=-1.000 (±0.000), win=0.0%, viol=90.9% ...
+[step   41] TRAIN done: 0.0s, loss=0.0000, grad_norm=0.0000, 0/64 samples used
+[step   41] REPLAY: sft_loss=0.2102
+[step   41/200] reward=-1.000  loss=0.0000  win=0.0%  violations=90.9%  format=0.0%  mem=7.7GB  time=322.5s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   42] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   42] ROLLOUT done: 187.8s, 0/64 wins, targets=['VISOR', 'FULLY', 'MUNCH', 'SAINT']
+[step   42] TRAIN: reward=-1.000 (±0.000), win=0.0%, viol=91.6% ...
+[step   42] TRAIN done: 0.0s, loss=0.0000, grad_norm=0.0000, 0/64 samples used
+[step   42] REPLAY: sft_loss=0.3654
+[step   42/200] reward=-1.000  loss=0.0000  win=0.0%  violations=91.6%  format=0.0%  mem=7.7GB  time=191.5s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   43] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   43] ROLLOUT done: 174.8s, 2/64 wins, targets=['RACER', 'SLUMP', 'TRUCE', 'SPANK']
+[step   43] TRAIN: reward=-0.869 (±0.731), win=3.1%, viol=94.9% ...
+[step   43] TRAIN done: 242.2s, loss=0.0783, grad_norm=0.1596, 32/64 samples used
+[step   43] REPLAY: +8 examples from wins (buffer=2062 total)
+[step   43] REPLAY: sft_loss=0.3838
+[step   43/200] reward=-0.869  loss=0.0783  win=3.1%  violations=94.9%  format=0.0%  mem=7.7GB  time=420.9s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   44] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   44] ROLLOUT done: 248.9s, 3/64 wins, targets=['CRUMB', 'ICILY', 'GROSS', 'BRAND']
+[step   44] TRAIN: reward=-0.806 (±0.874), win=4.7%, viol=84.8% ...
+[step   44] TRAIN done: 558.3s, loss=0.1226, grad_norm=0.2875, 16/64 samples used
+[step   44] REPLAY: +14 examples from wins (buffer=2076 total)
+[step   44] REPLAY: sft_loss=0.2372
+[step   44/200] reward=-0.806  loss=0.1226  win=4.7%  violations=84.8%  format=0.0%  mem=7.7GB  time=811.8s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   45] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   45] ROLLOUT done: 372.3s, 1/64 wins, targets=['PAUSE', 'ANNEX', 'WIGHT', 'GUPPY']
+[step   45] TRAIN: reward=-0.933 (±0.533), win=1.6%, viol=86.4% ...
+[step   45] TRAIN done: 88.1s, loss=0.1124, grad_norm=0.1740, 16/64 samples used
+[step   45] REPLAY: +3 examples from wins (buffer=2079 total)
+[step   45] REPLAY: sft_loss=0.1462
+[step   45/200] reward=-0.933  loss=0.1124  win=1.6%  violations=86.4%  format=0.0%  mem=7.7GB  time=463.2s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[mlx] Checkpoint saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/binary_expert_100/step_0045 (step 45)
+[wordle] Saving trajectories for step 45 (5 probe words)...
+  [trace 1/5] CRAFT → 5 turns, solved
+  [trace 2/5] ARDOR → 6 turns, failed
+  [trace 3/5] LEVEL → 6 turns, failed
+  [trace 4/5] HUMPH → 6 turns, failed
+  [trace 5/5] GRIND → 6 turns, failed
+[wordle] Trajectories saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/binary_expert_100/trajectories/step_0045.json (16.0s total)
+[step   46] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   46] ROLLOUT done: 202.7s, 8/64 wins, targets=['GRATE', 'AFIRE', 'BRUNT', 'BONUS']
+[step   46] TRAIN: reward=-0.466 (±1.415), win=12.5%, viol=86.6% ...
+[step   46] TRAIN done: 278.5s, loss=0.1475, grad_norm=0.1463, 48/64 samples used
+[step   46] REPLAY: +26 examples from wins (buffer=2105 total)
+[step   46] REPLAY: sft_loss=0.3348
+[step   46/200] reward=-0.466  loss=0.1475  win=12.5%  violations=86.6%  format=0.0%  mem=7.7GB  time=485.2s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   47] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   47] ROLLOUT done: 238.6s, 2/64 wins, targets=['GUISE', 'BRIEF', 'AVIAN', 'OVARY']
+[step   47] TRAIN: reward=-0.872 (±0.714), win=3.1%, viol=89.0% ...
+[step   47] TRAIN done: 87.1s, loss=0.0329, grad_norm=0.3080, 16/64 samples used
+[step   47] REPLAY: +10 examples from wins (buffer=2115 total)
+[step   47] REPLAY: sft_loss=0.1949
+[step   47/200] reward=-0.872  loss=0.0329  win=3.1%  violations=89.0%  format=0.0%  mem=7.7GB  time=330.9s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   48] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   48] ROLLOUT done: 3270.2s, 3/64 wins, targets=['BRUNT', 'TREND', 'HELIX', 'LIVER']
+[step   48] TRAIN: reward=-0.803 (±0.888), win=4.7%, viol=85.4% ...
+[step   48] TRAIN done: 3229.7s, loss=0.0868, grad_norm=0.1460, 32/64 samples used
+[step   48] REPLAY: +12 examples from wins (buffer=2127 total)
+[step   48] REPLAY: sft_loss=0.3023
+[step   48/200] reward=-0.803  loss=0.0868  win=4.7%  violations=85.4%  format=0.0%  mem=7.7GB  time=6503.4s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   49] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   49] ROLLOUT done: 7381.4s, 0/64 wins, targets=['SWIRL', 'GNOME', 'VISOR', 'DENSE']
+[step   49] TRAIN: reward=-1.000 (±0.000), win=0.0%, viol=91.2% ...
+[step   49] TRAIN done: 0.0s, loss=0.0000, grad_norm=0.0000, 0/64 samples used
+[step   49] REPLAY: sft_loss=0.2776
+[step   49/200] reward=-1.000  loss=0.0000  win=0.0%  violations=91.2%  format=0.0%  mem=7.7GB  time=7385.0s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   50] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   50] ROLLOUT done: 189.6s, 2/64 wins, targets=['STONE', 'HOUND', 'STONY', 'SCOFF']
+[step   50] TRAIN: reward=-0.869 (±0.731), win=3.1%, viol=88.9% ...
+[step   50] TRAIN done: 94.0s, loss=0.0814, grad_norm=0.3209, 16/64 samples used
+[step   50] REPLAY: +8 examples from wins (buffer=2135 total)
+[step   50] REPLAY: sft_loss=0.2894
+[step   50/200] reward=-0.869  loss=0.0814  win=3.1%  violations=88.9%  format=0.0%  mem=7.7GB  time=287.4s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[mlx] Checkpoint saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/binary_expert_100/step_0050 (step 50)
+[wordle] Saving trajectories for step 50 (5 probe words)...
+  [trace 1/5] CRAFT → 6 turns, failed
+  [trace 2/5] ARDOR → 6 turns, failed
+  [trace 3/5] LEVEL → 6 turns, failed
+  [trace 4/5] HUMPH → 6 turns, failed
+  [trace 5/5] GRIND → 6 turns, failed
+[wordle] Trajectories saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/binary_expert_100/trajectories/step_0050.json (17.1s total)
+[step   51] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   51] ROLLOUT done: 185.0s, 5/64 wins, targets=['FLUNK', 'CHUNK', 'CLAMP', 'SKIFF']
+[step   51] TRAIN: reward=-0.675 (±1.116), win=7.8%, viol=81.7% ...
+[step   51] TRAIN done: 163.0s, loss=0.0895, grad_norm=0.1933, 32/64 samples used
+[step   51] REPLAY: +22 examples from wins (buffer=2157 total)
+[step   51] REPLAY: sft_loss=0.0766
+[step   51/200] reward=-0.675  loss=0.0895  win=7.8%  violations=81.7%  format=0.0%  mem=7.7GB  time=352.2s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   52] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   52] ROLLOUT done: 194.3s, 1/64 wins, targets=['POOCH', 'SHOOK', 'SCUBA', 'STATE']
+[step   52] TRAIN: reward=-0.938 (±0.496), win=1.6%, viol=86.6% ...
+[step   52] TRAIN done: 93.2s, loss=0.0030, grad_norm=0.2979, 16/64 samples used
+[step   52] REPLAY: +6 examples from wins (buffer=2163 total)
+[step   52] REPLAY: sft_loss=0.3939
+[step   52/200] reward=-0.938  loss=0.0030  win=1.6%  violations=86.6%  format=0.0%  mem=7.7GB  time=291.2s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   53] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   53] ROLLOUT done: 182.8s, 3/64 wins, targets=['BLISS', 'CLEAN', 'BORAX', 'SAUCY']
+[step   53] TRAIN: reward=-0.806 (±0.874), win=4.7%, viol=89.9% ...
+[step   53] TRAIN done: 179.0s, loss=0.0735, grad_norm=0.1666, 32/64 samples used
+[step   53] REPLAY: +14 examples from wins (buffer=2177 total)
+[step   53] REPLAY: sft_loss=0.2565
+[step   53/200] reward=-0.806  loss=0.0735  win=4.7%  violations=89.9%  format=0.0%  mem=7.7GB  time=366.1s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   54] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   54] ROLLOUT done: 183.5s, 0/64 wins, targets=['PEARL', 'COUPE', 'IDIOM', 'FOCAL']
+[step   54] TRAIN: reward=-1.000 (±0.000), win=0.0%, viol=96.6% ...
+[step   54] TRAIN done: 0.0s, loss=0.0000, grad_norm=0.0000, 0/64 samples used
+[step   54] REPLAY: sft_loss=0.3224
+[step   54/200] reward=-1.000  loss=0.0000  win=0.0%  violations=96.6%  format=0.0%  mem=7.7GB  time=187.5s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   55] ROLLOUT: generating 64 episodes (4 words x 16 group) ...

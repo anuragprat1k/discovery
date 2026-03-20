@@ -1,0 +1,6 @@
+{
+  "step": 0,
+  "metrics": {
+    "phase": "post_sft_warmup"
+  }
+}

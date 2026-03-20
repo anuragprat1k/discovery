@@ -1,0 +1,78 @@
+/Users/anurag/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+[wordle] === MLX Multi-turn Wordle GRPO Training ===
+[wordle] Reward       : sparse
+[wordle] Model        : mlx-community/Qwen3-4B-bf16
+[wordle] Max turns    : 6
+[wordle] LoRA rank    : 16
+[wordle] LoRA layers  : 16
+[wordle] LR           : 0.0001
+[wordle] KL coef      : 0.04
+[wordle] CISPO clip   : [0.8, 1.2]
+[wordle] Grad clip    : 1.0
+[wordle] Batch size   : 8 words x 16 episodes
+[wordle] Micro-batch  : 4
+[wordle] Batch infer  : on (all)
+[wordle] Max steps    : 100
+[wordle] Env elim     : ON (env provides eliminated letters)
+[wordle] Output dir   : /Users/anurag/repos/discovery/wordle/autoresearch/results/binary_expert_100_fast
+[wordle] Loading model with LoRA ...
+Fetching 10 files:   0%|          | 0/10 [00:00<?, ?it/s]Fetching 10 files: 100%|██████████| 10/10 [00:00<00:00, 195995.51it/s]
+[mlx] Model loaded: mlx-community/Qwen3-4B-bf16
+[mlx] Total params: 4,037,148,160  Trainable: 14,680,064 (0.36%)
+[wordle] Memory after load: 7.49 GB active, 7.49 GB peak
+[wordle] Resuming from wordle/autoresearch/results/sft_warmup_only/sft_checkpoint ...
+[mlx] Loaded 224 trainable weight tensors
+[mlx] Loaded optimizer state
+[mlx] Checkpoint restored from wordle/autoresearch/results/sft_warmup_only/sft_checkpoint (step 0)
+[wordle] Resuming from step 0
+[wordle] Loaded 2315 answers, 12972 total valid guesses
+[wordle] Probe words   : ['CRAFT', 'ARDOR', 'LEVEL', 'HUMPH', 'GRIND']
+[wordle] Saving trajectories for step 0 (5 probe words)...
+  [trace 1/5] CRAFT → 6 turns, failed
+  [trace 2/5] ARDOR → 6 turns, failed
+  [trace 3/5] LEVEL → 6 turns, failed
+  [trace 4/5] HUMPH → 6 turns, failed
+  [trace 5/5] GRIND → 6 turns, failed
+[wordle] Trajectories saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/binary_expert_100_fast/trajectories/step_0000.json (18.2s total)
+wandb: [wandb.login()] Loaded credentials for https://api.wandb.ai from WANDB_API_KEY.
+wandb: Currently logged in as: anuragprateek to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run xoduua70
+wandb: Tracking run with wandb version 0.25.1
+wandb: Run data is saved locally in /Users/anurag/repos/discovery/wandb/run-20260319_135312-xoduua70
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run wordle_mlx_sparse
+wandb: ⭐️ View project at https://wandb.ai/anuragprateek/discovery-wordle-autoresearch
+wandb: 🚀 View run at https://wandb.ai/anuragprateek/discovery-wordle-autoresearch/runs/xoduua70
+[wordle] W&B run: https://wandb.ai/anuragprateek/discovery-wordle-autoresearch/runs/xoduua70
+[step    1] ROLLOUT: generating 128 episodes (8 words x 16 group) ...
+[step    1] ROLLOUT done: 1541.2s, 2/128 wins, targets=['CRAFT', 'ARDOR', 'LEVEL', 'HUMPH', 'GRIND', 'DONOR', 'CLOUT', 'WATER']
+[step    1] TRAIN: reward=-0.934 (±0.527), win=1.6%, viol=90.2% ...
+[step    1] TRAIN done: 51.4s, loss=0.2142, grad_norm=0.2426, 16/128 samples used
+[step    1/100] reward=-0.934  loss=0.2142  win=1.6%  violations=90.2%  format=0.0%  mem=7.7GB  time=1592.7s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step    2] ROLLOUT: generating 128 episodes (8 words x 16 group) ...
+[step    2] ROLLOUT done: 205.6s, 2/128 wins, targets=['CHAOS', 'SHIRE', 'AWAIT', 'AUDIO', 'CHOSE', 'GRAIN', 'HAREM', 'TITAN']
+[step    2] TRAIN: reward=-0.934 (±0.521), win=1.6%, viol=89.3% ...
+[step    2] TRAIN done: 43.9s, loss=0.1035, grad_norm=0.1973, 16/128 samples used
+[step    2/100] reward=-0.934  loss=0.1035  win=1.6%  violations=89.3%  format=0.0%  mem=7.7GB  time=249.5s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step    3] ROLLOUT: generating 128 episodes (8 words x 16 group) ...
+[step    3] ROLLOUT done: 209.5s, 3/128 wins, targets=['AROSE', 'WREST', 'FROND', 'WATCH', 'SHEEP', 'GRATE', 'SONAR', 'LITHE']
+Traceback (most recent call last):
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/runpy.py", line 197, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/runpy.py", line 87, in _run_code
+    exec(code, run_globals)
+  File "/Users/anurag/repos/discovery/wordle/recipes/train_mlx.py", line 1178, in <module>
+    main()
+  File "/Users/anurag/repos/discovery/wordle/recipes/train_mlx.py", line 978, in main
+    violation_rate = compute_constraint_violation_rate(episode_histories)
+  File "/Users/anurag/repos/discovery/wordle/environment/constraints.py", line 107, in compute_constraint_violation_rate
+    if constraints.check_violations(guess):
+  File "/Users/anurag/repos/discovery/wordle/environment/constraints.py", line 76, in check_violations
+    if letter in self.yellow[i]:
+KeyError: 5
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mwordle_mlx_sparse[0m at: [34mhttps://wandb.ai/anuragprateek/discovery-wordle-autoresearch/runs/xoduua70[0m
+[1;34mwandb[0m: Find logs at: [1;35mwandb/run-20260319_135312-xoduua70/logs[0m

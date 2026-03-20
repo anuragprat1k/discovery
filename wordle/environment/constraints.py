@@ -72,7 +72,7 @@ class RevealedConstraints:
                 )
 
         # 3. Places a yellow letter in a position where it was already shown yellow
-        for i, letter in enumerate(guess):
+        for i, letter in enumerate(guess[:5]):
             if letter in self.yellow[i]:
                 violations.append(
                     f"Yellow letter '{letter}' placed at position {i} where already excluded"
