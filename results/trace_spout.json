@@ -1,0 +1,67 @@
+{
+  "result": {
+    "target": "SPOUT",
+    "solved": false,
+    "turns": 6
+  },
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are playing Wordle. Guess a 5-letter English word.\nAfter each guess, you receive feedback on each letter:\n🟩 = letter is in the target word and in the correct position\n🟨 = letter is in the target word but in the wrong position\n⬜ = letter is NOT in the target word\n\nYou have 6 attempts. Before each guess, list letters you know are NOT in the target word in <eliminated> tags, then make your guess in <guess> tags.\n\nExample:\nYou guess:\n<eliminated></eliminated>\n<guess>CRANE</guess>\nFeedback: Turn 1: CRANE → ⬜🟨⬜⬜🟩  (5 turn(s) remaining)\nThis means: C is not in the target (⬜), R is in the target but wrong position (🟨), A is not in the target (⬜), N is not in the target (⬜), E is correct and in position 5 (🟩).\nYour next response should be:\n<eliminated>C, A, N</eliminated>\n<guess>STARE</guess>"
+    },
+    {
+      "role": "user",
+      "content": "Guess a 5-letter word."
+    },
+    {
+      "role": "assistant",
+      "content": "<eliminated></eliminated>\n<guess>CRANE</guess>",
+      "tokens": 16
+    },
+    {
+      "role": "user",
+      "content": "Turn 1: CRANE → ⬜⬜⬜⬜⬜  (5 turn(s) remaining)"
+    },
+    {
+      "role": "assistant",
+      "content": "<eliminated>C, R, A, N, E</eliminated>  \n<guess>BOSSY</guess>",
+      "tokens": 27
+    },
+    {
+      "role": "user",
+      "content": "Turn 2: BOSSY → ⬜🟨🟨⬜⬜  (4 turn(s) remaining)"
+    },
+    {
+      "role": "assistant",
+      "content": "<eliminated>C, R, A, N, E, S, Y</eliminated>  \n<guess>BORED</guess>",
+      "tokens": 30
+    },
+    {
+      "role": "user",
+      "content": "Turn 3: BORED → ⬜🟨⬜⬜⬜  (3 turn(s) remaining)"
+    },
+    {
+      "role": "assistant",
+      "content": "<eliminated>C, R, A, N, E, S, Y, B, O, D</eliminated>  \n<guess>TIRED</guess>",
+      "tokens": 36
+    },
+    {
+      "role": "user",
+      "content": "Turn 4: TIRED → 🟨⬜⬜⬜⬜  (2 turn(s) remaining)"
+    },
+    {
+      "role": "assistant",
+      "content": "<eliminated>C, R, A, N, E, S, Y, B, O, D, T, I</eliminated>  \n<guess>GRATE</guess>",
+      "tokens": 40
+    },
+    {
+      "role": "user",
+      "content": "Turn 5: GRATE → ⬜⬜⬜🟨⬜  (1 turn(s) remaining)"
+    },
+    {
+      "role": "assistant",
+      "content": "<eliminated>C, R, A, N, E, S, Y, B, O, D, T, I, G, H</eliminated>  \n<guess>WATER</guess>",
+      "tokens": 44
+    }
+  ]
+}

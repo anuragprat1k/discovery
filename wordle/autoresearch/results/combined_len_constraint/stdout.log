@@ -1,0 +1,159 @@
+/Users/anurag/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+[wordle] === MLX Multi-turn Wordle GRPO Training ===
+[wordle] Reward       : dense
+[wordle] Model        : mlx-community/Qwen3-4B-bf16
+[wordle] Max turns    : 6
+[wordle] LoRA rank    : 16
+[wordle] LoRA layers  : 16
+[wordle] LR           : 0.0001
+[wordle] KL coef      : 0.04
+[wordle] CISPO clip   : [0.8, 1.2]
+[wordle] Grad clip    : 1.0
+[wordle] Batch size   : 4 words x 16 episodes
+[wordle] Micro-batch  : 1
+[wordle] Batch infer  : on (all)
+[wordle] Max steps    : 10
+[wordle] Env elim     : ON (env provides eliminated letters)
+[wordle] Output dir   : /Users/anurag/repos/discovery/wordle/autoresearch/results/combined_len_constraint
+[wordle] Loading model with LoRA ...
+Fetching 10 files:   0%|          | 0/10 [00:00<?, ?it/s]Fetching 10 files: 100%|██████████| 10/10 [00:00<00:00, 200684.40it/s]
+[mlx] Model loaded: mlx-community/Qwen3-4B-bf16
+[mlx] Total params: 4,037,148,160  Trainable: 14,680,064 (0.36%)
+[wordle] Memory after load: 7.49 GB active, 7.49 GB peak
+[wordle] Loaded 2315 answers, 12972 total valid guesses
+[wordle] Probe words   : ['CRAFT', 'ARDOR', 'LEVEL', 'HUMPH', 'GRIND']
+[wordle] Saving trajectories for step 0 (5 probe words)...
+  [trace 1/5] CRAFT → 6 turns, failed
+  [trace 2/5] ARDOR → 6 turns, failed
+  [trace 3/5] LEVEL → 6 turns, failed
+  [trace 4/5] HUMPH → 6 turns, failed
+  [trace 5/5] GRIND → 6 turns, failed
+[wordle] Trajectories saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/combined_len_constraint/trajectories/step_0000.json (11.1s total)
+wandb: [wandb.login()] Loaded credentials for https://api.wandb.ai from WANDB_API_KEY.
+wandb: Currently logged in as: anuragprateek to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run 7bs3hu19
+wandb: Tracking run with wandb version 0.25.1
+wandb: Run data is saved locally in /Users/anurag/repos/discovery/wandb/run-20260317_190117-7bs3hu19
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run wordle_mlx_dense
+wandb: ⭐️ View project at https://wandb.ai/anuragprateek/discovery-wordle-autoresearch
+wandb: 🚀 View run at https://wandb.ai/anuragprateek/discovery-wordle-autoresearch/runs/7bs3hu19
+[wordle] W&B run: https://wandb.ai/anuragprateek/discovery-wordle-autoresearch/runs/7bs3hu19
+[step    1] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step    1] ROLLOUT done: 114.2s, 0/64 wins, targets=['CRAFT', 'ARDOR', 'LEVEL', 'HUMPH']
+[step    1] TRAIN: reward=-0.327 (±0.851), win=0.0%, viol=96.6% ...
+[step    1] TRAIN done: 225.3s, loss=0.0074, grad_norm=0.1139, 60/64 samples used
+[step    1/10] reward=-0.327  loss=0.0074  win=0.0%  violations=96.6%  format=92.7%  mem=7.7GB  time=339.6s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step    2] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step    2] ROLLOUT done: 128.6s, 6/64 wins, targets=['GRIND', 'DONOR', 'CLOUT', 'WATER']
+[step    2] TRAIN: reward=0.756 (±1.863), win=9.4%, viol=97.4% ...
+[step    2] TRAIN done: 207.4s, loss=0.0117, grad_norm=0.1365, 64/64 samples used
+[step    2/10] reward=0.756  loss=0.0117  win=9.4%  violations=97.4%  format=92.7%  mem=7.7GB  time=336.0s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step    3] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step    3] ROLLOUT done: 137.0s, 2/64 wins, targets=['CHAOS', 'SHIRE', 'AWAIT', 'AUDIO']
+[step    3] TRAIN: reward=0.415 (±1.140), win=3.1%, viol=99.1% ...
+[step    3] TRAIN done: 252.7s, loss=0.0078, grad_norm=0.1472, 64/64 samples used
+[step    3/10] reward=0.415  loss=0.0078  win=3.1%  violations=99.1%  format=98.4%  mem=7.7GB  time=389.8s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step    4] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step    4] ROLLOUT done: 247.2s, 0/64 wins, targets=['CHOSE', 'GRAIN', 'HAREM', 'TITAN']
+[step    4] TRAIN: reward=-0.940 (±1.490), win=0.0%, viol=90.3% ...
+[step    4] TRAIN done: 330.8s, loss=0.0067, grad_norm=0.0818, 64/64 samples used
+[step    4/10] reward=-0.940  loss=0.0067  win=0.0%  violations=90.3%  format=84.4%  mem=7.7GB  time=578.0s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step    5] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step    5] ROLLOUT done: 184.3s, 5/64 wins, targets=['AROSE', 'WREST', 'FROND', 'WATCH']
+[step    5] TRAIN: reward=-0.210 (±1.838), win=7.8%, viol=62.4% ...
+[step    5] TRAIN done: 313.1s, loss=0.0055, grad_norm=0.0915, 64/64 samples used
+[step    5/10] reward=-0.210  loss=0.0055  win=7.8%  violations=62.4%  format=99.2%  mem=7.7GB  time=497.5s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[mlx] Checkpoint saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/combined_len_constraint/step_0005 (step 5)
+[wordle] Saving trajectories for step 5 (5 probe words)...
+  [trace 1/5] CRAFT → 6 turns, failed
+  [trace 2/5] ARDOR → 6 turns, failed
+  [trace 3/5] LEVEL → 6 turns, failed
+  [trace 4/5] HUMPH → 6 turns, failed
+  [trace 5/5] GRIND → 6 turns, failed
+[wordle] Trajectories saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/combined_len_constraint/trajectories/step_0005.json (25.1s total)
+[step    6] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step    6] ROLLOUT done: 187.3s, 5/64 wins, targets=['SHEEP', 'GRATE', 'SONAR', 'LITHE']
+[step    6] TRAIN: reward=-0.913 (±2.150), win=7.8%, viol=77.7% ...
+[step    6] TRAIN done: 304.1s, loss=0.0043, grad_norm=0.1051, 64/64 samples used
+[step    6/10] reward=-0.913  loss=0.0043  win=7.8%  violations=77.7%  format=95.3%  mem=7.7GB  time=491.5s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step    7] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step    7] ROLLOUT done: 203.9s, 1/64 wins, targets=['ADORN', 'EMPTY', 'SHOAL', 'PENCE']
+[step    7] TRAIN: reward=-1.556 (±1.288), win=1.6%, viol=68.2% ...
+[step    7] TRAIN done: 338.7s, loss=0.0051, grad_norm=0.0937, 64/64 samples used
+[step    7/10] reward=-1.556  loss=0.0051  win=1.6%  violations=68.2%  format=91.1%  mem=7.7GB  time=542.7s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step    8] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step    8] ROLLOUT done: 242.8s, 0/64 wins, targets=['LIPID', 'EIGHT', 'GOLLY', 'PASTE']
+[step    8] TRAIN: reward=-2.508 (±0.422), win=0.0%, viol=80.6% ...
+[step    8] TRAIN done: 346.2s, loss=0.0058, grad_norm=0.1406, 64/64 samples used
+[step    8/10] reward=-2.508  loss=0.0058  win=0.0%  violations=80.6%  format=70.1%  mem=7.7GB  time=589.1s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step    9] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step    9] ROLLOUT done: 216.1s, 0/64 wins, targets=['CLOUD', 'CHOIR', 'REBEL', 'CLAIM']
+[step    9] TRAIN: reward=-2.292 (±0.675), win=0.0%, viol=78.1% ...
+[step    9] TRAIN done: 316.0s, loss=0.0044, grad_norm=0.1652, 64/64 samples used
+[step    9/10] reward=-2.292  loss=0.0044  win=0.0%  violations=78.1%  format=67.4%  mem=7.7GB  time=532.3s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   10] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step   10] ROLLOUT done: 194.5s, 0/64 wins, targets=['PRIMO', 'PICKY', 'KNIFE', 'BEING']
+[step   10] TRAIN: reward=-1.599 (±0.772), win=0.0%, viol=93.1% ...
+[step   10] TRAIN done: 287.0s, loss=0.0065, grad_norm=0.1447, 64/64 samples used
+[step   10/10] reward=-1.599  loss=0.0065  win=0.0%  violations=93.1%  format=96.4%  mem=7.7GB  time=481.5s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[mlx] Checkpoint saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/combined_len_constraint/step_0010 (step 10)
+[wordle] Saving trajectories for step 10 (5 probe words)...
+  [trace 1/5] CRAFT → 6 turns, failed
+  [trace 2/5] ARDOR → 6 turns, failed
+  [trace 3/5] LEVEL → 6 turns, failed
+  [trace 4/5] HUMPH → 6 turns, failed
+  [trace 5/5] GRIND → 6 turns, failed
+[wordle] Trajectories saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/combined_len_constraint/trajectories/step_0010.json (28.1s total)
+wandb: updating run metadata
+wandb: uploading summary, console lines 71-83
+wandb: 
+wandb: Run history:
+wandb:                 avg_turns █▃▇█▅▁▇███
+wandb: constraint_violation_rate ███▆▁▄▂▄▄▇
+wandb:    format_compliance_rate ▇▇█▅█▇▆▂▁▇
+wandb:         frac_positive_adv ▆▅▅█▁▆▆▇█▅
+wandb:                 grad_norm ▄▆▆▁▂▃▂▆█▆
+wandb:            groups_skipped ▁▁▁▁▁▁▁▁▁▁
+wandb:                      loss ▄█▄▃▂▁▂▂▁▃
+wandb:                max_reward ▄█▇▄▇▇▇▁▂▃
+wandb:        mean_abs_advantage ▄▅▄▆▁▇▃▄█▇
+wandb:       mean_completion_len ▁▁▂▇▆▇▇█▇▆
+wandb:                       +12 ...
+wandb: 
+wandb: Run summary:
+wandb:                 avg_turns 6
+wandb: constraint_violation_rate 0.93125
+wandb:    format_compliance_rate 0.96354
+wandb:         frac_positive_adv 0.42188
+wandb:                 grad_norm 0.14474
+wandb:            groups_skipped 0
+wandb:                      loss 0.00655
+wandb:                max_reward 0.54
+wandb:        mean_abs_advantage 0.84508
+wandb:       mean_completion_len 44.40104
+wandb:                       +12 ...
+wandb: 
+wandb: 🚀 View run wordle_mlx_dense at: https://wandb.ai/anuragprateek/discovery-wordle-autoresearch/runs/7bs3hu19
+wandb: ⭐️ View project at: https://wandb.ai/anuragprateek/discovery-wordle-autoresearch
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260317_190117-7bs3hu19/logs
+
+[wordle] === Training Complete ===
+[wordle] Total time       : 80.5 min
+[wordle] Final reward     : -1.599
+[wordle] Final win rate   : 0.0%
+[wordle] Final violations : 93.1%
+[mlx] Checkpoint saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/combined_len_constraint/final (step 10)
+[wordle] Done.

@@ -1,0 +1,118 @@
+/Users/anurag/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+[wordle] === MLX Multi-turn Wordle GRPO Training ===
+[wordle] Reward       : sparse
+[wordle] Model        : mlx-community/Qwen3-4B-bf16
+[wordle] Max turns    : 6
+[wordle] LoRA rank    : 16
+[wordle] LoRA layers  : 16
+[wordle] LR           : 0.0001
+[wordle] KL coef      : 0.04
+[wordle] CISPO clip   : [0.8, 1.2]
+[wordle] Grad clip    : 1.0
+[wordle] Batch size   : 4 words x 16 episodes
+[wordle] Micro-batch  : 1
+[wordle] Batch infer  : on (all)
+[wordle] Max steps    : 1
+[wordle] SFT warmup   : 100 steps (batch=8)
+[wordle] Env elim     : ON (env provides eliminated letters)
+[wordle] Output dir   : /Users/anurag/repos/discovery/wordle/autoresearch/results/sft_warmup_only
+[wordle] Loading model with LoRA ...
+Fetching 10 files:   0%|          | 0/10 [00:00<?, ?it/s]Fetching 10 files: 100%|██████████| 10/10 [00:00<00:00, 107271.20it/s]
+[mlx] Model loaded: mlx-community/Qwen3-4B-bf16
+[mlx] Total params: 4,037,148,160  Trainable: 14,680,064 (0.36%)
+[wordle] Memory after load: 7.49 GB active, 7.49 GB peak
+[wordle] Loaded 2315 answers, 12972 total valid guesses
+[wordle] Probe words   : ['CRAFT', 'ARDOR', 'LEVEL', 'HUMPH', 'GRIND']
+[wordle] Saving trajectories for step 0 (5 probe words)...
+  [trace 1/5] CRAFT → 6 turns, failed
+  [trace 2/5] ARDOR → 6 turns, failed
+  [trace 3/5] LEVEL → 6 turns, failed
+  [trace 4/5] HUMPH → 6 turns, failed
+  [trace 5/5] GRIND → 6 turns, failed
+[wordle] Trajectories saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/sft_warmup_only/trajectories/step_0000.json (19.2s total)
+wandb: [wandb.login()] Loaded credentials for https://api.wandb.ai from WANDB_API_KEY.
+wandb: Currently logged in as: anuragprateek to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run azwgb60r
+wandb: Tracking run with wandb version 0.25.1
+wandb: Run data is saved locally in /Users/anurag/repos/discovery/wandb/run-20260319_110138-azwgb60r
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run wordle_mlx_sparse
+wandb: ⭐️ View project at https://wandb.ai/anuragprateek/discovery-wordle-autoresearch
+wandb: 🚀 View run at https://wandb.ai/anuragprateek/discovery-wordle-autoresearch/runs/azwgb60r
+[wordle] W&B run: https://wandb.ai/anuragprateek/discovery-wordle-autoresearch/runs/azwgb60r
+
+[sft] === SFT Warmup: 100 steps, batch_size=8 ===
+[sft] Loaded 800 examples from expert_buffer.jsonl
+[sft] step 1/100  loss=1.1892  time=10.8s  mem=7.7GB
+[sft] step 5/100  loss=0.4261  time=5.3s  mem=7.7GB
+[sft] step 10/100  loss=0.4386  time=4.6s  mem=7.7GB
+[sft] step 15/100  loss=0.4356  time=4.3s  mem=7.7GB
+[sft] step 20/100  loss=0.4578  time=4.4s  mem=7.7GB
+[sft] step 25/100  loss=0.4553  time=4.6s  mem=7.7GB
+[sft] step 30/100  loss=0.4610  time=4.4s  mem=7.7GB
+[sft] step 35/100  loss=0.3941  time=4.2s  mem=7.7GB
+[sft] step 40/100  loss=0.3931  time=4.9s  mem=7.7GB
+[sft] step 45/100  loss=0.2396  time=4.5s  mem=7.7GB
+[sft] step 50/100  loss=0.2489  time=4.6s  mem=7.7GB
+[sft] step 55/100  loss=0.3373  time=4.9s  mem=7.7GB
+[sft] step 60/100  loss=0.4026  time=5.3s  mem=7.7GB
+[sft] step 65/100  loss=0.2823  time=4.4s  mem=7.7GB
+[sft] step 70/100  loss=0.4530  time=5.1s  mem=7.7GB
+[sft] step 75/100  loss=0.3128  time=4.9s  mem=7.7GB
+[sft] step 80/100  loss=0.2630  time=4.4s  mem=7.7GB
+[sft] step 85/100  loss=0.2346  time=5.2s  mem=7.7GB
+[sft] step 90/100  loss=0.3695  time=4.7s  mem=7.7GB
+[sft] step 95/100  loss=0.3432  time=4.3s  mem=7.7GB
+[sft] step 100/100  loss=0.3753  time=4.6s  mem=7.7GB
+[sft] Warmup complete in 493.1s
+
+[mlx] Checkpoint saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/sft_warmup_only/sft_checkpoint (step 0)
+[sft] Saved post-warmup checkpoint to /Users/anurag/repos/discovery/wordle/autoresearch/results/sft_warmup_only/sft_checkpoint
+[step    1] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step    1] ROLLOUT done: 147.8s, 0/64 wins, targets=['CRAFT', 'ARDOR', 'LEVEL', 'HUMPH']
+[step    1] TRAIN: reward=-1.000 (±0.000), win=0.0%, viol=83.4% ...
+[step    1] TRAIN done: 0.0s, loss=0.0000, grad_norm=0.0000, 0/64 samples used
+wandb: updating run metadata
+wandb: uploading history steps 100-100, summary, console lines 30-41
+wandb: 
+wandb: Run history:
+wandb:                 avg_turns ▁
+wandb: constraint_violation_rate ▁
+wandb:    format_compliance_rate ▁
+wandb:         frac_positive_adv ▁
+wandb:                 grad_norm ▁
+wandb:            groups_skipped ▁
+wandb:                      loss ▁
+wandb:                max_reward ▁
+wandb:        mean_abs_advantage ▁
+wandb:       mean_completion_len ▁
+wandb:                       +18 ...
+wandb: 
+wandb: Run summary:
+wandb:                 avg_turns 6
+wandb: constraint_violation_rate 0.83437
+wandb:    format_compliance_rate 0
+wandb:         frac_positive_adv 0
+wandb:                 grad_norm 0
+wandb:            groups_skipped 4
+wandb:                      loss 0
+wandb:                max_reward -1
+wandb:        mean_abs_advantage 0
+wandb:       mean_completion_len 10.34375
+wandb:                       +19 ...
+wandb: 
+wandb: 🚀 View run wordle_mlx_sparse at: https://wandb.ai/anuragprateek/discovery-wordle-autoresearch/runs/azwgb60r
+wandb: ⭐️ View project at: https://wandb.ai/anuragprateek/discovery-wordle-autoresearch
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260319_110138-azwgb60r/logs
+[step    1/1] reward=-1.000  loss=0.0000  win=0.0%  violations=83.4%  format=0.0%  mem=7.7GB  time=147.8s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+
+[wordle] === Training Complete ===
+[wordle] Total time       : 2.5 min
+[wordle] Final reward     : -1.000
+[wordle] Final win rate   : 0.0%
+[wordle] Final violations : 83.4%
+[mlx] Checkpoint saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/sft_warmup_only/final (step 1)
+[wordle] Done.

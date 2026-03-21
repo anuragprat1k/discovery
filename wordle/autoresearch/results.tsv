@@ -1,0 +1,18 @@
+name	hypothesis	score	win_rate	violation_rate	format_compliance	mean_completion_len	memory_peak_gb	wall_time_min	steps_completed	max_steps	early_stopped	early_stop_reason	status	timestamp
+baseline_cap128	hard cap at 128 tokens prevents verbosity explosion	0.3147	0.0344	0.9228	0.9483	9.0	29.51	64.5	10	10	no		COMPLETED	2026-03-17
+constraint_pen_03	constraint violation penalty -0.3 to teach feedback use	0.3072	0.0281	0.9571	0.9613	9.2	29.63	110.3	8	10	yes	step_time=3366s > 600.0s	EARLY_STOPPED	2026-03-17len_pen_005	length penalty -0.005/token over 20 free tokens discourages verbosity	0.308	0.0156	0.9393	0.9765	9.2	27.94	59.7	10	10	no		COMPLETED	2026-03-17
+combined_len_constraint	both length penalty and constraint penalty together	0.2872	0.0187	0.7956	0.8406	49.7	37.7	79.6	10	10	no		COMPLETED	2026-03-17
+lr_5e5_cap128	lower LR 5e-5 more stable training with cap	0.2994	0.0031	0.9463	0.962	9.2	29.55	59.9	10	10	no		COMPLETED	2026-03-17
+lr_2e4_cap128	higher LR 2e-4 learns faster with cap	0.2068	0.0063	0.9912	0.389	7.8	27.52	45.7	10	10	yes	format_compliance<0.2 for 3 consecutive steps	EARLY_STOPPED	2026-03-17
+beta_01_cap128	higher KL penalty 0.1 keeps model closer to base	0.2955	0.0	0.9688	0.976	9.5	29.7	54.7	10	10	no		COMPLETED	2026-03-17
+sft5_cap128	5 SFT warmup steps teach format before RL	0.3324	0.0	0.9669	0.9443	12.0	39.57	65.5	10	10	no		COMPLETED	2026-03-18
+sft100_cap128	100 SFT warmup steps — does aggressive warmup help?	0.4008	0.0	0.9125	0.938	9.9	37.64	124.4	9	10	yes	step_time=1173s > 600.0s	EARLY_STOPPED	2026-03-18
+replay_default	Expert replay buffer bootstraps learning from heuristic solver wins	0.2966	0.0031	0.9518	0.9562	10.2	33.02	149.0	10	10	yes	step_time=1366s > 600.0s	EARLY_STOPPED	2026-03-18
+replay_batch8	Larger SFT replay batch = stronger imitation signal	0.2977	0.0031	0.8862	0.9002	15.1	37.09	109.3	8	10	yes	step_time=651s > 600.0s	EARLY_STOPPED	2026-03-18
+replay_lr5e5	Replay + lower LR for stable learning	0.2942	0.0094	0.9687	0.9421	9.5	30.57	89.0	10	10	yes	step_time=663s > 600.0s	EARLY_STOPPED	2026-03-18
+expert_warmup_100	Expert game data for SFT warmup teaches strategy not just format	0.4121	0.0187	0.9219	0.9722	9.1	31.83	70.8	10	10	no		COMPLETED	2026-03-18
+sft_warmup_only		0.2254	0.0	0.8344	0.0	10.3	31.25	2.5	1	10	no		COMPLETED	2026-03-19
+binary_expert_100	sparse reward + 100-step expert SFT warmup + replay	0.4218	0.0813	0.8196	1.0	14.8	51.35	942.1	200	200	no		COMPLETED	2026-03-20
+binary_expert_100_fast		0.219	0.0156	0.8977	0.0	9.2	51.61	30.7	2	10	yes	step_time=1593s > 900.0s	EARLY_STOPPED	2026-03-19
+expert_warmup_100_long	200-step run of best config (expert warmup 100)	0.4394	0.0594	0.8869	0.999	9.1	35.83	1189.4	196	200	yes	step_time=1696s > 900.0s	EARLY_STOPPED	2026-03-20
+

@@ -1,0 +1,30 @@
+{
+  "step": 175,
+  "metrics": {
+    "step": 175,
+    "mean_reward": 2.6031250953674316,
+    "max_reward": 7.599999904632568,
+    "min_reward": 1.100000023841858,
+    "reward_std": 0.8881104588508606,
+    "loss": 0.005142347887158394,
+    "grad_norm": 0.22531463205814362,
+    "groups_skipped": 0,
+    "n_problems": 4,
+    "n_train_samples": 64,
+    "win_rate": 0.015625,
+    "avg_turns": 6.0,
+    "constraint_violation_rate": 0.978125,
+    "format_compliance_rate": 0.9895833333333334,
+    "mean_abs_advantage": 0.6935162537265569,
+    "frac_positive_adv": 0.40625,
+    "mean_completion_len": 9.151041666666666,
+    "memory_active_gb": 7.658,
+    "memory_peak_gb": 35.827,
+    "sft_replay_loss": 0.0,
+    "replay_new_examples": 0,
+    "replay_buffer_size": 0,
+    "time_gen": 115.16,
+    "time_train": 245.47,
+    "time_total": 360.7
+  }
+}

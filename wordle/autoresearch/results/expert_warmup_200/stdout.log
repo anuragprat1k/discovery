@@ -1,0 +1,154 @@
+/Users/anurag/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+[wordle] === MLX Multi-turn Wordle GRPO Training ===
+[wordle] Reward       : dense
+[wordle] Model        : mlx-community/Qwen3-4B-bf16
+[wordle] Max turns    : 6
+[wordle] LoRA rank    : 16
+[wordle] LoRA layers  : 16
+[wordle] LR           : 0.0001
+[wordle] KL coef      : 0.04
+[wordle] CISPO clip   : [0.8, 1.2]
+[wordle] Grad clip    : 1.0
+[wordle] Batch size   : 4 words x 16 episodes
+[wordle] Micro-batch  : 1
+[wordle] Batch infer  : on (all)
+[wordle] Max steps    : 10
+[wordle] SFT warmup   : 200 steps (batch=8)
+[wordle] Env elim     : ON (env provides eliminated letters)
+[wordle] Output dir   : /Users/anurag/repos/discovery/wordle/autoresearch/results/expert_warmup_200
+[wordle] Loading model with LoRA ...
+Fetching 10 files:   0%|          | 0/10 [00:00<?, ?it/s]Fetching 10 files: 100%|██████████| 10/10 [00:00<00:00, 204600.20it/s]
+[mlx] Model loaded: mlx-community/Qwen3-4B-bf16
+[mlx] Total params: 4,037,148,160  Trainable: 14,680,064 (0.36%)
+[wordle] Memory after load: 7.49 GB active, 7.49 GB peak
+[wordle] Loaded 2315 answers, 12972 total valid guesses
+[wordle] Probe words   : ['CRAFT', 'ARDOR', 'LEVEL', 'HUMPH', 'GRIND']
+[wordle] Saving trajectories for step 0 (5 probe words)...
+  [trace 1/5] CRAFT → 6 turns, failed
+  [trace 2/5] ARDOR → 6 turns, failed
+  [trace 3/5] LEVEL → 6 turns, failed
+  [trace 4/5] HUMPH → 6 turns, failed
+  [trace 5/5] GRIND → 6 turns, failed
+[wordle] Trajectories saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/expert_warmup_200/trajectories/step_0000.json (16.3s total)
+wandb: [wandb.login()] Loaded credentials for https://api.wandb.ai from WANDB_API_KEY.
+wandb: Currently logged in as: anuragprateek to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run cps7feay
+wandb: Tracking run with wandb version 0.25.1
+wandb: Run data is saved locally in /Users/anurag/repos/discovery/wandb/run-20260318_124258-cps7feay
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run wordle_mlx_dense
+wandb: ⭐️ View project at https://wandb.ai/anuragprateek/discovery-wordle-autoresearch
+wandb: 🚀 View run at https://wandb.ai/anuragprateek/discovery-wordle-autoresearch/runs/cps7feay
+[wordle] W&B run: https://wandb.ai/anuragprateek/discovery-wordle-autoresearch/runs/cps7feay
+
+[sft] === SFT Warmup: 200 steps, batch_size=8 ===
+[sft] Loaded 1600 examples from expert_buffer.jsonl
+[sft] step 1/200  loss=1.1892  time=7.0s  mem=7.7GB
+[sft] step 5/200  loss=0.4385  time=8.3s  mem=7.7GB
+[sft] step 10/200  loss=0.4364  time=7.2s  mem=7.7GB
+[sft] step 15/200  loss=0.4341  time=6.8s  mem=7.7GB
+[sft] step 20/200  loss=0.4562  time=6.9s  mem=7.7GB
+[sft] step 25/200  loss=0.4573  time=7.7s  mem=7.7GB
+[sft] step 30/200  loss=0.4613  time=7.1s  mem=7.7GB
+[sft] step 35/200  loss=0.3949  time=6.7s  mem=7.7GB
+[sft] step 40/200  loss=0.3934  time=8.4s  mem=7.7GB
+[sft] step 45/200  loss=0.2315  time=7.3s  mem=7.7GB
+[sft] step 50/200  loss=0.2500  time=6.8s  mem=7.7GB
+[sft] step 55/200  loss=0.3428  time=7.6s  mem=7.7GB
+[sft] step 60/200  loss=0.3970  time=8.7s  mem=7.7GB
+[sft] step 65/200  loss=0.2812  time=6.9s  mem=7.7GB
+[sft] step 70/200  loss=0.4530  time=8.1s  mem=7.7GB
+[sft] step 75/200  loss=0.3174  time=8.0s  mem=7.7GB
+[sft] step 80/200  loss=0.2665  time=7.2s  mem=7.7GB
+[sft] step 85/200  loss=0.2338  time=8.4s  mem=7.7GB
+[sft] step 90/200  loss=0.3621  time=7.4s  mem=7.7GB
+[sft] step 95/200  loss=0.3411  time=7.0s  mem=7.7GB
+[sft] step 100/200  loss=0.3713  time=7.3s  mem=7.7GB
+[sft] step 105/200  loss=0.2886  time=8.6s  mem=7.7GB
+[sft] step 110/200  loss=0.2861  time=8.1s  mem=7.7GB
+[sft] step 115/200  loss=0.1897  time=8.4s  mem=7.7GB
+[sft] step 120/200  loss=0.3321  time=6.7s  mem=7.7GB
+[sft] step 125/200  loss=0.2004  time=7.1s  mem=7.7GB
+[sft] step 130/200  loss=0.1940  time=7.9s  mem=7.7GB
+[sft] step 135/200  loss=0.2945  time=8.3s  mem=7.7GB
+[sft] step 140/200  loss=0.3007  time=7.5s  mem=7.7GB
+[sft] step 145/200  loss=0.3952  time=7.4s  mem=7.7GB
+[sft] step 150/200  loss=0.2478  time=6.8s  mem=7.7GB
+[sft] step 155/200  loss=0.2881  time=7.8s  mem=7.7GB
+[sft] step 160/200  loss=0.3069  time=7.5s  mem=7.7GB
+[sft] step 165/200  loss=0.3447  time=6.5s  mem=7.7GB
+[sft] step 170/200  loss=0.3064  time=9.1s  mem=7.7GB
+[sft] step 175/200  loss=0.4105  time=6.3s  mem=7.7GB
+[sft] step 180/200  loss=0.4067  time=7.4s  mem=7.7GB
+[sft] step 185/200  loss=0.2474  time=8.3s  mem=7.7GB
+[sft] step 190/200  loss=0.1875  time=8.3s  mem=7.7GB
+[sft] step 195/200  loss=0.3521  time=8.4s  mem=7.7GB
+[sft] step 200/200  loss=0.2457  time=8.8s  mem=7.7GB
+[sft] Warmup complete in 1535.6s
+
+[step    1] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step    1] ROLLOUT done: 255.5s, 0/64 wins, targets=['CRAFT', 'ARDOR', 'LEVEL', 'HUMPH']
+[step    1] TRAIN: reward=0.631 (±0.729), win=0.0%, viol=77.2% ...
+[step    1] TRAIN done: 373.0s, loss=0.0144, grad_norm=0.1608, 64/64 samples used
+[step    1/10] reward=0.631  loss=0.0144  win=0.0%  violations=77.2%  format=99.5%  mem=7.7GB  time=628.7s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step    2] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step    2] ROLLOUT done: 204.6s, 2/64 wins, targets=['GRIND', 'DONOR', 'CLOUT', 'WATER']
+[step    2] TRAIN: reward=1.267 (±1.278), win=3.1%, viol=89.3% ...
+[step    2] TRAIN done: 374.2s, loss=0.0054, grad_norm=0.1677, 64/64 samples used
+[step    2/10] reward=1.267  loss=0.0054  win=3.1%  violations=89.3%  format=98.7%  mem=7.7GB  time=578.9s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step    3] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step    3] ROLLOUT done: 234.7s, 1/64 wins, targets=['CHAOS', 'SHIRE', 'AWAIT', 'AUDIO']
+[step    3] TRAIN: reward=0.788 (±1.062), win=1.6%, viol=90.0% ...
+[step    3] TRAIN done: 337.1s, loss=0.0096, grad_norm=0.1871, 61/64 samples used
+[step    3/10] reward=0.788  loss=0.0096  win=1.6%  violations=90.0%  format=95.8%  mem=7.7GB  time=571.9s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step    4] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step    4] ROLLOUT done: 246.0s, 3/64 wins, targets=['CHOSE', 'GRAIN', 'HAREM', 'TITAN']
+[step    4] TRAIN: reward=1.519 (±1.214), win=4.7%, viol=90.5% ...
+[step    4] TRAIN done: 353.1s, loss=0.0096, grad_norm=0.1737, 63/64 samples used
+[step    4/10] reward=1.519  loss=0.0096  win=4.7%  violations=90.5%  format=96.3%  mem=7.7GB  time=599.1s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step    5] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step    5] ROLLOUT done: 350.5s, 1/64 wins, targets=['AROSE', 'WREST', 'FROND', 'WATCH']
+[step    5] TRAIN: reward=1.352 (±0.979), win=1.6%, viol=94.3% ...
+[step    5] TRAIN done: 399.0s, loss=0.0076, grad_norm=0.1393, 64/64 samples used
+[step    5/10] reward=1.352  loss=0.0076  win=1.6%  violations=94.3%  format=91.3%  mem=7.7GB  time=749.6s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[mlx] Checkpoint saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/expert_warmup_200/step_0005 (step 5)
+[wordle] Saving trajectories for step 5 (5 probe words)...
+  [trace 1/5] CRAFT → 6 turns, failed
+  [trace 2/5] ARDOR → 6 turns, failed
+  [trace 3/5] LEVEL → 6 turns, failed
+  [trace 4/5] HUMPH → 6 turns, failed
+  [trace 5/5] GRIND → 6 turns, failed
+[wordle] Trajectories saved: /Users/anurag/repos/discovery/wordle/autoresearch/results/expert_warmup_200/trajectories/step_0005.json (35.8s total)
+[step    6] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step    6] ROLLOUT done: 310.5s, 1/64 wins, targets=['SHEEP', 'GRATE', 'SONAR', 'LITHE']
+[step    6] TRAIN: reward=1.186 (±1.068), win=1.6%, viol=89.9% ...
+[step    6] TRAIN done: 411.2s, loss=0.0050, grad_norm=0.1469, 64/64 samples used
+[step    6/10] reward=1.186  loss=0.0050  win=1.6%  violations=89.9%  format=89.8%  mem=7.7GB  time=721.9s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step    7] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step    7] ROLLOUT done: 328.0s, 0/64 wins, targets=['ADORN', 'EMPTY', 'SHOAL', 'PENCE']
+[step    7] TRAIN: reward=1.022 (±0.736), win=0.0%, viol=91.2% ...
+[step    7] TRAIN done: 419.7s, loss=0.0060, grad_norm=0.1805, 64/64 samples used
+[step    7/10] reward=1.022  loss=0.0060  win=0.0%  violations=91.2%  format=89.6%  mem=7.7GB  time=747.8s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step    8] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step    8] ROLLOUT done: 292.8s, 2/64 wins, targets=['LIPID', 'EIGHT', 'GOLLY', 'PASTE']
+[step    8] TRAIN: reward=0.930 (±1.323), win=3.1%, viol=84.7% ...
+[step    8] TRAIN done: 391.3s, loss=0.0073, grad_norm=0.1774, 64/64 samples used
+[step    8/10] reward=0.930  loss=0.0073  win=3.1%  violations=84.7%  format=94.5%  mem=7.7GB  time=684.2s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step    9] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step    9] ROLLOUT done: 204.0s, 0/64 wins, targets=['CLOUD', 'CHOIR', 'REBEL', 'CLAIM']
+[step    9] TRAIN: reward=1.447 (±0.686), win=0.0%, viol=90.9% ...
+[step    9] TRAIN done: 349.4s, loss=0.0056, grad_norm=0.1505, 64/64 samples used
+[step    9/10] reward=1.447  loss=0.0056  win=0.0%  violations=90.9%  format=95.3%  mem=7.7GB  time=553.4s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step   10] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/multiprocessing/resource_tracker.py:216: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '

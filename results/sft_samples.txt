@@ -1,0 +1,193 @@
+============================================================
+Example 1
+============================================================
+[SYSTEM] You are playing Wordle. Guess a 5-letter English word.
+After each guess, you receive feedback on each letter:
+🟩 = letter is in the target word and in the correct position
+🟨 = letter is in the target w
+[USER] Guess a 5-letter word.
+[ASSISTANT] <eliminated></eliminated>
+<guess>FERES</guess>
+[USER] Turn 1: FERES → ⬜⬜⬜⬜🟨  (5 turn(s) remaining)
+[ASSISTANT] <eliminated>E, F, R</eliminated>
+<guess>LEADY</guess>
+[USER] Turn 2: LEADY → ⬜⬜🟨⬜🟩  (4 turn(s) remaining)
+[ASSISTANT] <eliminated>D, E, F, L, R</eliminated>
+<guess>STREP</guess>
+[USER] Turn 3: STREP → 🟩⬜⬜⬜⬜  (3 turn(s) remaining)
+[ASSISTANT] <eliminated>D, E, F, L, P, R, T</eliminated>
+<guess>INUST</guess>
+[USER] Turn 4: INUST → ⬜⬜⬜🟨⬜  (2 turn(s) remaining)
+
+[TARGET COMPLETION]
+<eliminated>D, E, F, I, L, N, P, R, T, U</eliminated>
+<guess>SAGGY</guess>
+
+============================================================
+Example 2
+============================================================
+[SYSTEM] You are playing Wordle. Guess a 5-letter English word.
+After each guess, you receive feedback on each letter:
+🟩 = letter is in the target word and in the correct position
+🟨 = letter is in the target w
+[USER] Guess a 5-letter word.
+[ASSISTANT] <eliminated></eliminated>
+<guess>SWEEP</guess>
+[USER] Turn 1: SWEEP → 🟩⬜⬜⬜⬜  (5 turn(s) remaining)
+[ASSISTANT] <eliminated>E, P, W</eliminated>
+<guess>DINES</guess>
+[USER] Turn 2: DINES → ⬜⬜⬜⬜🟨  (4 turn(s) remaining)
+
+[TARGET COMPLETION]
+<eliminated>D, E, I, N, P, W</eliminated>
+<guess>SLUBB</guess>
+
+============================================================
+Example 3
+============================================================
+[SYSTEM] You are playing Wordle. Guess a 5-letter English word.
+After each guess, you receive feedback on each letter:
+🟩 = letter is in the target word and in the correct position
+🟨 = letter is in the target w
+[USER] Guess a 5-letter word.
+[ASSISTANT] <eliminated></eliminated>
+<guess>INFER</guess>
+[USER] Turn 1: INFER → ⬜⬜⬜⬜🟨  (5 turn(s) remaining)
+[ASSISTANT] <eliminated>E, F, I, N</eliminated>
+<guess>BOWNE</guess>
+[USER] Turn 2: BOWNE → ⬜⬜⬜⬜⬜  (4 turn(s) remaining)
+
+[TARGET COMPLETION]
+<eliminated>B, E, F, I, N, O, W</eliminated>
+<guess>GARDA</guess>
+
+============================================================
+Example 4
+============================================================
+[SYSTEM] You are playing Wordle. Guess a 5-letter English word.
+After each guess, you receive feedback on each letter:
+🟩 = letter is in the target word and in the correct position
+🟨 = letter is in the target w
+[USER] Guess a 5-letter word.
+[ASSISTANT] <eliminated></eliminated>
+<guess>IDENT</guess>
+[USER] Turn 1: IDENT → ⬜⬜⬜⬜⬜  (5 turn(s) remaining)
+[ASSISTANT] <eliminated>D, E, I, N, T</eliminated>
+<guess>REKEY</guess>
+[USER] Turn 2: REKEY → 🟩⬜⬜⬜⬜  (4 turn(s) remaining)
+
+[TARGET COMPLETION]
+<eliminated>D, E, I, K, N, T, Y</eliminated>
+<guess>RUSAS</guess>
+
+============================================================
+Example 5
+============================================================
+[SYSTEM] You are playing Wordle. Guess a 5-letter English word.
+After each guess, you receive feedback on each letter:
+🟩 = letter is in the target word and in the correct position
+🟨 = letter is in the target w
+[USER] Guess a 5-letter word.
+[ASSISTANT] <eliminated></eliminated>
+<guess>FUGUE</guess>
+[USER] Turn 1: FUGUE → ⬜⬜⬜⬜🟩  (5 turn(s) remaining)
+[ASSISTANT] <eliminated>F, G, U</eliminated>
+<guess>NOMOI</guess>
+[USER] Turn 2: NOMOI → ⬜⬜⬜⬜⬜  (4 turn(s) remaining)
+
+[TARGET COMPLETION]
+<eliminated>F, G, I, M, N, O, U</eliminated>
+<guess>CACHE</guess>
+
+============================================================
+Example 6
+============================================================
+[SYSTEM] You are playing Wordle. Guess a 5-letter English word.
+After each guess, you receive feedback on each letter:
+🟩 = letter is in the target word and in the correct position
+🟨 = letter is in the target w
+[USER] Guess a 5-letter word.
+[ASSISTANT] <eliminated></eliminated>
+<guess>FOGGY</guess>
+[USER] Turn 1: FOGGY → ⬜⬜⬜⬜🟩  (5 turn(s) remaining)
+
+[TARGET COMPLETION]
+<eliminated>F, G, O</eliminated>
+<guess>VEALY</guess>
+
+============================================================
+Example 7
+============================================================
+[SYSTEM] You are playing Wordle. Guess a 5-letter English word.
+After each guess, you receive feedback on each letter:
+🟩 = letter is in the target word and in the correct position
+🟨 = letter is in the target w
+[USER] Guess a 5-letter word.
+[ASSISTANT] <eliminated></eliminated>
+<guess>EMBOW</guess>
+[USER] Turn 1: EMBOW → ⬜⬜⬜🟨🟨  (5 turn(s) remaining)
+[ASSISTANT] <eliminated>B, E, M</eliminated>
+<guess>DOOBS</guess>
+[USER] Turn 2: DOOBS → ⬜⬜🟩⬜⬜  (4 turn(s) remaining)
+
+[TARGET COMPLETION]
+<eliminated>B, D, E, M, S</eliminated>
+<guess>WHORT</guess>
+
+============================================================
+Example 8
+============================================================
+[SYSTEM] You are playing Wordle. Guess a 5-letter English word.
+After each guess, you receive feedback on each letter:
+🟩 = letter is in the target word and in the correct position
+🟨 = letter is in the target w
+[USER] Guess a 5-letter word.
+[ASSISTANT] <eliminated></eliminated>
+<guess>THILL</guess>
+[USER] Turn 1: THILL → 🟨⬜🟩⬜⬜  (5 turn(s) remaining)
+
+[TARGET COMPLETION]
+<eliminated>H, L</eliminated>
+<guess>OVIST</guess>
+
+============================================================
+Example 9
+============================================================
+[SYSTEM] You are playing Wordle. Guess a 5-letter English word.
+After each guess, you receive feedback on each letter:
+🟩 = letter is in the target word and in the correct position
+🟨 = letter is in the target w
+[USER] Guess a 5-letter word.
+[ASSISTANT] <eliminated></eliminated>
+<guess>RAMPS</guess>
+[USER] Turn 1: RAMPS → ⬜⬜⬜⬜⬜  (5 turn(s) remaining)
+[ASSISTANT] <eliminated>A, M, P, R, S</eliminated>
+<guess>AREFY</guess>
+[USER] Turn 2: AREFY → ⬜⬜🟨⬜⬜  (4 turn(s) remaining)
+[ASSISTANT] <eliminated>A, F, M, P, R, S, Y</eliminated>
+<guess>ACNES</guess>
+[USER] Turn 3: ACNES → ⬜⬜⬜🟨⬜  (3 turn(s) remaining)
+[ASSISTANT] <eliminated>A, C, F, M, N, P, R, S, Y</eliminated>
+<guess>PANIM</guess>
+[USER] Turn 4: PANIM → ⬜⬜⬜🟨⬜  (2 turn(s) remaining)
+
+[TARGET COMPLETION]
+<eliminated>A, C, F, M, N, P, R, S, Y</eliminated>
+<guess>LIGGE</guess>
+
+============================================================
+Example 10
+============================================================
+[SYSTEM] You are playing Wordle. Guess a 5-letter English word.
+After each guess, you receive feedback on each letter:
+🟩 = letter is in the target word and in the correct position
+🟨 = letter is in the target w
+[USER] Guess a 5-letter word.
+[ASSISTANT] <eliminated></eliminated>
+<guess>APIAN</guess>
+[USER] Turn 1: APIAN → ⬜⬜⬜⬜⬜  (5 turn(s) remaining)
+
+[TARGET COMPLETION]
+<eliminated>A, I, N, P</eliminated>
+<guess>GREED</guess>
+
