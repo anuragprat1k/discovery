@@ -258,26 +258,26 @@ def make_wordle_rollout_func(
         # Compute rewards and behavioral metrics for each episode
         episode_rewards = []
         wins = 0
-        total_turns = 0
+        total_turns_played = 0
+        total_turns_with_guess = 0
         total_constraint_violations = 0
-        total_format_compliant = 0
         total_turn_reward = 0.0
         for i in range(n):
             reward, ep_metrics = _compute_total_episode_reward(envs[i], reward_module, max_turns)
             episode_rewards.append(reward)
             if envs[i].target_reached:
                 wins += 1
-            total_turns += int(ep_metrics["turns"])
+            total_turns_played += int(ep_metrics["total_turns_played"])
+            total_turns_with_guess += int(ep_metrics["format_compliant_turns"])
             total_constraint_violations += int(ep_metrics["constraint_violations"])
-            total_format_compliant += int(ep_metrics["format_compliant_turns"])
             total_turn_reward += ep_metrics["turn_reward_mean"]
 
         win_rate = wins / max(n, 1)
-        avg_turns = total_turns / max(n, 1)
+        avg_turns = total_turns_played / max(n, 1)
         avg_reward = sum(episode_rewards) / max(n, 1)
         reward_std = (sum((r - avg_reward) ** 2 for r in episode_rewards) / max(n, 1)) ** 0.5
-        constraint_violation_rate = total_constraint_violations / max(total_turns, 1)
-        format_compliance_rate = total_format_compliant / max(total_turns, 1)
+        constraint_violation_rate = total_constraint_violations / max(total_turns_with_guess, 1)
+        format_compliance_rate = total_turns_with_guess / max(total_turns_played, 1)
         avg_turn_reward = total_turn_reward / max(n, 1)
 
         # Mean completion length (model tokens only, across all episodes)
@@ -350,8 +350,8 @@ def _compute_total_episode_reward(
         turn_rewards.append(turn_reward)
         if turn_metrics.get("constraint_violation", 0) > 0:
             constraint_violations += 1
-        if turn_metrics.get("format_compliance", 0) > 0:
-            format_compliant += 1
+        # A guess in env.guesses means <guess> tag was parsed successfully
+        format_compliant += 1
 
         if is_last:
             ep_reward, _ = reward_module.compute_episode_reward(
@@ -362,11 +362,15 @@ def _compute_total_episode_reward(
             turn_reward += ep_reward
         total += turn_reward
 
+    # env.turn = total turns played (including invalid parses)
+    # total_turn_count = len(env.guesses) = turns with valid <guess> tags
+    total_played = env.turn
     metrics = {
-        "turns": float(total_turn_count),
+        "turns": float(total_played),
         "turn_reward_mean": sum(turn_rewards) / max(len(turn_rewards), 1),
         "constraint_violations": float(constraint_violations),
         "format_compliant_turns": float(format_compliant),
+        "total_turns_played": float(total_played),
     }
     return total, metrics
 
