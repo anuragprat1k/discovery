@@ -280,6 +280,10 @@ def make_wordle_rollout_func(
         format_compliance_rate = total_format_compliant / max(total_turns, 1)
         avg_turn_reward = total_turn_reward / max(n, 1)
 
+        # Mean completion length (model tokens only, across all episodes)
+        completion_lens = [len(ids) for ids in all_completion_ids]
+        mean_completion_len = sum(completion_lens) / max(len(completion_lens), 1)
+
         # Log behavioral metrics to wandb (TRL only logs reward/loss/KL)
         if _WANDB_AVAILABLE and wandb.run is not None:
             wandb.log({
@@ -292,6 +296,7 @@ def make_wordle_rollout_func(
                 "wordle/avg_turn_reward": avg_turn_reward,
                 "wordle/constraint_violation_rate": constraint_violation_rate,
                 "wordle/format_compliance_rate": format_compliance_rate,
+                "wordle/mean_completion_len": mean_completion_len,
                 "wordle/n_episodes": float(n),
             }, commit=False)
 
