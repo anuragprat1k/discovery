@@ -251,28 +251,47 @@ def make_wordle_rollout_func(
         episode_rewards = []
         wins = 0
         total_turns = 0
+        total_constraint_violations = 0
+        total_format_compliant = 0
+        total_turn_reward = 0.0
         for i in range(n):
-            reward = _compute_total_episode_reward(envs[i], reward_module, max_turns)
+            reward, ep_metrics = _compute_total_episode_reward(envs[i], reward_module, max_turns)
             episode_rewards.append(reward)
             if envs[i].target_reached:
                 wins += 1
-            total_turns += len(envs[i].guesses)
+            total_turns += int(ep_metrics["turns"])
+            total_constraint_violations += int(ep_metrics["constraint_violations"])
+            total_format_compliant += int(ep_metrics["format_compliant_turns"])
+            total_turn_reward += ep_metrics["turn_reward_mean"]
 
         win_rate = wins / max(n, 1)
         avg_turns = total_turns / max(n, 1)
+        avg_reward = sum(episode_rewards) / max(n, 1)
+        reward_std = (sum((r - avg_reward) ** 2 for r in episode_rewards) / max(n, 1)) ** 0.5
+        constraint_violation_rate = total_constraint_violations / max(total_turns, 1)
+        format_compliance_rate = total_format_compliant / max(total_turns, 1)
+        avg_turn_reward = total_turn_reward / max(n, 1)
 
         # Log behavioral metrics to wandb (TRL only logs reward/loss/KL)
         if _WANDB_AVAILABLE and wandb.run is not None:
             wandb.log({
                 "wordle/win_rate": win_rate,
                 "wordle/avg_turns": avg_turns,
-                "wordle/avg_reward": sum(episode_rewards) / max(n, 1),
+                "wordle/avg_reward": avg_reward,
+                "wordle/reward_std": reward_std,
+                "wordle/max_reward": max(episode_rewards),
+                "wordle/min_reward": min(episode_rewards),
+                "wordle/avg_turn_reward": avg_turn_reward,
+                "wordle/constraint_violation_rate": constraint_violation_rate,
+                "wordle/format_compliance_rate": format_compliance_rate,
+                "wordle/n_episodes": float(n),
             }, commit=False)
 
         logger.info(
             f"Rollout: {n} episodes, "
             f"win_rate={win_rate:.1%}, avg_turns={avg_turns:.1f}, "
-            f"avg reward: {sum(episode_rewards) / max(n, 1):.2f}"
+            f"avg_reward={avg_reward:.2f}, "
+            f"violations={constraint_violation_rate:.1%}, format={format_compliance_rate:.1%}"
         )
 
         return {
@@ -290,18 +309,23 @@ def _compute_total_episode_reward(
     env: WordleGymEnv,
     reward_module,
     max_turns: int,
-) -> float:
-    """Compute total reward for a completed Wordle episode (scalar sum)."""
+) -> tuple[float, dict[str, float]]:
+    """Compute total reward + aggregated metrics for a completed episode."""
     total = 0.0
-    for turn_idx in range(len(env.guesses)):
+    turn_rewards: list[float] = []
+    constraint_violations = 0
+    format_compliant = 0
+    total_turn_count = len(env.guesses)
+
+    for turn_idx in range(total_turn_count):
         guess = env.guesses[turn_idx]
         feedback = env.feedbacks[turn_idx]
         prev_guesses = env.guesses[:turn_idx]
         prev_feedbacks = env.feedbacks[:turn_idx]
-        is_last = turn_idx == len(env.guesses) - 1
+        is_last = turn_idx == total_turn_count - 1
         target_reached = env.target_reached and is_last
 
-        turn_reward, _ = reward_module.compute_turn_reward(
+        turn_reward, turn_metrics = reward_module.compute_turn_reward(
             guess=guess,
             feedback=feedback,
             prev_feedbacks=prev_feedbacks,
@@ -310,15 +334,28 @@ def _compute_total_episode_reward(
             max_turns=max_turns,
             target_reached=target_reached,
         )
+        turn_rewards.append(turn_reward)
+        if turn_metrics.get("constraint_violation", 0) > 0:
+            constraint_violations += 1
+        if turn_metrics.get("format_compliance", 0) > 0:
+            format_compliant += 1
+
         if is_last:
             ep_reward, _ = reward_module.compute_episode_reward(
                 target_reached=env.target_reached,
-                total_turns=len(env.guesses),
+                total_turns=total_turn_count,
                 max_turns=max_turns,
             )
             turn_reward += ep_reward
         total += turn_reward
-    return total
+
+    metrics = {
+        "turns": float(total_turn_count),
+        "turn_reward_mean": sum(turn_rewards) / max(len(turn_rewards), 1),
+        "constraint_violations": float(constraint_violations),
+        "format_compliant_turns": float(format_compliant),
+    }
+    return total, metrics
 
 
 # ---------------------------------------------------------------------------
