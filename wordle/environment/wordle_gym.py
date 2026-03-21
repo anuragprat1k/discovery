@@ -10,8 +10,10 @@ import random
 from pathlib import Path
 
 from wordle.environment.feedback import TileColor, compute_feedback, feedback_to_emoji
+from wordle.environment.constraints import RevealedConstraints
 from wordle.environment.wordle_env import (
     SYSTEM_PROMPT,
+    SYSTEM_PROMPT_ENV_ELIMINATED,
     _extract_guess,
     load_word_list,
 )
@@ -141,6 +143,12 @@ class WordleGymEnv:
         # Build feedback text
         emoji = feedback_to_emoji(feedback)
         remaining = self.max_turns - self.turn
+
+        # Compute eliminated letters from full history
+        constraints = RevealedConstraints.from_history(self.guesses, self.feedbacks)
+        eliminated = sorted(c.upper() for c in constraints.grey)
+        eliminated_str = ", ".join(eliminated) if eliminated else "none yet"
+
         if self.target_reached:
             feedback_text = (
                 f"Turn {self.turn}: {guess.upper()} → {emoji}  "
@@ -149,12 +157,14 @@ class WordleGymEnv:
         elif guess not in self.valid_guesses:
             feedback_text = (
                 f"Turn {self.turn}: (not a valid word) {guess.upper()} → {emoji}  "
-                f"({remaining} turn(s) remaining)"
+                f"({remaining} turn(s) remaining)\n"
+                f"Eliminated letters: {eliminated_str}"
             )
         else:
             feedback_text = (
                 f"Turn {self.turn}: {guess.upper()} → {emoji}  "
-                f"({remaining} turn(s) remaining)"
+                f"({remaining} turn(s) remaining)\n"
+                f"Eliminated letters: {eliminated_str}"
             )
 
         observation = {"messages": [{"role": "user", "content": feedback_text}]}
