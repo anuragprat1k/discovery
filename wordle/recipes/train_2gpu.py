@@ -55,13 +55,16 @@ def parse_args() -> argparse.Namespace:
         description="Wordle GRPO training with TRL + vLLM (colocate).",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
+    from wordle.rewards.registry import list_reward_names
     parser.add_argument(
         "--reward",
         required=True,
-        choices=["dense", "sparse"],
-        help="Reward function: 'dense' for per-turn shaping, 'sparse' for terminal-only.",
+        choices=list_reward_names(),
+        help="Reward function name (from registry).",
     )
     parser.add_argument("--model", type=str, default="Qwen/Qwen3-4B")
+    parser.add_argument("--model_path", type=str, default=None,
+                        help="Path to local checkpoint (e.g. SFT-merged). Overrides --model for weights.")
     parser.add_argument("--max_steps", type=int, default=200)
     parser.add_argument("--max_turns", type=int, default=6)
     parser.add_argument(
@@ -95,7 +98,10 @@ def parse_args() -> argparse.Namespace:
         default="wordle-grpo",
         help="W&B project name (set to '' to disable).",
     )
-    parser.add_argument("--run_name", type=str, default=None)
+    parser.add_argument("--run_name", type=str, default=None,
+                        help="W&B run name. Auto-generated from reward type if not set.")
+    parser.add_argument("--log_file", type=str, default=None,
+                        help="Path to JSONL training log (for autoresearch evaluator).")
     parser.add_argument("--trace_words", type=str, nargs="*", default=None,
                         help="Probe words for trajectory saving. Random if not set.")
     parser.add_argument("--n_trace_words", type=int, default=5)
@@ -468,6 +474,28 @@ class TrajectoryCallback:
 
 
 # ---------------------------------------------------------------------------
+# JSONL metrics callback (for autoresearch evaluator compatibility)
+# ---------------------------------------------------------------------------
+
+
+class JSONLMetricsCallback:
+    """Write per-step metrics to a JSONL file for the autoresearch evaluator."""
+
+    def __init__(self, log_file: str):
+        self.log_file = log_file
+        os.makedirs(os.path.dirname(log_file) or ".", exist_ok=True)
+        self._fh = open(log_file, "a")
+
+    def log_step(self, step: int, metrics: dict) -> None:
+        entry = {"step": step, **metrics}
+        self._fh.write(json.dumps(entry) + "\n")
+        self._fh.flush()
+
+    def close(self):
+        self._fh.close()
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
@@ -487,10 +515,11 @@ def main():
     logger.info(f"Loading reward module: {args.reward}")
     reward_module = get_reward_module(args.reward)
 
-    logger.info(f"Loading model: {args.model}")
-    tokenizer = AutoTokenizer.from_pretrained(args.model, trust_remote_code=True)
+    model_name_or_path = args.model_path or args.model
+    logger.info(f"Loading model: {model_name_or_path}")
+    tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, trust_remote_code=True)
     model = AutoModelForCausalLM.from_pretrained(
-        args.model,
+        model_name_or_path,
         torch_dtype=torch.bfloat16,
         trust_remote_code=True,
     )
@@ -509,7 +538,8 @@ def main():
 
     # Reporting
     report_to = "wandb" if args.wandb_project else "none"
-    run_name = args.run_name or f"wordle-{args.reward}-{args.model.split('/')[-1]}"
+    model_slug = Path(model_name_or_path).name if args.model_path else args.model.split("/")[-1]
+    run_name = args.run_name or f"wordle-{args.reward}-{model_slug}"
 
     # GRPOConfig — colocate mode: vLLM + training share one GPU
     config = GRPOConfig(
@@ -574,7 +604,7 @@ def main():
         probe_words = probe_rng.sample(answers, min(args.n_trace_words, len(answers)))
     logger.info(f"Probe words: {[w.upper() for w in probe_words]}")
 
-    # Register trajectory callback
+    # Register callbacks
     from transformers import TrainerCallback
 
     class _TrajectoryCallback(TrainerCallback):
@@ -593,9 +623,21 @@ def main():
 
     trainer.add_callback(_TrajectoryCallback())
 
+    # JSONL metrics callback for autoresearch evaluator
+    jsonl_logger = None
+    if args.log_file:
+        jsonl_logger = JSONLMetricsCallback(args.log_file)
+
+        class _JSONLCallback(TrainerCallback):
+            def on_log(self, _args, state, control, logs=None, **kwargs):
+                if logs and state.global_step > 0:
+                    jsonl_logger.log_step(state.global_step, logs)
+
+        trainer.add_callback(_JSONLCallback())
+
     logger.info("Starting training...")
     logger.info(f"  Reward: {args.reward}")
-    logger.info(f"  Model: {args.model}")
+    logger.info(f"  Model: {model_name_or_path}")
     logger.info(f"  LoRA rank: {args.lora_rank}")
     logger.info(f"  Group size: {args.num_generations}")
     logger.info(f"  Max steps: {args.max_steps}")
@@ -606,6 +648,8 @@ def main():
 
     # Save final model
     trainer.save_model(args.output_dir + "/final")
+    if jsonl_logger:
+        jsonl_logger.close()
     logger.info(f"Training complete. Model saved to {args.output_dir}/final")
 
 
