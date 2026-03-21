@@ -538,6 +538,8 @@ def main():
 
     # Reporting
     report_to = "wandb" if args.wandb_project else "none"
+    if args.wandb_project:
+        os.environ["WANDB_PROJECT"] = args.wandb_project
     model_slug = Path(model_name_or_path).name if args.model_path else args.model.split("/")[-1]
     run_name = args.run_name or f"wordle-{args.reward}-{model_slug}"
 
