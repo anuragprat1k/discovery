@@ -140,6 +140,7 @@ def make_wordle_rollout_func(
     - episode_rewards: list of float rewards (one total per episode)
     """
     tokenizer = None  # Will be set from trainer on first call
+    solved_words: set[str] = set()  # Track unique words solved across training
 
     def wordle_rollout(prompts, trainer, **kwargs):
         """Multi-turn Wordle rollout with environment feedback.
@@ -274,6 +275,7 @@ def make_wordle_rollout_func(
             episode_rewards.append(reward)
             if envs[i].target_reached:
                 wins += 1
+                solved_words.add(envs[i].target)
             total_turns_played += int(ep_metrics["total_turns_played"])
             total_turns_with_guess += int(ep_metrics["format_compliant_turns"])
             total_constraint_violations += int(ep_metrics["constraint_violations"])
@@ -308,6 +310,7 @@ def make_wordle_rollout_func(
                 "wordle/mean_completion_len": mean_completion_len,
                 "wordle/invalid_word_rate": total_invalid_words / max(total_turns_with_guess, 1),
                 "wordle/format_violation_turns": float(total_format_violations),
+                "wordle/unique_words_solved": len(solved_words),
                 "wordle/n_episodes": float(n),
             }, commit=False)
 
@@ -315,7 +318,8 @@ def make_wordle_rollout_func(
             f"Rollout: {n} episodes, "
             f"win_rate={win_rate:.1%}, avg_turns={avg_turns:.1f}, "
             f"avg_reward={avg_reward:.2f}, "
-            f"violations={constraint_violation_rate:.1%}, format={format_compliance_rate:.1%}"
+            f"violations={constraint_violation_rate:.1%}, format={format_compliance_rate:.1%}, "
+            f"unique_solved={len(solved_words)}"
         )
 
         return {
