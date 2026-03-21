@@ -1219,3 +1219,68 @@ wandb: 🚀 View run at https://wandb.ai/anuragprateek/discovery-wordle-autorese
 [step  127] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
 [step  127] ROLLOUT done: 109.0s, 2/64 wins, targets=['STORY', 'SORRY', 'JUDGE', 'HYENA']
 [step  127] TRAIN: reward=0.414 (±0.970), win=3.1%, viol=92.5% ...
+[step  127] TRAIN done: 328.7s, loss=0.0118, grad_norm=0.1682, 64/64 samples used
+[step  127] REPLAY: +11 examples from wins (buffer=3111 total)
+[step  127] REPLAY: sft_loss=0.1221
+[step  127/200] reward=0.414  loss=0.0118  win=3.1%  violations=92.5%  format=98.4%  mem=7.7GB  time=441.7s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step  128] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step  128] ROLLOUT done: 186.8s, 5/64 wins, targets=['LINEN', 'TURBO', 'SWIFT', 'HINGE']
+[step  128] TRAIN: reward=0.673 (±1.453), win=7.8%, viol=90.2% ...
+[step  128] TRAIN done: 328.0s, loss=0.0351, grad_norm=0.2019, 59/64 samples used
+[step  128] REPLAY: +25 examples from wins (buffer=3136 total)
+[step  128] REPLAY: sft_loss=0.2632
+[step  128/200] reward=0.673  loss=0.0351  win=7.8%  violations=90.2%  format=96.6%  mem=7.7GB  time=518.3s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+[step  129] ROLLOUT: generating 64 episodes (4 words x 16 group) ...
+[step  129] ROLLOUT done: 582.4s, 0/64 wins, targets=['LEMUR', 'SMALL', 'CABLE', 'LURCH']
+[step  129] TRAIN: reward=0.406 (±0.412), win=0.0%, viol=96.9% ...
+[step  129] TRAIN done: 4423.0s, loss=0.0055, grad_norm=0.1616, 64/64 samples used
+[step  129] REPLAY: sft_loss=0.3898
+[step  129/200] reward=0.406  loss=0.0055  win=0.0%  violations=96.9%  format=99.0%  mem=7.7GB  time=5008.2s
+[wordle] WARNING: Active memory 7.66 GB exceeds 6 GB threshold. Consider reducing batch/group size.
+
+[wordle] ABORT: Step 129 took 5008s (limit: 600s). Likely swap thrashing. Try --micro_batch_size 2 or reduce --group_size.
+wandb: updating run metadata
+wandb: uploading output.log; uploading wandb-summary.json; uploading config.yaml
+wandb: 
+wandb: Run history:
+wandb:                 avg_turns █████████████████████████▇▇█▇▁█████████▇
+wandb: constraint_violation_rate ▃▄▅▅▃▆▂▇▂▇▃▃▁▄▅▄▇▃▇▆▇▆▄▅▂▃▅▆▆█▂▃▃▂▁▂▁▅▅▄
+wandb:    format_compliance_rate ▃▁▆▇▆▆▅▄▄▄▆▆▅▇▆▆▆▇▆▅▃▆▇▆█▇▇▇██▅▆▇▄▄█▇▇▆▇
+wandb:         frac_positive_adv ▅▁▃▄▄▅█▄▅▆▅▇▆█▂▃▆█▇▇█▃▄▄▆██▇▆█▅▃▂▆▄▄▄▁▄▃
+wandb:                 grad_norm ▁▃▃▃▃▂▃▃▃▃▃▃▃▃▂▄▂▄▂▃▃▄█▃▄▅▃▄▄▄▄▃▃▃▄▃▃▃▃▃
+wandb:            groups_skipped ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁▁▁
+wandb:                      loss ▃▅▅▅▆▇▅▅▅▅▅▅▅▆▅▅▆▅▆▆▅▅▆▅▅█▅▄▅▅▄▆▅▁▆▅▆▅▆▆
+wandb:                max_reward ▁▇▇▇▂▇▇▂▁█▂▇▂█▇▇▇▂▇▇▇▂▇▇▂▇█▇▃▂▂▂▇▇▂▂▇███
+wandb:        mean_abs_advantage █▆▄▇█▆▆▄▇▆▅▃▇▆▆▃▇▅▅▇▄▄▅▇▆▇▆▇▆▇▆▅▆▇▅█▄▁▃▆
+wandb:       mean_completion_len ▃█▆▆▂▃▄▃▃▅▃▃▂▁▃▂▁▂▂▃▁▁▂▂▄▂▂▂▂▂▂▂▂▂▂▂▃▄▃▃
+wandb:                       +15 ...
+wandb: 
+wandb: Run summary:
+wandb:                 avg_turns 6
+wandb: constraint_violation_rate 0.96875
+wandb:    format_compliance_rate 0.98958
+wandb:         frac_positive_adv 0.40625
+wandb:                 grad_norm 0.16164
+wandb:            groups_skipped 0
+wandb:                      loss 0.00551
+wandb:                max_reward 1.6
+wandb:        mean_abs_advantage 0.79495
+wandb:       mean_completion_len 9.20312
+wandb:                       +15 ...
+wandb: 
+wandb: 🚀 View run wordle_mlx_dense at: https://wandb.ai/anuragprateek/discovery-wordle-autoresearch/runs/sipwy0yw
+wandb: ⭐️ View project at: https://wandb.ai/anuragprateek/discovery-wordle-autoresearch
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260320_110343-sipwy0yw/logs
+[mlx] Checkpoint saved: wordle/autoresearch/results/dense_fixed_200/step_0129 (step 129)
+[wordle] Emergency checkpoint saved to wordle/autoresearch/results/dense_fixed_200/step_0129
+
+[wordle] === Training Complete ===
+[wordle] Total time       : 833.4 min
+[wordle] Final reward     : 0.406
+[wordle] Final win rate   : 0.0%
+[wordle] Final violations : 96.9%
+[mlx] Checkpoint saved: wordle/autoresearch/results/dense_fixed_200/final (step 200)
+[wordle] Done.
