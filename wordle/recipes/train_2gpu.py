@@ -264,6 +264,7 @@ def make_wordle_rollout_func(
         # Compute rewards and behavioral metrics for each episode
         episode_rewards = []
         wins = 0
+        batch_solved: set[str] = set()
         total_turns_played = 0
         total_turns_with_guess = 0
         total_constraint_violations = 0
@@ -275,6 +276,7 @@ def make_wordle_rollout_func(
             episode_rewards.append(reward)
             if envs[i].target_reached:
                 wins += 1
+                batch_solved.add(envs[i].target)
                 solved_words.add(envs[i].target)
             total_turns_played += int(ep_metrics["total_turns_played"])
             total_turns_with_guess += int(ep_metrics["format_compliant_turns"])
@@ -311,6 +313,7 @@ def make_wordle_rollout_func(
                 "wordle/invalid_word_rate": total_invalid_words / max(total_turns_with_guess, 1),
                 "wordle/format_violation_turns": float(total_format_violations),
                 "wordle/unique_words_solved": len(solved_words),
+                "wordle/unique_wins_per_batch": float(len(batch_solved)),
                 "wordle/n_episodes": float(n),
             }, commit=False)
 
