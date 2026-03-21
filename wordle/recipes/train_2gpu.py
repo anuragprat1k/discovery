@@ -33,7 +33,7 @@ from trl import GRPOConfig, GRPOTrainer
 from trl.experimental.openenv import generate_rollout_completions
 
 from wordle.environment.feedback import feedback_to_emoji
-from wordle.environment.wordle_env import _extract_guess, SYSTEM_PROMPT
+from wordle.environment.wordle_env import _extract_guess, SYSTEM_PROMPT_ENV_ELIMINATED
 from wordle.environment.wordle_gym import WordleGymEnv, load_default_word_lists
 from wordle.rewards.registry import get_reward_module
 
@@ -169,7 +169,7 @@ def make_wordle_rollout_func(
         conversations = []
         for i in range(n):
             conversations.append([
-                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "system", "content": SYSTEM_PROMPT_ENV_ELIMINATED},
                 {"role": "user", "content": "Guess a 5-letter word."},
             ])
 
@@ -374,7 +374,7 @@ def build_prompt_dataset(
     for _ in range(num_prompts):
         prompts.append(
             [
-                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "system", "content": SYSTEM_PROMPT_ENV_ELIMINATED},
                 {"role": "user", "content": "Guess a 5-letter word."},
             ]
         )
@@ -440,7 +440,7 @@ def save_trajectories(
         # (We don't use vLLM here — just record what the current model would do
         #  by using generate_rollout_completions for one episode at a time)
         conversation = [
-            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": SYSTEM_PROMPT_ENV_ELIMINATED},
             {"role": "user", "content": "Guess a 5-letter word."},
         ]
 
