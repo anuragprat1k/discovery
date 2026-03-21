@@ -57,8 +57,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--lora_alpha", type=int, default=128)
     parser.add_argument("--max_seq_length", type=int, default=2048)
     parser.add_argument("--seed", type=int, default=42)
-    parser.add_argument("--wandb_project", type=str, default="",
-                        help="W&B project (empty to disable).")
+    parser.add_argument("--wandb_project", type=str, default="wordle-grpo",
+                        help="W&B project name (set to '' to disable).")
     return parser.parse_args()
 
 
