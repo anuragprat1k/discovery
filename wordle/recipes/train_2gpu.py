@@ -193,7 +193,15 @@ def make_wordle_rollout_func(
                 break
 
             # Build current prompts for active episodes (full conversation so far)
-            active_prompts = [conversations[i] for i in active_indices]
+            # Pre-apply chat template with enable_thinking=False to ensure
+            # <think>\n\n</think> is in the prompt (Qwen3 no-thinking mode)
+            active_prompts = [
+                tokenizer.apply_chat_template(
+                    conversations[i], tokenize=False,
+                    add_generation_prompt=True, enable_thinking=False,
+                )
+                for i in active_indices
+            ]
 
             # Generate completions via vLLM
             gen_results = generate_rollout_completions(
@@ -424,6 +432,7 @@ def save_trajectories(
     os.makedirs(traj_dir, exist_ok=True)
 
     logger.info(f"Saving trajectories for step {step} ({len(probe_words)} probe words)...")
+    tokenizer = trainer.processing_class
 
     # Create envs with fixed targets for probe words
     from wordle.environment.wordle_gym import WordleGymEnv
@@ -445,10 +454,14 @@ def save_trajectories(
         ]
 
         for turn in range(max_turns):
-            # Generate one completion
+            # Generate one completion (pre-apply template for no-thinking mode)
+            prompt_text = tokenizer.apply_chat_template(
+                conversation, tokenize=False,
+                add_generation_prompt=True, enable_thinking=False,
+            )
             gen_results = generate_rollout_completions(
                 trainer=trainer,
-                prompts=[conversation],
+                prompts=[prompt_text],
             )
             text = gen_results[0]["text"]
             conversation.append({"role": "assistant", "content": text})
