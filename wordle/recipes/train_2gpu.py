@@ -653,6 +653,7 @@ def main():
         gradient_checkpointing=True,
         # Checkpointing & logging
         save_steps=args.save_steps,
+        save_total_limit=2,
         logging_steps=args.logging_steps,
         report_to=report_to,
         # Misc
