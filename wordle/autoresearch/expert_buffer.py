@@ -15,7 +15,7 @@ from pathlib import Path
 
 from wordle.environment.feedback import TileColor, compute_feedback, feedback_to_emoji
 from wordle.environment.constraints import RevealedConstraints
-from wordle.environment.wordle_env import load_word_list, SYSTEM_PROMPT
+from wordle.environment.wordle_env import load_word_list, SYSTEM_PROMPT_ENV_ELIMINATED
 
 
 STARTER_WORD = "crane"
@@ -81,24 +81,15 @@ def game_to_sft_examples(
     """
     examples = []
     messages = [
-        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "system", "content": SYSTEM_PROMPT_ENV_ELIMINATED},
         {"role": "user", "content": "Guess a 5-letter word."},
     ]
 
     for turn_idx, (guess, feedback) in enumerate(history):
         turn = turn_idx + 1
 
-        # Build completion: eliminated tags + guess tags
-        if turn_idx == 0:
-            eliminated_str = ""
-        else:
-            prior_constraints = RevealedConstraints.from_history(
-                [g for g, _ in history[:turn_idx]],
-                [f for _, f in history[:turn_idx]],
-            )
-            eliminated_str = ", ".join(c.upper() for c in sorted(prior_constraints.grey))
-
-        completion = f"<eliminated>{eliminated_str}</eliminated>\n<guess>{guess.upper()}</guess>"
+        # Completion: just <guess>WORD</guess> (env provides eliminated letters)
+        completion = f"<guess>{guess.upper()}</guess>"
 
         # Save this turn as an SFT example
         examples.append({
@@ -110,6 +101,15 @@ def game_to_sft_examples(
         messages.append({"role": "assistant", "content": completion})
         emoji = feedback_to_emoji(feedback)
         remaining = max_turns - turn
+
+        # Build feedback with eliminated letters (matches wordle_gym.py)
+        constraints = RevealedConstraints.from_history(
+            [g for g, _ in history[:turn_idx + 1]],
+            [f for _, f in history[:turn_idx + 1]],
+        )
+        eliminated = sorted(c.upper() for c in constraints.grey)
+        eliminated_str = ", ".join(eliminated) if eliminated else "none yet"
+
         if guess == target:
             fb_text = (
                 f"Turn {turn}: {guess.upper()} → {emoji}  "
@@ -118,7 +118,8 @@ def game_to_sft_examples(
         else:
             fb_text = (
                 f"Turn {turn}: {guess.upper()} → {emoji}  "
-                f"({remaining} turn(s) remaining)"
+                f"({remaining} turn(s) remaining)\n"
+                f"Eliminated letters: {eliminated_str}"
             )
         messages.append({"role": "user", "content": fb_text})
 
