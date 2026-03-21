@@ -706,11 +706,17 @@ def save_trajectories(
             flush=True,
         )
 
+        # Compute per-turn rewards for validation
+        reward_type = args.reward
+        per_turn_rewards, _ = compute_episode_rewards(episode, reward_type, args.max_turns)
+
         episodes_data.append({
             "target": target.upper(),
             "solved": episode["target_reached"],
             "turns": episode["total_turns"],
             "messages": messages,
+            "per_turn_rewards": per_turn_rewards,
+            "reward_type": reward_type,
         })
 
     trace_path = os.path.join(traj_dir, f"step_{step:04d}.json")

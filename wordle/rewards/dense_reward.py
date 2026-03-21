@@ -11,6 +11,7 @@ from wordle.rewards.reward_utils import count_new_greens, count_new_yellows, has
 LENGTH_PENALTY_PER_TOKEN = 0.0
 LENGTH_PENALTY_FREE_TOKENS = 40
 CONSTRAINT_VIOLATION_PENALTY = 0.0
+FORMAT_REWARD = 0.0
 
 
 def _has_guess_tag(completion_text: str) -> bool:
@@ -32,16 +33,15 @@ def compute_turn_reward(
     """Per-turn dense reward.
 
     Components (positive-only per-turn):
-    - +0.4 per new green tile
-    - +0.2 per new yellow tile
-    - +0.1 if completion contains valid <guess>WORD</guess> tag
-    - No penalties for constraint violations or missing format
+    - +0.4 per new green tile (position-deduped)
+    - +0.2 per new yellow tile (letter-deduped)
+    - +FORMAT_REWARD if completion contains valid <guess>WORD</guess> tag (default 0)
     """
     reward = 0.0
     metrics: dict[str, float] = {"turn": float(turn)}
 
     new_greens = count_new_greens(feedback, prev_feedbacks)
-    new_yellows = count_new_yellows(feedback, prev_feedbacks)
+    new_yellows = count_new_yellows(feedback, prev_feedbacks, guess, prev_guesses)
 
     reward += 0.4 * new_greens
     reward += 0.2 * new_yellows
@@ -55,9 +55,9 @@ def compute_turn_reward(
     else:
         metrics["constraint_violation"] = 0.0
 
-    # Format compliance reward (positive only)
+    # Format compliance tracking (reward is tunable, default 0)
     if completion_text and _has_guess_tag(completion_text):
-        reward += 0.1
+        reward += FORMAT_REWARD
         metrics["format_compliance"] = 1.0
     else:
         metrics["format_compliance"] = 0.0

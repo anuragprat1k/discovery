@@ -334,6 +334,17 @@ class TestRewardUtils:
         fb = [X, Y, X, Y, X]
         assert count_new_yellows(fb, []) == 2
 
+    def test_count_new_yellows_filters_known_letters(self):
+        # Turn 1: CRANE -> R is yellow (new), A is yellow (new)
+        fb1 = [X, Y, Y, X, X]
+        assert count_new_yellows(fb1, [], "crane", []) == 2
+        # Turn 2: BRIAR -> R is yellow again (not new), A yellow (not new)
+        fb2 = [X, Y, X, X, Y]
+        assert count_new_yellows(fb2, [fb1], "briar", ["crane"]) == 0
+        # Turn 2: PLOTS -> O is yellow (new)
+        fb3 = [X, X, X, X, Y]
+        assert count_new_yellows(fb3, [fb1], "plots", ["crane"]) == 1
+
     def test_has_constraint_violation_no_history(self):
         assert has_constraint_violation("crane", [], []) is False
 
