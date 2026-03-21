@@ -38,13 +38,18 @@ class RewardModule(Protocol):
 
 
 def _load_registry() -> dict[str, ModuleType]:
-    from wordle.rewards import dense_reward, sparse_reward, potential_reward, reduction_reward
+    from wordle.rewards import (
+        dense_reward, sparse_reward, potential_reward, reduction_reward,
+        dense_potential_reward, dense_reduction_reward,
+    )
 
     return {
         "dense": dense_reward,
         "sparse": sparse_reward,
         "potential": potential_reward,
         "reduction": reduction_reward,
+        "dense_potential": dense_potential_reward,
+        "dense_reduction": dense_reduction_reward,
     }
 
 
