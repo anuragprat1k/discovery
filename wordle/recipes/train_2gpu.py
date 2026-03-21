@@ -107,6 +107,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--n_trace_words", type=int, default=5)
     parser.add_argument("--trace_steps", type=int, default=25,
                         help="Save trajectories every N steps.")
+    parser.add_argument("--enable_thinking", action="store_true",
+                        help="Allow Qwen3 thinking mode (default: disabled).")
     return parser.parse_args()
 
 
@@ -120,6 +122,7 @@ def make_wordle_rollout_func(
     valid_guesses: set[str],
     reward_module,
     max_turns: int = 6,
+    enable_thinking: bool = False,
 ):
     """Create a rollout function compatible with TRL GRPOTrainer.
 
@@ -175,7 +178,7 @@ def make_wordle_rollout_func(
 
         # Tokenize prompts (initial conversation)
         prompt_texts = [
-            tokenizer.apply_chat_template(conv, tokenize=False, add_generation_prompt=True, enable_thinking=False)
+            tokenizer.apply_chat_template(conv, tokenize=False, add_generation_prompt=True, enable_thinking=enable_thinking)
             for conv in conversations
         ]
         all_prompt_ids = [tokenizer.encode(t) for t in prompt_texts]
@@ -193,12 +196,11 @@ def make_wordle_rollout_func(
                 break
 
             # Build current prompts for active episodes (full conversation so far)
-            # Pre-apply chat template with enable_thinking=False to ensure
-            # <think>\n\n</think> is in the prompt (Qwen3 no-thinking mode)
+            # Pre-apply chat template to control thinking mode
             active_prompts = [
                 tokenizer.apply_chat_template(
                     conversations[i], tokenize=False,
-                    add_generation_prompt=True, enable_thinking=False,
+                    add_generation_prompt=True, enable_thinking=enable_thinking,
                 )
                 for i in active_indices
             ]
@@ -244,7 +246,7 @@ def make_wordle_rollout_func(
                     # Tokenize the feedback + generation prompt for next turn.
                     # These env tokens get mask=0 (not trained on).
                     feedback_with_prompt = tokenizer.apply_chat_template(
-                        conversations[i], tokenize=False, add_generation_prompt=True, enable_thinking=False
+                        conversations[i], tokenize=False, add_generation_prompt=True, enable_thinking=enable_thinking
                     )
                     full_ids = tokenizer.encode(feedback_with_prompt)
                     existing_len = len(all_prompt_ids[i]) + len(all_completion_ids[i])
@@ -435,6 +437,7 @@ def save_trajectories(
     trainer,
     output_dir: str,
     max_turns: int = 6,
+    enable_thinking: bool = False,
 ) -> None:
     """Run one episode per probe word and save conversation traces."""
     traj_dir = os.path.join(output_dir, "trajectories")
@@ -466,7 +469,7 @@ def save_trajectories(
             # Generate one completion (pre-apply template for no-thinking mode)
             prompt_text = tokenizer.apply_chat_template(
                 conversation, tokenize=False,
-                add_generation_prompt=True, enable_thinking=False,
+                add_generation_prompt=True, enable_thinking=enable_thinking,
             )
             gen_results = generate_rollout_completions(
                 trainer=trainer,
@@ -611,7 +614,7 @@ def main():
         vllm_mode="colocate",
         vllm_gpu_memory_utilization=args.vllm_gpu_memory_utilization,
         vllm_enable_sleep_mode=False,
-        chat_template_kwargs={"enable_thinking": False},
+        chat_template_kwargs={"enable_thinking": args.enable_thinking},
         # GRPO hyperparameters
         num_generations=args.num_generations,
         max_completion_length=args.max_completion_length,
@@ -644,6 +647,7 @@ def main():
         valid_guesses=valid_guesses,
         reward_module=reward_module,
         max_turns=args.max_turns,
+        enable_thinking=args.enable_thinking,
     )
     reward_fn = make_reward_func(reward_module, max_turns=args.max_turns)
 
@@ -680,6 +684,7 @@ def main():
                     trainer=trainer,
                     output_dir=args.output_dir,
                     max_turns=args.max_turns,
+                    enable_thinking=args.enable_thinking,
                 )
 
     trainer.add_callback(_TrajectoryCallback())
