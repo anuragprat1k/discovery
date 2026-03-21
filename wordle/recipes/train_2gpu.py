@@ -109,6 +109,8 @@ def parse_args() -> argparse.Namespace:
                         help="Save trajectories every N steps.")
     parser.add_argument("--enable_thinking", action="store_true",
                         help="Allow Qwen3 thinking mode (default: disabled).")
+    parser.add_argument("--invalid_word_penalty", type=float, default=0.0,
+                        help="Per-turn penalty for guessing non-dictionary words.")
     return parser.parse_args()
 
 
@@ -123,6 +125,7 @@ def make_wordle_rollout_func(
     reward_module,
     max_turns: int = 6,
     enable_thinking: bool = False,
+    invalid_word_penalty: float = 0.0,
 ):
     """Create a rollout function compatible with TRL GRPOTrainer.
 
@@ -264,8 +267,10 @@ def make_wordle_rollout_func(
         total_turns_with_guess = 0
         total_constraint_violations = 0
         total_turn_reward = 0.0
+        total_invalid_words = 0
+        total_format_violations = 0
         for i in range(n):
-            reward, ep_metrics = _compute_total_episode_reward(envs[i], reward_module, max_turns)
+            reward, ep_metrics = _compute_total_episode_reward(envs[i], reward_module, max_turns, invalid_word_penalty)
             episode_rewards.append(reward)
             if envs[i].target_reached:
                 wins += 1
@@ -273,6 +278,8 @@ def make_wordle_rollout_func(
             total_turns_with_guess += int(ep_metrics["format_compliant_turns"])
             total_constraint_violations += int(ep_metrics["constraint_violations"])
             total_turn_reward += ep_metrics["turn_reward_mean"]
+            total_invalid_words += int(ep_metrics.get("invalid_words", 0))
+            total_format_violations += int(ep_metrics.get("format_violation_turns", 0))
 
         win_rate = wins / max(n, 1)
         avg_turns = total_turns_played / max(n, 1)
@@ -299,6 +306,8 @@ def make_wordle_rollout_func(
                 "wordle/constraint_violation_rate": constraint_violation_rate,
                 "wordle/format_compliance_rate": format_compliance_rate,
                 "wordle/mean_completion_len": mean_completion_len,
+                "wordle/invalid_word_rate": total_invalid_words / max(total_turns_with_guess, 1),
+                "wordle/format_violation_turns": float(total_format_violations),
                 "wordle/n_episodes": float(n),
             }, commit=False)
 
@@ -324,12 +333,14 @@ def _compute_total_episode_reward(
     env: WordleGymEnv,
     reward_module,
     max_turns: int,
+    invalid_word_penalty: float = 0.0,
 ) -> tuple[float, dict[str, float]]:
     """Compute total reward + aggregated metrics for a completed episode."""
     total = 0.0
     turn_rewards: list[float] = []
     constraint_violations = 0
     format_compliant = 0
+    invalid_words = 0
     total_turn_count = len(env.guesses)
 
     for turn_idx in range(total_turn_count):
@@ -349,6 +360,12 @@ def _compute_total_episode_reward(
             max_turns=max_turns,
             target_reached=target_reached,
         )
+
+        # Penalize invalid (non-dictionary) words
+        if guess not in env.valid_guesses:
+            turn_reward += invalid_word_penalty
+            invalid_words += 1
+
         turn_rewards.append(turn_reward)
         if turn_metrics.get("constraint_violation", 0) > 0:
             constraint_violations += 1
@@ -364,6 +381,11 @@ def _compute_total_episode_reward(
             turn_reward += ep_reward
         total += turn_reward
 
+    # Penalize format violations: turns where no <guess> tag was parsed
+    # This prevents the "corrupt the tag to avoid losing" exploit
+    format_violation_turns = env.turn - total_turn_count
+    total += format_violation_turns * (-1.0)
+
     # env.turn = total turns played (including invalid parses)
     # total_turn_count = len(env.guesses) = turns with valid <guess> tags
     total_played = env.turn
@@ -372,6 +394,8 @@ def _compute_total_episode_reward(
         "turn_reward_mean": sum(turn_rewards) / max(len(turn_rewards), 1),
         "constraint_violations": float(constraint_violations),
         "format_compliant_turns": float(format_compliant),
+        "invalid_words": float(invalid_words),
+        "format_violation_turns": float(format_violation_turns),
         "total_turns_played": float(total_played),
     }
     return total, metrics
@@ -648,6 +672,7 @@ def main():
         reward_module=reward_module,
         max_turns=args.max_turns,
         enable_thinking=args.enable_thinking,
+        invalid_word_penalty=args.invalid_word_penalty,
     )
     reward_fn = make_reward_func(reward_module, max_turns=args.max_turns)
 
