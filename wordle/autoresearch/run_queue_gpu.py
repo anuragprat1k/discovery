@@ -38,7 +38,8 @@ RESULTS_TSV = AUTORESEARCH_DIR / "results_gpu.tsv"
 
 # Default CLI args shared by all experiments
 BASE_CLI_ARGS = (
-    "--save_steps 50 --wandb_project discovery-wordle-gpu"
+    "--save_steps 50 --trace_steps 25 --n_trace_words 5 "
+    "--wandb_project wordle-grpo"
 )
 
 
