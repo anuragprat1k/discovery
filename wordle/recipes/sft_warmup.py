@@ -172,6 +172,8 @@ def main():
     # Step 5: Training
     lora_output_dir = args.output_dir + "_lora"
     report_to = "wandb" if args.wandb_project else "none"
+    if args.wandb_project:
+        os.environ["WANDB_PROJECT"] = args.wandb_project
 
     training_args = TrainingArguments(
         output_dir=lora_output_dir,
