@@ -337,6 +337,10 @@ def make_wordle_rollout_func(
             "episode_rewards": episode_rewards,
         }
 
+    # Expose tracking state as function attributes for callbacks
+    wordle_rollout.solved_words = solved_words
+    wordle_rollout.solved_counts = solved_counts
+
     return wordle_rollout
 
 
@@ -724,16 +728,17 @@ def main():
                     enable_thinking=args.enable_thinking,
                 )
                 # Save solved/mastered word sets for later analysis
-                # Access closure variables from rollout_func
                 words_dir = os.path.join(args.output_dir, "solved_words")
                 os.makedirs(words_dir, exist_ok=True)
+                sw = rollout_func.solved_words
+                sc = rollout_func.solved_counts
                 snapshot = {
                     "step": step,
-                    "unique_solved": sorted(solved_words),
-                    "solved_counts": dict(sorted(solved_counts.items(), key=lambda x: -x[1])),
-                    "mastered": sorted(w for w, c in solved_counts.items() if c >= 2),
-                    "total_unique": len(solved_words),
-                    "total_mastered": sum(1 for c in solved_counts.values() if c >= 2),
+                    "unique_solved": sorted(sw),
+                    "solved_counts": dict(sorted(sc.items(), key=lambda x: -x[1])),
+                    "mastered": sorted(w for w, c in sc.items() if c >= 2),
+                    "total_unique": len(sw),
+                    "total_mastered": sum(1 for c in sc.values() if c >= 2),
                 }
                 with open(os.path.join(words_dir, f"step_{step:04d}.json"), "w") as f:
                     json.dump(snapshot, f, indent=2)
