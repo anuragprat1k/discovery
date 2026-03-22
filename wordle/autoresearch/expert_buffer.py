@@ -18,7 +18,7 @@ from wordle.environment.constraints import RevealedConstraints
 from wordle.environment.wordle_env import load_word_list, SYSTEM_PROMPT_ENV_ELIMINATED
 
 
-STARTER_WORD = "crane"
+STARTER_WORDS = ["crane", "slate", "trace", "adieu", "stare"]
 
 
 def _filter_candidates(candidates: list[str], constraints: RevealedConstraints) -> list[str]:
@@ -45,7 +45,7 @@ def play_game(
 
     for turn in range(1, max_turns + 1):
         if turn == 1:
-            guess = STARTER_WORD
+            guess = rng.choice(STARTER_WORDS)
         else:
             # Filter candidates by constraints so far
             guesses_so_far = [g for g, _ in history]
@@ -130,15 +130,24 @@ def generate_expert_buffer(
     n_games: int = 500,
     output_path: str = "expert_buffer.jsonl",
     seed: int = 42,
+    word_list: list[str] | None = None,
 ) -> dict:
     """Play n_games, save winning trajectories as SFT examples.
+
+    Args:
+        word_list: Target words to sample from. If None, uses SFT split
+                   from split_words.py to avoid GRPO contamination.
 
     Returns stats dict with wins, total_examples, win_rate.
     """
     data_dir = Path(__file__).parent.parent / "data"
-    answers = load_word_list(data_dir / "wordle_answers.txt")
+    if word_list is not None:
+        answers = list(word_list)
+    else:
+        from wordle.data.split_words import get_word_splits
+        answers = get_word_splits()["sft"]
     extra_guesses = load_word_list(data_dir / "wordle_guesses.txt")
-    valid_guesses = list(set(answers) | set(extra_guesses))
+    valid_guesses = list(set(answers) | set(extra_guesses) | set(load_word_list(data_dir / "wordle_answers.txt")))
 
     rng = random.Random(seed)
     wins = 0
