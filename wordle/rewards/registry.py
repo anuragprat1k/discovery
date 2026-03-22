@@ -41,6 +41,7 @@ def _load_registry() -> dict[str, ModuleType]:
     from wordle.rewards import (
         dense_reward, sparse_reward, potential_reward, reduction_reward,
         dense_potential_reward, dense_reduction_reward,
+        dense_greens_only_reward, dense_plus_potential_reward,
     )
 
     return {
@@ -50,6 +51,8 @@ def _load_registry() -> dict[str, ModuleType]:
         "reduction": reduction_reward,
         "dense_potential": dense_potential_reward,
         "dense_reduction": dense_reduction_reward,
+        "dense_greens_only": dense_greens_only_reward,
+        "dense_plus_potential": dense_plus_potential_reward,
     }
 
 
