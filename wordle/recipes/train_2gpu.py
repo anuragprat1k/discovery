@@ -141,6 +141,7 @@ def make_wordle_rollout_func(
     """
     tokenizer = None  # Will be set from trainer on first call
     solved_words: set[str] = set()  # Track unique words solved across training
+    solved_counts: dict[str, int] = {}  # word -> times solved (for mastered detection)
 
     def wordle_rollout(prompts, trainer, **kwargs):
         """Multi-turn Wordle rollout with environment feedback.
@@ -278,6 +279,7 @@ def make_wordle_rollout_func(
                 wins += 1
                 batch_solved.add(envs[i].target)
                 solved_words.add(envs[i].target)
+                solved_counts[envs[i].target] = solved_counts.get(envs[i].target, 0) + 1
             total_turns_played += int(ep_metrics["total_turns_played"])
             total_turns_with_guess += int(ep_metrics["format_compliant_turns"])
             total_constraint_violations += int(ep_metrics["constraint_violations"])
@@ -313,16 +315,18 @@ def make_wordle_rollout_func(
                 "wordle/invalid_word_rate": total_invalid_words / max(total_turns_with_guess, 1),
                 "wordle/format_violation_turns": float(total_format_violations),
                 "wordle/unique_words_solved": len(solved_words),
+                "wordle/mastered_words": sum(1 for c in solved_counts.values() if c >= 2),
                 "wordle/unique_wins_per_batch": float(len(batch_solved)),
                 "wordle/n_episodes": float(n),
             }, commit=False)
 
+        mastered = sum(1 for c in solved_counts.values() if c >= 2)
         logger.info(
             f"Rollout: {n} episodes, "
             f"win_rate={win_rate:.1%}, avg_turns={avg_turns:.1f}, "
             f"avg_reward={avg_reward:.2f}, "
             f"violations={constraint_violation_rate:.1%}, format={format_compliance_rate:.1%}, "
-            f"unique_solved={len(solved_words)}"
+            f"unique_solved={len(solved_words)}, mastered={mastered}"
         )
 
         return {
@@ -719,6 +723,20 @@ def main():
                     max_turns=args.max_turns,
                     enable_thinking=args.enable_thinking,
                 )
+                # Save solved/mastered word sets for later analysis
+                # Access closure variables from rollout_func
+                words_dir = os.path.join(args.output_dir, "solved_words")
+                os.makedirs(words_dir, exist_ok=True)
+                snapshot = {
+                    "step": step,
+                    "unique_solved": sorted(solved_words),
+                    "solved_counts": dict(sorted(solved_counts.items(), key=lambda x: -x[1])),
+                    "mastered": sorted(w for w, c in solved_counts.items() if c >= 2),
+                    "total_unique": len(solved_words),
+                    "total_mastered": sum(1 for c in solved_counts.values() if c >= 2),
+                }
+                with open(os.path.join(words_dir, f"step_{step:04d}.json"), "w") as f:
+                    json.dump(snapshot, f, indent=2)
 
     trainer.add_callback(_TrajectoryCallback())
 
