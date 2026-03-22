@@ -4,6 +4,7 @@ from __future__ import annotations
 import re
 
 from wordle.environment.feedback import TileColor
+from wordle.rewards.reward_utils import has_constraint_violation
 
 
 def _has_guess_tag(completion_text: str) -> bool:
@@ -28,6 +29,11 @@ def compute_turn_reward(
         metrics["format_compliance"] = 1.0
     else:
         metrics["format_compliance"] = 0.0
+    if has_constraint_violation(guess, prev_guesses, prev_feedbacks):
+        metrics["constraint_violation"] = 1.0
+    else:
+        metrics["constraint_violation"] = 0.0
+
     return 0.0, metrics
 
 
