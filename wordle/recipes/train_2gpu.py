@@ -15,9 +15,11 @@ import argparse
 import json
 import logging
 import os
+import math
 import random
 import sys
 import time
+from collections import Counter
 from pathlib import Path
 
 os.environ.setdefault("TRL_EXPERIMENTAL_SILENCE", "1")
@@ -299,6 +301,25 @@ def make_wordle_rollout_func(
         completion_lens = [len(ids) for ids in all_completion_ids]
         mean_completion_len = sum(completion_lens) / max(len(completion_lens), 1)
 
+        # Opener diversity metrics
+        first_guesses = [envs[i].guesses[0] if envs[i].guesses else "" for i in range(n)]
+        first_letters = [g[0] if g else "?" for g in first_guesses]
+        letter_counts = Counter(first_letters)
+        total_letters = sum(letter_counts.values())
+        opener_entropy = -sum(
+            (c / total_letters) * math.log2(c / total_letters)
+            for c in letter_counts.values() if c > 0
+        ) if total_letters > 0 else 0.0
+        crane_frac = sum(1 for g in first_guesses if g == "crane") / max(len(first_guesses), 1)
+
+        # Mastered first-letter distribution
+        mastered_letters = Counter(w[0] for w in solved_words if solved_counts.get(w, 0) >= 2)
+        mastered_total = sum(mastered_letters.values())
+        mastered_first_letter_entropy = -sum(
+            (c / mastered_total) * math.log2(c / mastered_total)
+            for c in mastered_letters.values() if c > 0
+        ) if mastered_total > 0 else 0.0
+
         # Log behavioral metrics to wandb (TRL only logs reward/loss/KL)
         if _WANDB_AVAILABLE and wandb.run is not None:
             wandb.log({
@@ -318,6 +339,9 @@ def make_wordle_rollout_func(
                 "wordle/mastered_words": sum(1 for c in solved_counts.values() if c >= 2),
                 "wordle/unique_wins_per_batch": float(len(batch_solved)),
                 "wordle/n_episodes": float(n),
+                "wordle/opener_entropy": opener_entropy,
+                "wordle/opener_crane_frac": crane_frac,
+                "wordle/mastered_first_letter_entropy": mastered_first_letter_entropy,
             }, commit=False)
 
         mastered = sum(1 for c in solved_counts.values() if c >= 2)
@@ -609,9 +633,13 @@ def main():
         format="%(asctime)s [%(name)s] %(levelname)s: %(message)s",
     )
 
-    logger.info("Loading word lists...")
-    answers, valid_guesses = load_default_word_lists()
-    logger.info(f"  {len(answers)} answers, {len(valid_guesses)} valid guesses")
+    logger.info("Loading word lists (GRPO split)...")
+    from wordle.data.split_words import get_word_splits
+    splits = get_word_splits()
+    _, valid_guesses = load_default_word_lists()
+    answers = splits["grpo"]
+    logger.info(f"  {len(answers)} GRPO answers, {len(valid_guesses)} valid guesses")
+    logger.info(f"  (SFT: {len(splits['sft'])}, Probe: {len(splits['probe'])})")
 
     logger.info(f"Loading reward module: {args.reward}")
     reward_module = get_reward_module(args.reward)
@@ -702,12 +730,11 @@ def main():
         rollout_func=rollout_func,
     )
 
-    # Select probe words for trajectory saving
-    probe_rng = random.Random(args.seed)
+    # Select probe words for trajectory saving (use held-out probe set by default)
     if args.trace_words:
         probe_words = [w.lower() for w in args.trace_words]
     else:
-        probe_words = probe_rng.sample(answers, min(args.n_trace_words, len(answers)))
+        probe_words = splits["probe"]
     logger.info(f"Probe words: {[w.upper() for w in probe_words]}")
 
     # Register callbacks
@@ -732,13 +759,18 @@ def main():
                 os.makedirs(words_dir, exist_ok=True)
                 sw = rollout_func.solved_words
                 sc = rollout_func.solved_counts
+                first_letter_dist = dict(sorted(Counter(w[0] for w in sw).items()))
+                mastered_words = [w for w, c in sc.items() if c >= 2]
+                mastered_first_letter_dist = dict(sorted(Counter(w[0] for w in mastered_words).items()))
                 snapshot = {
                     "step": step,
                     "unique_solved": sorted(sw),
                     "solved_counts": dict(sorted(sc.items(), key=lambda x: -x[1])),
-                    "mastered": sorted(w for w, c in sc.items() if c >= 2),
+                    "mastered": sorted(mastered_words),
                     "total_unique": len(sw),
-                    "total_mastered": sum(1 for c in sc.values() if c >= 2),
+                    "total_mastered": len(mastered_words),
+                    "first_letter_distribution": first_letter_dist,
+                    "mastered_first_letter_distribution": mastered_first_letter_dist,
                 }
                 with open(os.path.join(words_dir, f"step_{step:04d}.json"), "w") as f:
                     json.dump(snapshot, f, indent=2)
