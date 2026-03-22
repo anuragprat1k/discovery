@@ -38,6 +38,7 @@ from wordle.environment.feedback import feedback_to_emoji
 from wordle.environment.wordle_env import _extract_guess, SYSTEM_PROMPT_ENV_ELIMINATED
 from wordle.environment.wordle_gym import WordleGymEnv, load_default_word_lists
 from wordle.rewards.registry import get_reward_module
+from wordle.rewards.reward_utils import has_constraint_violation
 
 try:
     import wandb
@@ -111,7 +112,7 @@ def parse_args() -> argparse.Namespace:
                         help="Save trajectories every N steps.")
     parser.add_argument("--enable_thinking", action="store_true",
                         help="Allow Qwen3 thinking mode (default: disabled).")
-    parser.add_argument("--invalid_word_penalty", type=float, default=0.0,
+    parser.add_argument("--invalid_word_penalty", type=float, default=-0.2,
                         help="Per-turn penalty for guessing non-dictionary words.")
     return parser.parse_args()
 
@@ -400,13 +401,16 @@ def _compute_total_episode_reward(
             target_reached=target_reached,
         )
 
-        # Penalize invalid (non-dictionary) words
-        if guess not in env.valid_guesses:
-            turn_reward += invalid_word_penalty
+        # Detect bad guesses at trainer level (not relying on reward module)
+        is_invalid = guess not in env.valid_guesses
+        is_violation = has_constraint_violation(guess, prev_guesses, prev_feedbacks)
+
+        if is_invalid:
+            turn_reward = invalid_word_penalty  # zero out per-turn, apply penalty only
             invalid_words += 1
 
-        turn_rewards.append(turn_reward)
-        if turn_metrics.get("constraint_violation", 0) > 0:
+        if is_violation:
+            turn_reward = 0.0  # zero out per-turn reward for constraint violations
             constraint_violations += 1
         # A guess in env.guesses means <guess> tag was parsed successfully
         format_compliant += 1
