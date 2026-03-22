@@ -21,7 +21,15 @@ echo "Model: $MODEL"
 
 cd /workspace
 
-# --- Dependencies (torch is pre-installed on RunPod) ---
+# --- Virtual environment ---
+if [ ! -d "/workspace/venv" ]; then
+    echo "=== Creating virtual environment ==="
+    python3 -m venv /workspace/venv --system-site-packages
+fi
+source /workspace/venv/bin/activate
+echo "Using Python: $(which python3)"
+
+# --- Dependencies (torch is pre-installed via system-site-packages) ---
 echo "=== Installing Python dependencies ==="
 pip install --quiet vllm trl peft datasets accelerate wandb python-dotenv matplotlib tqdm
 
@@ -64,8 +72,10 @@ echo "=== Base setup complete ==="
 echo "Repo: /workspace/discovery (branch: $BRANCH)"
 echo "Model cached: $MODEL"
 echo "HF cache: /workspace/hf_cache"
+echo "Venv: source /workspace/venv/bin/activate"
 echo ""
 echo "Next steps (Wordle v4):"
+echo "  source /workspace/venv/bin/activate"
 echo "  cd /workspace/discovery"
 echo "  bash wordle/scripts/runpod_setup.sh   # SFT warmup + verify"
 echo ""
