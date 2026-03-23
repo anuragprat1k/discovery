@@ -84,7 +84,8 @@ def play_game_hf(model, tokenizer, target, valid_guesses, answers,
         conversation.append({"role": "assistant", "content": generated})
         if done:
             break
-        conversation.append({"role": "user", "content": obs})
+        feedback_text = obs["messages"][0]["content"] if isinstance(obs, dict) else obs
+        conversation.append({"role": "user", "content": feedback_text})
 
     return {"target": target, "solved": env.target_reached,
             "turns": len(guesses), "guesses": guesses}
@@ -130,7 +131,8 @@ def play_game_vllm(llm, tokenizer, target, valid_guesses, answers,
         conversation.append({"role": "assistant", "content": generated})
         if done:
             break
-        conversation.append({"role": "user", "content": obs})
+        feedback_text = obs["messages"][0]["content"] if isinstance(obs, dict) else obs
+        conversation.append({"role": "user", "content": feedback_text})
 
     return {"target": target, "solved": env.target_reached,
             "turns": len(guesses), "guesses": guesses}
