@@ -1,4 +1,4 @@
-# V5 Dense greens only — testing without yellow reward (potential-based only)
+# V5 Dense greens only — no yellows, no penalties, no zeroing
 name: dense_greens_only_v5
 version: v5
 
@@ -6,7 +6,6 @@ reward: dense_greens_only
 loss_type: grpo
 model_path: /workspace/checkpoints/sft_merged
 
-# Same config as V4 dense
 max_steps: 1000
 num_generations: 16
 per_device_train_batch_size: 4
@@ -17,9 +16,9 @@ temperature: 1.0
 beta: 0.04
 lr: 1e-4
 
-# Penalties
+# Matches V4 — no penalties, no zeroing
 invalid_word_penalty: 0.0
-zero_reward_on_violation: true  # V5 has this in trainer
+zero_reward_on_violation: false
 
 # SFT warmup
 sft_steps: 100
