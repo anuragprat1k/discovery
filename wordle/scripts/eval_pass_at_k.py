@@ -197,7 +197,11 @@ def main():
             merged = PeftModel.from_pretrained(base, args.lora)
             merged = merged.merge_and_unload()
 
-            merge_dir = tempfile.mkdtemp(prefix="merged_")
+            # Use /workspace/tmp if available (container root may be small)
+            tmp_base = "/workspace/tmp" if Path("/workspace").exists() else None
+            if tmp_base:
+                Path(tmp_base).mkdir(exist_ok=True)
+            merge_dir = tempfile.mkdtemp(prefix="merged_", dir=tmp_base)
             merged.save_pretrained(merge_dir)
             tokenizer = AutoTokenizer.from_pretrained(args.model)
             tokenizer.save_pretrained(merge_dir)
@@ -206,6 +210,9 @@ def main():
 
             print(f"Loading merged model into vLLM from {merge_dir}...")
             llm = LLM(model=merge_dir, gpu_memory_utilization=0.6)
+            # Clean up merged dir after loading
+            import shutil
+            shutil.rmtree(merge_dir, ignore_errors=True)
         else:
             print(f"Loading {args.model} into vLLM...")
             llm = LLM(model=args.model, gpu_memory_utilization=0.6)
