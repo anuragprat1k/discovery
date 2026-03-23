@@ -1,4 +1,4 @@
-# V5 Dense GRPO — same as V4 dense but with zero_reward_on_violation in trainer
+# V5 Dense GRPO — matches V4 dense config exactly (no penalty, no zero-on-violation)
 name: dense_grpo_v5
 version: v5
 
@@ -16,9 +16,9 @@ temperature: 1.0
 beta: 0.04
 lr: 1e-4
 
-# Penalties
+# Matches V4 — no penalties, no zeroing
 invalid_word_penalty: 0.0
-zero_reward_on_violation: true  # differs from V4
+zero_reward_on_violation: false
 
 # SFT warmup
 sft_steps: 100
@@ -27,8 +27,3 @@ sft_openers: ["crane", "slate", "trace", "adieu", "stare"]
 # LoRA
 lora_rank: 64
 lora_alpha: 128
-
-# Dense reward constants
-length_penalty_per_token: 0.0
-constraint_violation_penalty: 0.0
-format_reward: 0.0

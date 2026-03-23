@@ -112,8 +112,10 @@ def parse_args() -> argparse.Namespace:
                         help="Save trajectories every N steps.")
     parser.add_argument("--enable_thinking", action="store_true",
                         help="Allow Qwen3 thinking mode (default: disabled).")
-    parser.add_argument("--invalid_word_penalty", type=float, default=-0.2,
+    parser.add_argument("--invalid_word_penalty", type=float, default=0.0,
                         help="Per-turn penalty for guessing non-dictionary words.")
+    parser.add_argument("--zero_reward_on_violation", action="store_true", default=False,
+                        help="Zero out per-turn reward for constraint violations and invalid words.")
     parser.add_argument("--loss_type", type=str, default="grpo",
                         choices=["grpo", "cispo"],
                         help="Loss type: grpo (default) or cispo.")
@@ -132,6 +134,7 @@ def make_wordle_rollout_func(
     max_turns: int = 6,
     enable_thinking: bool = False,
     invalid_word_penalty: float = 0.0,
+    zero_reward_on_violation: bool = False,
 ):
     """Create a rollout function compatible with TRL GRPOTrainer.
 
@@ -279,7 +282,7 @@ def make_wordle_rollout_func(
         total_invalid_words = 0
         total_format_violations = 0
         for i in range(n):
-            reward, ep_metrics = _compute_total_episode_reward(envs[i], reward_module, max_turns, invalid_word_penalty)
+            reward, ep_metrics = _compute_total_episode_reward(envs[i], reward_module, max_turns, invalid_word_penalty, zero_reward_on_violation)
             episode_rewards.append(reward)
             if envs[i].target_reached:
                 wins += 1
@@ -377,6 +380,7 @@ def _compute_total_episode_reward(
     reward_module,
     max_turns: int,
     invalid_word_penalty: float = 0.0,
+    zero_reward_on_violation: bool = False,
 ) -> tuple[float, dict[str, float]]:
     """Compute total reward + aggregated metrics for a completed episode."""
     total = 0.0
@@ -409,11 +413,15 @@ def _compute_total_episode_reward(
         is_violation = has_constraint_violation(guess, prev_guesses, prev_feedbacks)
 
         if is_invalid:
-            turn_reward = invalid_word_penalty  # zero out per-turn, apply penalty only
+            if zero_reward_on_violation:
+                turn_reward = invalid_word_penalty
+            else:
+                turn_reward += invalid_word_penalty
             invalid_words += 1
 
         if is_violation:
-            turn_reward = 0.0  # zero out per-turn reward for constraint violations
+            if zero_reward_on_violation:
+                turn_reward = 0.0
             constraint_violations += 1
         # A guess in env.guesses means <guess> tag was parsed successfully
         format_compliant += 1
@@ -725,6 +733,7 @@ def main():
         max_turns=args.max_turns,
         enable_thinking=args.enable_thinking,
         invalid_word_penalty=args.invalid_word_penalty,
+        zero_reward_on_violation=args.zero_reward_on_violation,
     )
     reward_fn = make_reward_func(reward_module, max_turns=args.max_turns)
 
