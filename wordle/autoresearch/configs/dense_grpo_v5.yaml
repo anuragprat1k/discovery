@@ -1,0 +1,34 @@
+# V5 Dense GRPO — same as V4 dense but with zero_reward_on_violation in trainer
+name: dense_grpo_v5
+version: v5
+
+reward: dense
+loss_type: grpo
+model_path: /workspace/checkpoints/sft_merged
+
+max_steps: 1000
+num_generations: 16
+per_device_train_batch_size: 4
+gradient_accumulation_steps: 4
+vllm_gpu_memory_utilization: 0.6
+max_completion_length: 50
+temperature: 1.0
+beta: 0.04
+lr: 1e-4
+
+# Penalties
+invalid_word_penalty: 0.0
+zero_reward_on_violation: true  # differs from V4
+
+# SFT warmup
+sft_steps: 100
+sft_openers: ["crane", "slate", "trace", "adieu", "stare"]
+
+# LoRA
+lora_rank: 64
+lora_alpha: 128
+
+# Dense reward constants
+length_penalty_per_token: 0.0
+constraint_violation_penalty: 0.0
+format_reward: 0.0

@@ -1,0 +1,38 @@
+# V4 Dense baseline — the best-performing configuration
+# 355 unique, 125 mastered, 5.7% win rate
+name: dense_proxy_sft100
+version: v4
+
+reward: dense
+loss_type: grpo
+model_path: /workspace/checkpoints/sft_merged
+
+# GRPO config
+max_steps: 1000
+num_generations: 16
+per_device_train_batch_size: 4
+gradient_accumulation_steps: 4
+vllm_gpu_memory_utilization: 0.6
+max_completion_length: 50
+temperature: 1.0
+beta: 0.04  # KL penalty
+lr: 1e-4
+
+# Penalties (all zero in V4)
+invalid_word_penalty: 0.0
+zero_reward_on_violation: false  # V4 did NOT have this
+
+# SFT warmup
+sft_steps: 100
+sft_openers: ["crane", "slate", "trace", "adieu", "stare"]
+sft_word_split: sft  # 768 words
+grpo_word_split: grpo  # 1537 words
+
+# LoRA
+lora_rank: 64
+lora_alpha: 128
+
+# Dense reward constants (all zero = no extra penalties in reward module)
+length_penalty_per_token: 0.0
+constraint_violation_penalty: 0.0
+format_reward: 0.0
