@@ -209,13 +209,13 @@ def main():
             torch.cuda.empty_cache() if torch.cuda.is_available() else None
 
             print(f"Loading merged model into vLLM from {merge_dir}...")
-            llm = LLM(model=merge_dir, gpu_memory_utilization=0.5, max_model_len=4096)
+            llm = LLM(model=merge_dir, gpu_memory_utilization=0.5, max_model_len=512)
             # Clean up merged dir after loading
             import shutil
             shutil.rmtree(merge_dir, ignore_errors=True)
         else:
             print(f"Loading {args.model} into vLLM...")
-            llm = LLM(model=args.model, gpu_memory_utilization=0.5, max_model_len=4096)
+            llm = LLM(model=args.model, gpu_memory_utilization=0.5, max_model_len=512)
 
         tokenizer = AutoTokenizer.from_pretrained(args.model)
         play_fn = lambda t: play_game_vllm(llm, tokenizer, t, valid_guesses_set,
