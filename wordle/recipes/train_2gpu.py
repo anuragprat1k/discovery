@@ -114,6 +114,9 @@ def parse_args() -> argparse.Namespace:
                         help="Allow Qwen3 thinking mode (default: disabled).")
     parser.add_argument("--invalid_word_penalty", type=float, default=-0.2,
                         help="Per-turn penalty for guessing non-dictionary words.")
+    parser.add_argument("--loss_type", type=str, default="grpo",
+                        choices=["grpo", "cispo"],
+                        help="Loss type: grpo (default) or cispo.")
     return parser.parse_args()
 
 
@@ -687,6 +690,7 @@ def main():
         vllm_enable_sleep_mode=False,
         chat_template_kwargs={"enable_thinking": args.enable_thinking},
         # GRPO hyperparameters
+        loss_type=args.loss_type,
         num_generations=args.num_generations,
         max_completion_length=args.max_completion_length,
         temperature=args.temperature,
