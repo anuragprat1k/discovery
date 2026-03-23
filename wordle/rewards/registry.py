@@ -42,6 +42,7 @@ def _load_registry() -> dict[str, ModuleType]:
         dense_reward, sparse_reward, potential_reward, reduction_reward,
         dense_potential_reward, dense_reduction_reward,
         dense_greens_only_reward, dense_plus_potential_reward,
+        dense_compliance_reward,
     )
 
     return {
@@ -53,6 +54,7 @@ def _load_registry() -> dict[str, ModuleType]:
         "dense_reduction": dense_reduction_reward,
         "dense_greens_only": dense_greens_only_reward,
         "dense_plus_potential": dense_plus_potential_reward,
+        "dense_compliance": dense_compliance_reward,
     }
 
 
