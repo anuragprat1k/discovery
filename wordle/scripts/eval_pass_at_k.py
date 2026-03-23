@@ -192,9 +192,9 @@ def main():
             from peft import PeftModel
             import tempfile
 
-            print(f"Merging LoRA {args.lora} into {args.model}...")
-            base = AutoModelForCausalLM.from_pretrained(args.model, torch_dtype=torch.float16)
-            merged = PeftModel.from_pretrained(base, args.lora)
+            print(f"Merging LoRA {args.lora} into {args.model} (on CPU)...")
+            base = AutoModelForCausalLM.from_pretrained(args.model, torch_dtype=torch.float16, device_map="cpu")
+            merged = PeftModel.from_pretrained(base, args.lora, device_map="cpu")
             merged = merged.merge_and_unload()
 
             # Use /workspace/tmp if available (container root may be small)
@@ -209,7 +209,7 @@ def main():
             torch.cuda.empty_cache() if torch.cuda.is_available() else None
 
             print(f"Loading merged model into vLLM from {merge_dir}...")
-            llm = LLM(model=merge_dir, gpu_memory_utilization=0.6)
+            llm = LLM(model=merge_dir, gpu_memory_utilization=0.3)
             # Clean up merged dir after loading
             import shutil
             shutil.rmtree(merge_dir, ignore_errors=True)
