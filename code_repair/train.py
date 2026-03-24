@@ -60,7 +60,7 @@ def parse_args() -> argparse.Namespace:
         "--reward", required=True,
         choices=["sparse", "dense_passes", "dense_full"],
     )
-    parser.add_argument("--model_name", type=str, default="Qwen/Qwen3-4B")
+    parser.add_argument("--model_name", type=str, default="Qwen/Qwen3-4B-Instruct-2507")
     parser.add_argument("--max_steps", type=int, default=500)
     parser.add_argument("--problems_path", type=str,
                         default="code_repair/data/problems/train.json")
@@ -73,7 +73,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--gradient_accumulation_steps", type=int, default=4)
     parser.add_argument("--lr", type=float, default=1e-4)
     parser.add_argument("--beta", type=float, default=0.04)
-    parser.add_argument("--max_completion_length", type=int, default=1024)
+    parser.add_argument("--max_completion_length", type=int, default=2048,
+                        help="Max tokens per generation (thinking + repair code).")
     parser.add_argument("--temperature", type=float, default=1.0)
     parser.add_argument("--save_steps", type=int, default=50)
     parser.add_argument("--sandbox_timeout", type=int, default=5)
