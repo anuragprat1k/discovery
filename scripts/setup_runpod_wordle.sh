@@ -28,12 +28,14 @@ BRANCH="${BRANCH:-feat/gpu-autoresearch}"
 MODEL="${MODEL:-Qwen/Qwen3-4B}"
 EXPERT_GAMES="${EXPERT_GAMES:-1000}"
 SFT_STEPS="${SFT_STEPS:-100}"
+SEED="${SEED:-42}"
 
 echo "========================================"
 echo "  RunPod Wordle Autoresearch Setup"
 echo "========================================"
 echo "GPU:           $(nvidia-smi --query-gpu=name,memory.total --format=csv,noheader 2>/dev/null || echo 'N/A')"
 echo "Branch:        $BRANCH"
+echo "Seed:          $SEED"
 echo "Model:         $MODEL"
 echo "Expert games:  $EXPERT_GAMES"
 echo "SFT steps:     $SFT_STEPS"
@@ -114,7 +116,8 @@ else
     echo ">>> Generating expert replay buffer ($EXPERT_GAMES games)..."
     python3 -m wordle.autoresearch.expert_buffer \
         --n_games "$EXPERT_GAMES" \
-        --output "$EXPERT_BUFFER"
+        --output "$EXPERT_BUFFER" \
+        --seed "$SEED"
 fi
 
 # ── 7. SFT warmup ──────────────────────────────────────────────────
@@ -128,7 +131,8 @@ else
         --output_dir "$SFT_DIR" \
         --max_steps "$SFT_STEPS" \
         --batch_size 8 \
-        --model "$MODEL"
+        --model "$MODEL" \
+        --seed "$SEED"
 fi
 
 # ── 8. Verify setup ────────────────────────────────────────────────
