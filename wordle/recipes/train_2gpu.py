@@ -48,6 +48,14 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
+
+def _pass_at_k(n: int, c: int, k: int) -> float:
+    """Unbiased pass@k estimator (Chen et al. 2021)."""
+    if n - c < k:
+        return 1.0
+    return 1.0 - math.comb(n - c, k) / math.comb(n, k)
+
+
 # ---------------------------------------------------------------------------
 # Argument parsing
 # ---------------------------------------------------------------------------
@@ -349,6 +357,9 @@ def make_wordle_rollout_func(
                 "wordle/opener_entropy": opener_entropy,
                 "wordle/opener_crane_frac": crane_frac,
                 "wordle/mastered_first_letter_entropy": mastered_first_letter_entropy,
+                "wordle/pass_at_1": _pass_at_k(n, wins, 1),
+                "wordle/pass_at_8": _pass_at_k(n, wins, 8),
+                "wordle/pass_at_16": 1.0 if wins > 0 else 0.0,
             }, commit=False)
 
         mastered = sum(1 for c in solved_counts.values() if c >= 2)
