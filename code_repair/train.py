@@ -101,7 +101,7 @@ def load_lora_model(model_name: str, lora_rank: int, lora_alpha: int):
     print(f"[train] Loading base model in bf16: {model_name}")
     model = AutoModelForCausalLM.from_pretrained(
         model_name,
-        torch_dtype=torch.bfloat16,
+        dtype=torch.bfloat16,
         trust_remote_code=True,
         device_map="auto",
     )
@@ -313,6 +313,10 @@ def main():
     dataset = build_dataset(args.problems_path, sandbox_timeout=args.sandbox_timeout)
     reward_fn = REWARD_FNS[args.reward]
 
+    # per_device_train_batch_size = num problems * num_generations per step
+    # TRL requires generation_batch_size to be divisible by num_generations
+    train_batch = args.num_generations * args.per_device_batch_size
+
     grpo_config = GRPOConfig(
         output_dir=output_dir,
         run_name=f"code-repair-{args.reward}-s{args.seed}",
@@ -320,7 +324,7 @@ def main():
 
         max_steps=args.max_steps,
 
-        per_device_train_batch_size=args.per_device_batch_size,
+        per_device_train_batch_size=train_batch,
         gradient_accumulation_steps=args.gradient_accumulation_steps,
 
         num_generations=args.num_generations,
