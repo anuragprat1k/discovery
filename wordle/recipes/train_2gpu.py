@@ -38,7 +38,8 @@ from wordle.environment.feedback import feedback_to_emoji
 from wordle.environment.wordle_env import _extract_guess, SYSTEM_PROMPT_ENV_ELIMINATED
 from wordle.environment.wordle_gym import WordleGymEnv, load_default_word_lists
 from wordle.rewards.registry import get_reward_module
-from wordle.rewards.reward_utils import has_constraint_violation
+from wordle.rewards.reward_utils import compute_candidate_set, has_constraint_violation
+from wordle.data.split_words import get_word_splits
 
 try:
     import wandb
@@ -327,6 +328,26 @@ def make_wordle_rollout_func(
         ) if total_letters > 0 else 0.0
         crane_frac = sum(1 for g in first_guesses if g == "crane") / max(len(first_guesses), 1)
 
+        # Search space entropy reduction per turn
+        grpo_vocab = get_word_splits(seed=42)["grpo"]
+        entropy_per_turn: dict[int, list[float]] = {t: [] for t in range(max_turns + 1)}
+        for i in range(n):
+            env = envs[i]
+            # Turn 0: full vocab
+            entropy_per_turn[0].append(math.log2(len(grpo_vocab)))
+            for t_idx in range(len(env.guesses)):
+                guesses_so_far = env.guesses[:t_idx + 1]
+                feedbacks_so_far = env.feedbacks[:t_idx + 1]
+                remaining = compute_candidate_set(grpo_vocab, guesses_so_far, feedbacks_so_far)
+                h = math.log2(len(remaining)) if remaining else 0.0
+                entropy_per_turn[t_idx + 1].append(h)
+
+        mean_entropy_per_turn = {}
+        for t in range(max_turns + 1):
+            vals = entropy_per_turn[t]
+            if vals:
+                mean_entropy_per_turn[t] = sum(vals) / len(vals)
+
         # Mastered first-letter distribution
         mastered_letters = Counter(w[0] for w in solved_words if solved_counts.get(w, 0) >= 2)
         mastered_total = sum(mastered_letters.values())
@@ -360,6 +381,7 @@ def make_wordle_rollout_func(
                 "wordle/pass_at_1": _pass_at_k(n, wins, 1),
                 "wordle/pass_at_8": _pass_at_k(n, wins, 8),
                 "wordle/pass_at_16": 1.0 if wins > 0 else 0.0,
+                **{f"wordle/entropy_turn_{t}": v for t, v in mean_entropy_per_turn.items()},
             }, commit=False)
 
         mastered = sum(1 for c in solved_counts.values() if c >= 2)
