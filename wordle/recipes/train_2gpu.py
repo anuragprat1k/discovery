@@ -126,7 +126,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--zero_reward_on_violation", action="store_true", default=False,
                         help="Zero out per-turn reward for constraint violations and invalid words.")
     parser.add_argument("--loss_type", type=str, default="grpo",
-                        choices=["grpo", "cispo"],
+                        choices=["grpo", "dr_grpo", "dapo", "bnpo", "cispo", "sapo"],
                         help="Loss type: grpo (default) or cispo.")
     return parser.parse_args()
 
