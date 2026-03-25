@@ -246,7 +246,9 @@ def run_episode(
         n_gen = len(gen_ids)
         # Truncate to the shorter of the two (can differ by 1 near EOS)
         n_use = min(n_logits, n_gen)
-        logits_stack = torch.stack(output.logits[:n_use], dim=0)  # (n_use, vocab)
+        logits_stack = torch.stack(output.logits[:n_use], dim=0)  # (n_use, batch, vocab)
+        if logits_stack.dim() == 3:
+            logits_stack = logits_stack[:, 0, :]  # squeeze batch dim -> (n_use, vocab)
         log_probs_all = F.log_softmax(logits_stack, dim=-1)
         gen_ids_trunc = gen_ids[:n_use]
         token_logprobs = log_probs_all[range(n_use), gen_ids_trunc].cpu().tolist()
