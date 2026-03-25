@@ -1,16 +1,13 @@
 """
-GRPO training script for code repair using TRL's GRPOTrainer with LoRA.
+Multi-turn GRPO training for code repair.
 
-Single-turn: model sees buggy code + test results, outputs one <repair>.
-Reward function parses the repair, runs tests in sandbox, computes reward.
+Each episode: model sees buggy code + test results, outputs <repair>,
+gets updated test results, repeats for up to max_turns. Rewards computed
+per-turn (dense) or at episode end only (sparse).
 
-Three reward conditions:
-  - sparse:       terminal only (all-pass → +3, else -1)
-  - dense_passes: +0.4 per newly-passing test (potential-based, normalized)
-  - dense_full:   dense_passes + partial-correctness (no-crash, type, shape)
-
-Eval callback runs every --eval_steps steps on held-out problems and logs
-pass@1, pass@k, format_rate, unique_solved to wandb.
+Uses HF model for generation with per-turn token/logprob collection,
+then computes GRPO loss manually (no TRL GRPOTrainer — we need full
+control over multi-turn rollouts).
 
 Usage:
     python -m code_repair.train --reward {sparse,dense_passes,dense_full} [options]
@@ -19,15 +16,16 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
-import re
+import random
 import sys
+import time
 
+import numpy as np
 import torch
-import transformers
-from transformers import AutoModelForCausalLM, AutoTokenizer, TrainerCallback
-from datasets import Dataset
-from trl import GRPOTrainer, GRPOConfig
+import torch.nn.functional as F
+from transformers import AutoModelForCausalLM, AutoTokenizer
 from peft import LoraConfig, get_peft_model, TaskType
 from dotenv import load_dotenv
 
@@ -38,8 +36,9 @@ from code_repair.env.code_repair_env import (
     SYSTEM_PROMPT,
     extract_repair,
     format_initial_prompt,
+    format_feedback,
+    format_test_results,
 )
-from code_repair.eval import evaluate
 
 try:
     import wandb
@@ -49,49 +48,38 @@ except ImportError:
 
 
 # ---------------------------------------------------------------------------
-# Argument parsing
+# Args
 # ---------------------------------------------------------------------------
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="GRPO code repair training with TRL + LoRA.",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-    )
-    parser.add_argument(
-        "--reward", required=True,
-        choices=["sparse", "dense_passes", "dense_full"],
-    )
-    parser.add_argument("--model_name", type=str, default="Qwen/Qwen3-4B-Instruct-2507")
-    parser.add_argument("--max_steps", type=int, default=500)
-    parser.add_argument("--problems_path", type=str,
-                        default="code_repair/data/problems/train.json")
-    parser.add_argument("--eval_problems_path", type=str,
-                        default="code_repair/data/problems/eval.json")
-    parser.add_argument("--output_dir", type=str, default=None)
-    parser.add_argument("--lora_rank", type=int, default=64)
-    parser.add_argument("--lora_alpha", type=int, default=128)
-    parser.add_argument("--num_generations", type=int, default=16,
-                        help="Rollouts per prompt (G in GRPO).")
-    parser.add_argument("--per_device_batch_size", type=int, default=1)
-    parser.add_argument("--gradient_accumulation_steps", type=int, default=4)
-    parser.add_argument("--lr", type=float, default=1e-4)
-    parser.add_argument("--beta", type=float, default=0.04)
-    parser.add_argument("--max_completion_length", type=int, default=2048,
-                        help="Max tokens per generation (thinking + repair code).")
-    parser.add_argument("--temperature", type=float, default=1.0)
-    parser.add_argument("--save_steps", type=int, default=50)
-    parser.add_argument("--eval_steps", type=int, default=50,
-                        help="Run eval every N training steps.")
-    parser.add_argument("--eval_samples", type=int, default=8,
-                        help="Samples per eval problem (for pass@k).")
-    parser.add_argument("--eval_temperature", type=float, default=0.6)
-    parser.add_argument("--sandbox_timeout", type=int, default=5)
-    parser.add_argument("--use_vllm", action="store_true",
-                        help="Use vLLM for generation (faster, requires compatible version).")
-    parser.add_argument("--no_wandb", action="store_true")
-    parser.add_argument("--wandb_project", type=str, default="discovery-code-repair")
-    parser.add_argument("--seed", type=int, default=42)
-    return parser.parse_args()
+    p = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    p.add_argument("--reward", required=True, choices=["sparse", "dense_passes", "dense_full"])
+    p.add_argument("--model_name", default="Qwen/Qwen3-4B-Instruct-2507")
+    p.add_argument("--max_steps", type=int, default=500)
+    p.add_argument("--max_turns", type=int, default=4)
+    p.add_argument("--problems_path", default="code_repair/data/problems_multi/train.json")
+    p.add_argument("--eval_problems_path", default="code_repair/data/problems_multi/eval.json")
+    p.add_argument("--output_dir", default=None)
+    p.add_argument("--lora_rank", type=int, default=64)
+    p.add_argument("--lora_alpha", type=int, default=128)
+    p.add_argument("--group_size", type=int, default=8)
+    p.add_argument("--batch_size", type=int, default=4, help="Problems per step.")
+    p.add_argument("--lr", type=float, default=1e-4)
+    p.add_argument("--beta", type=float, default=0.04, help="KL penalty coefficient.")
+    p.add_argument("--clip_low", type=float, default=0.8)
+    p.add_argument("--clip_high", type=float, default=1.2)
+    p.add_argument("--grad_clip_norm", type=float, default=1.0)
+    p.add_argument("--max_new_tokens", type=int, default=2048)
+    p.add_argument("--temperature", type=float, default=1.0)
+    p.add_argument("--save_steps", type=int, default=100)
+    p.add_argument("--eval_steps", type=int, default=10)
+    p.add_argument("--eval_samples", type=int, default=8)
+    p.add_argument("--eval_temperature", type=float, default=0.6)
+    p.add_argument("--sandbox_timeout", type=int, default=5)
+    p.add_argument("--no_wandb", action="store_true")
+    p.add_argument("--wandb_project", default="discovery-code-repair")
+    p.add_argument("--seed", type=int, default=42)
+    return p.parse_args()
 
 
 # ---------------------------------------------------------------------------
@@ -99,25 +87,20 @@ def parse_args() -> argparse.Namespace:
 # ---------------------------------------------------------------------------
 
 def load_tokenizer(model_name: str):
-    tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
-    tokenizer.padding_side = "left"
-    if tokenizer.pad_token is None:
-        tokenizer.pad_token = tokenizer.eos_token
-    return tokenizer
+    tok = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+    tok.padding_side = "left"
+    if tok.pad_token is None:
+        tok.pad_token = tok.eos_token
+    return tok
 
 
 def load_lora_model(model_name: str, lora_rank: int, lora_alpha: int):
     print(f"[train] Loading base model in bf16: {model_name}")
     model = AutoModelForCausalLM.from_pretrained(
-        model_name,
-        dtype=torch.bfloat16,
-        trust_remote_code=True,
-        device_map="auto",
+        model_name, dtype=torch.bfloat16, trust_remote_code=True, device_map="auto",
     )
     lora_config = LoraConfig(
-        task_type=TaskType.CAUSAL_LM,
-        r=lora_rank,
-        lora_alpha=lora_alpha,
+        task_type=TaskType.CAUSAL_LM, r=lora_rank, lora_alpha=lora_alpha,
         lora_dropout=0.05,
         target_modules=["q_proj", "k_proj", "v_proj", "o_proj",
                         "gate_proj", "up_proj", "down_proj"],
@@ -126,41 +109,6 @@ def load_lora_model(model_name: str, lora_rank: int, lora_alpha: int):
     model = get_peft_model(model, lora_config)
     model.print_trainable_parameters()
     return model
-
-
-# ---------------------------------------------------------------------------
-# Dataset
-# ---------------------------------------------------------------------------
-
-def build_dataset(problems_path: str, sandbox_timeout: int = 5) -> Dataset:
-    with open(problems_path) as f:
-        problems = json.load(f)
-
-    rows = []
-    for p in problems:
-        initial_results = run_tests(
-            p["buggy_code"], p["test_code"], p["entry_point"],
-            timeout=sandbox_timeout, detailed=True,
-        )
-        user_msg = format_initial_prompt(
-            p["buggy_code"], initial_results, max_turns=1,
-        )
-        row = {
-            "prompt": [
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": user_msg},
-            ],
-            "task_id": p["task_id"],
-            "buggy_code": p["buggy_code"],
-            "canonical_solution": p["canonical_solution"],
-            "test_code": p["test_code"],
-            "entry_point": p["entry_point"],
-            "num_tests": p["num_tests"],
-        }
-        rows.append(row)
-
-    print(f"[train] Built dataset: {len(rows)} problems")
-    return Dataset.from_list(rows)
 
 
 # ---------------------------------------------------------------------------
@@ -176,353 +124,482 @@ NO_CRASH_BONUS = 0.05
 TYPE_MATCH_BONUS = 0.05
 SHAPE_MATCH_BONUS = 0.05
 
-_SANDBOX_TIMEOUT = 5
+
+def compute_turn_reward_sparse(info: dict, is_terminal: bool) -> float:
+    if info.get("format_violation"):
+        return FORMAT_PENALTY
+    if is_terminal:
+        if info["all_passed"]:
+            return TERMINAL_WIN + SPEED_BONUS * (info["max_turns"] - info["turn"])
+        return TERMINAL_LOSS
+    return 0.0
 
 
-def _extract_and_test(completion_text: str, test_code: str, entry_point: str
-                      ) -> tuple[str | None, list[TestResult]]:
-    repair = extract_repair(completion_text)
-    if repair is None:
-        return None, []
-    results = run_tests(repair, test_code, entry_point,
-                        timeout=_SANDBOX_TIMEOUT, detailed=True)
-    return repair, results
+def compute_turn_reward_dense_passes(info: dict, is_terminal: bool) -> float:
+    r = 0.0
+    if info.get("format_violation"):
+        return FORMAT_PENALTY
+    # HWM delta (potential-based)
+    n_tests = max(info["num_tests"], 1)
+    hwm_delta = info["hw_passing"] - info["old_hw"]
+    if hwm_delta > 0:
+        r += PASS_REWARD_PER_TEST * hwm_delta / n_tests
+    # Terminal
+    if is_terminal:
+        if info["all_passed"]:
+            r += TERMINAL_WIN + SPEED_BONUS * (info["max_turns"] - info["turn"])
+        else:
+            r += TERMINAL_LOSS
+    return r
 
 
-def _reward_sparse(completions, test_code, entry_point, num_tests, **kwargs):
-    rewards = []
-    for comp, tc, ep, nt in zip(completions, test_code, entry_point, num_tests):
-        text = comp[0]["content"] if isinstance(comp, list) else comp
-        repair, results = _extract_and_test(text, tc, ep)
-        if repair is None:
-            rewards.append(FORMAT_PENALTY + TERMINAL_LOSS)
-            continue
-        passed = sum(1 for r in results if r.passed)
-        all_passed = (passed == len(results) and len(results) > 0
-                      and not (len(results) == 1 and results[0].name in
-                               ("timeout", "syntax_error", "runtime_error")))
-        rewards.append(TERMINAL_WIN if all_passed else TERMINAL_LOSS)
-    return rewards
-
-
-def _reward_dense_passes(completions, test_code, entry_point, num_tests, **kwargs):
-    rewards = []
-    for comp, tc, ep, nt in zip(completions, test_code, entry_point, num_tests):
-        text = comp[0]["content"] if isinstance(comp, list) else comp
-        repair, results = _extract_and_test(text, tc, ep)
-        if repair is None:
-            rewards.append(FORMAT_PENALTY + TERMINAL_LOSS)
-            continue
-        n_tests = max(len(results), int(nt), 1)
-        passed = sum(1 for r in results if r.passed)
-        all_passed = (passed == len(results) and len(results) > 0
-                      and not (len(results) == 1 and results[0].name in
-                               ("timeout", "syntax_error", "runtime_error")))
-        r = PASS_REWARD_PER_TEST * passed / n_tests
-        r += TERMINAL_WIN if all_passed else TERMINAL_LOSS
-        rewards.append(r)
-    return rewards
-
-
-def _reward_dense_full(completions, test_code, entry_point, num_tests, **kwargs):
-    rewards = []
-    for comp, tc, ep, nt in zip(completions, test_code, entry_point, num_tests):
-        text = comp[0]["content"] if isinstance(comp, list) else comp
-        repair, results = _extract_and_test(text, tc, ep)
-        if repair is None:
-            rewards.append(FORMAT_PENALTY + TERMINAL_LOSS)
-            continue
-        n_tests = max(len(results), int(nt), 1)
-        passed = sum(1 for r in results if r.passed)
-        all_passed = (passed == len(results) and len(results) > 0
-                      and not (len(results) == 1 and results[0].name in
-                               ("timeout", "syntax_error", "runtime_error")))
-        r = PASS_REWARD_PER_TEST * passed / n_tests
-        for res in results:
-            if res.passed or not res.no_crash:
-                continue
-            r += NO_CRASH_BONUS / n_tests
-            if res.return_type is not None:
-                r += TYPE_MATCH_BONUS / n_tests
-            if res.return_shape is not None:
-                r += SHAPE_MATCH_BONUS / n_tests
-        r += TERMINAL_WIN if all_passed else TERMINAL_LOSS
-        rewards.append(r)
-    return rewards
+def compute_turn_reward_dense_full(info: dict, is_terminal: bool) -> float:
+    r = 0.0
+    if info.get("format_violation"):
+        return FORMAT_PENALTY
+    n_tests = max(info["num_tests"], 1)
+    # HWM delta
+    hwm_delta = info["hw_passing"] - info["old_hw"]
+    if hwm_delta > 0:
+        r += PASS_REWARD_PER_TEST * hwm_delta / n_tests
+    # Partial-correctness (non-potential)
+    r += NO_CRASH_BONUS * info.get("no_crash_failing", 0) / n_tests
+    r += TYPE_MATCH_BONUS * info.get("type_match_failing", 0) / n_tests
+    r += SHAPE_MATCH_BONUS * info.get("shape_match_failing", 0) / n_tests
+    # Terminal
+    if is_terminal:
+        if info["all_passed"]:
+            r += TERMINAL_WIN + SPEED_BONUS * (info["max_turns"] - info["turn"])
+        else:
+            r += TERMINAL_LOSS
+    return r
 
 
 REWARD_FNS = {
-    "sparse": _reward_sparse,
-    "dense_passes": _reward_dense_passes,
-    "dense_full": _reward_dense_full,
+    "sparse": compute_turn_reward_sparse,
+    "dense_passes": compute_turn_reward_dense_passes,
+    "dense_full": compute_turn_reward_dense_full,
 }
 
 
 # ---------------------------------------------------------------------------
-# Eval callback
+# Multi-turn episode rollout
 # ---------------------------------------------------------------------------
 
-class EvalCallback(TrainerCallback):
-    """Runs eval on held-out problems every N steps, logs to wandb with trajectory samples."""
+@torch.no_grad()
+def run_episode(
+    problem: dict,
+    model,
+    tokenizer,
+    reward_fn,
+    max_turns: int = 4,
+    max_new_tokens: int = 2048,
+    temperature: float = 1.0,
+    sandbox_timeout: int = 5,
+) -> dict:
+    """Run one multi-turn code repair episode, collecting per-turn tokens and logprobs."""
+    device = next(model.parameters()).device
 
-    def __init__(
-        self,
-        eval_problems: list[dict],
-        tokenizer,
-        eval_steps: int = 50,
-        n_samples: int = 8,
-        max_new_tokens: int = 2048,
-        temperature: float = 0.6,
-        sandbox_timeout: int = 5,
-        n_trace_problems: int = 5,
-    ):
-        self.eval_problems = eval_problems
-        self.tokenizer = tokenizer
-        self.eval_steps = eval_steps
-        self.n_samples = n_samples
-        self.max_new_tokens = max_new_tokens
-        self.temperature = temperature
-        self.sandbox_timeout = sandbox_timeout
-        self.n_trace_problems = n_trace_problems
+    # Initial state
+    initial_results = run_tests(
+        problem["buggy_code"], problem["test_code"], problem["entry_point"],
+        timeout=sandbox_timeout, detailed=True,
+    )
+    user_msg = format_initial_prompt(
+        problem["buggy_code"], initial_results, max_turns,
+    )
+    messages = [
+        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "user", "content": user_msg},
+    ]
 
-    def _collect_traces(self, model, step: int) -> list[dict]:
-        """Generate one sample per problem for a subset, capturing full rollouts."""
-        device = next(model.parameters()).device
-        traces = []
-        subset = self.eval_problems[:self.n_trace_problems]
+    prompt_tokens_per_turn = []
+    completion_tokens_per_turn = []
+    logprobs_per_turn = []
+    per_turn_rewards = []
+    completion_texts = []
 
-        for p in subset:
-            initial_results = run_tests(
-                p["buggy_code"], p["test_code"], p["entry_point"],
-                timeout=self.sandbox_timeout, detailed=True,
-            )
-            user_msg = format_initial_prompt(
-                p["buggy_code"], initial_results, max_turns=1,
-            )
-            messages = [
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": user_msg},
-            ]
-            input_ids = self.tokenizer.apply_chat_template(
-                messages, add_generation_prompt=True, tokenize=True,
-                return_tensors="pt",
-            ).to(device)
+    hw_passing = 0
+    all_passed = False
+    test_results_history = [initial_results]
 
-            with torch.no_grad():
-                output = model.generate(
-                    input_ids, max_new_tokens=self.max_new_tokens,
-                    temperature=self.temperature, do_sample=True,
-                )
-            completion = self.tokenizer.decode(
-                output[0][input_ids.shape[1]:], skip_special_tokens=True,
-            )
-            repair = extract_repair(completion)
+    for turn in range(1, max_turns + 1):
+        # Encode conversation
+        prompt_text = tokenizer.apply_chat_template(
+            messages, add_generation_prompt=True, tokenize=False,
+        )
+        prompt_ids = tokenizer.encode(prompt_text, add_special_tokens=False,
+                                       return_tensors="pt").to(device)
+        n_prompt = prompt_ids.shape[1]
 
-            test_summary = "no <repair> tag"
-            passed = 0
-            total = 0
-            solved = False
-            if repair:
-                results = run_tests(
-                    repair, p["test_code"], p["entry_point"],
-                    timeout=self.sandbox_timeout, detailed=True,
-                )
-                passed = sum(1 for r in results if r.passed)
-                total = len(results)
-                solved = passed == total and total > 0
-                test_summary = f"{passed}/{total}" + (" SOLVED" if solved else "")
+        # Generate
+        output = model.generate(
+            prompt_ids, max_new_tokens=max_new_tokens,
+            temperature=temperature, do_sample=True,
+            return_dict_in_generate=True, output_logits=True,
+        )
+        gen_ids = output.sequences[0, n_prompt:]  # completion tokens only
 
-            traces.append({
-                "step": step,
-                "task_id": p["task_id"],
-                "bug_type": p.get("bug_type", ""),
-                "test_result": test_summary,
-                "solved": solved,
-                "passed": passed,
-                "total_tests": total,
-                "user_prompt": user_msg[:2000],
-                "completion": completion[:3000],
-                "repair": (repair or "")[:2000],
-            })
-        return traces
+        # Compute logprobs from logits
+        logits_stack = torch.stack(output.logits, dim=0)  # (gen_len, vocab)
+        log_probs_all = F.log_softmax(logits_stack, dim=-1)
+        token_logprobs = log_probs_all[range(len(gen_ids)), gen_ids].cpu().tolist()
 
-    def on_step_end(self, args, state, control, model=None, **kwargs):
-        if state.global_step % self.eval_steps != 0:
-            return
-        if model is None:
-            return
+        completion_text = tokenizer.decode(gen_ids, skip_special_tokens=True)
 
-        print(f"\n[eval] Running eval at step {state.global_step}...", flush=True)
-        model.eval()
-        results = evaluate(
-            model=model,
-            tokenizer=self.tokenizer,
-            problems=self.eval_problems,
-            n_samples=self.n_samples,
-            max_new_tokens=self.max_new_tokens,
-            temperature=self.temperature,
-            sandbox_timeout=self.sandbox_timeout,
-            verbose=True,
+        prompt_tokens_per_turn.append(prompt_ids[0].cpu().tolist())
+        completion_tokens_per_turn.append(gen_ids.cpu().tolist())
+        logprobs_per_turn.append(token_logprobs)
+        completion_texts.append(completion_text)
+
+        # Parse repair and run tests
+        repair = extract_repair(completion_text)
+
+        if repair is None:
+            prev_results = test_results_history[-1]
+            info = {
+                "turn": turn, "max_turns": max_turns,
+                "format_violation": True,
+                "num_tests": len(prev_results),
+                "hw_passing": hw_passing, "old_hw": hw_passing,
+                "all_passed": False,
+                "no_crash_failing": 0, "type_match_failing": 0, "shape_match_failing": 0,
+            }
+            is_terminal = turn >= max_turns
+            per_turn_rewards.append(reward_fn(info, is_terminal))
+
+            remaining = max_turns - turn
+            feedback = f"No valid <repair> tag found. ({remaining} turn(s) remaining)"
+            messages.append({"role": "assistant", "content": completion_text})
+            messages.append({"role": "user", "content": feedback})
+            if is_terminal:
+                break
+            continue
+
+        # Run tests
+        test_results = run_tests(
+            repair, problem["test_code"], problem["entry_point"],
+            timeout=sandbox_timeout, detailed=True,
+        )
+        test_results_history.append(test_results)
+
+        prev_results = test_results_history[-2]
+        prev_passing = {r.name for r in prev_results if r.passed}
+        curr_passing = {r.name for r in test_results if r.passed}
+        num_tests = max(len(test_results), 1)
+
+        old_hw = hw_passing
+        hw_passing = max(hw_passing, len(curr_passing))
+
+        all_passed = (
+            len(curr_passing) == len(test_results) and len(test_results) > 0
+            and not (len(test_results) == 1 and test_results[0].name in
+                     ("timeout", "syntax_error", "runtime_error", "import_error"))
         )
 
-        # Collect trajectory samples
-        traces = self._collect_traces(model, state.global_step)
-        model.train()
+        no_crash = sum(1 for r in test_results if r.no_crash and not r.passed)
+        type_match = sum(1 for r in test_results if not r.passed and r.no_crash and r.return_type)
+        shape_match = sum(1 for r in test_results if not r.passed and r.return_shape is not None)
 
-        print(f"[eval] step={state.global_step}: "
-              f"pass@1={results['pass_at_1']:.3f} "
-              f"pass@k={results['pass_at_k']:.3f} "
-              f"format={results['format_rate']:.3f} "
-              f"unique={results['unique_solved']}/{results['n_problems']}",
-              flush=True)
+        is_terminal = all_passed or turn >= max_turns
+        info = {
+            "turn": turn, "max_turns": max_turns, "num_tests": num_tests,
+            "hw_passing": hw_passing, "old_hw": old_hw,
+            "all_passed": all_passed,
+            "no_crash_failing": no_crash, "type_match_failing": type_match,
+            "shape_match_failing": shape_match,
+        }
+        per_turn_rewards.append(reward_fn(info, is_terminal))
 
-        # Log to wandb
-        if _WANDB_AVAILABLE and wandb.run is not None:
-            log_dict = {
-                "eval/pass_at_1": results["pass_at_1"],
-                "eval/pass_at_k": results["pass_at_k"],
-                "eval/format_rate": results["format_rate"],
-                "eval/unique_solved": results["unique_solved"],
-                "eval/unique_solved_frac": results["unique_solved_frac"],
-                "eval/raw_solve_rate": results["raw_solve_rate"],
-            }
-            # Per bug-type pass@1
-            for bt, info in results.get("by_bug_type", {}).items():
-                log_dict[f"eval/pass1_{bt}"] = info["pass_at_1"]
+        # Build feedback
+        if all_passed:
+            feedback = f"All {num_tests} tests passing! Fixed in {turn} turn(s)."
+        else:
+            feedback = format_feedback(
+                test_results, repair, turn=turn, max_turns=max_turns,
+                prev_passing=prev_passing,
+            )
+        messages.append({"role": "assistant", "content": completion_text})
+        messages.append({"role": "user", "content": feedback})
 
-            # Log trajectory table
-            if traces:
-                columns = ["step", "task_id", "bug_type", "test_result", "solved",
-                           "passed", "total_tests", "user_prompt", "completion", "repair"]
-                table = wandb.Table(columns=columns)
-                for t in traces:
-                    table.add_data(*[t[c] for c in columns])
-                log_dict["eval/trajectories"] = table
+        if is_terminal:
+            break
 
-            wandb.log(log_dict, step=state.global_step)
+    return {
+        "prompt_tokens_per_turn": prompt_tokens_per_turn,
+        "completion_tokens_per_turn": completion_tokens_per_turn,
+        "logprobs_per_turn": logprobs_per_turn,
+        "per_turn_rewards": per_turn_rewards,
+        "completion_texts": completion_texts,
+        "all_passed": all_passed,
+        "total_turns": len(per_turn_rewards),
+        "hw_passing": hw_passing,
+        "task_id": problem.get("task_id", ""),
+    }
 
 
 # ---------------------------------------------------------------------------
-# Main
+# GRPO loss (CISPO variant)
+# ---------------------------------------------------------------------------
+
+def compute_grpo_loss(
+    model, episodes: list[dict], advantages: np.ndarray,
+    beta: float, clip_low: float, clip_high: float,
+) -> tuple[torch.Tensor, dict]:
+    """Compute GRPO/CISPO loss over a batch of multi-turn episodes.
+
+    Each turn is a separate forward pass: prompt + completion tokens.
+    Advantage is per-episode, applied uniformly to all turns' completion tokens.
+    """
+    device = next(model.parameters()).device
+    total_loss = torch.tensor(0.0, device=device)
+    n_tokens = 0
+    total_kl = 0.0
+
+    for ep_idx, ep in enumerate(episodes):
+        adv = advantages[ep_idx]
+        if abs(adv) < 1e-8:
+            continue
+
+        for turn_idx in range(ep["total_turns"]):
+            prompt_tok = ep["prompt_tokens_per_turn"][turn_idx]
+            comp_tok = ep["completion_tokens_per_turn"][turn_idx]
+            old_logprobs = ep["logprobs_per_turn"][turn_idx]
+
+            if not comp_tok:
+                continue
+
+            full_ids = torch.tensor(prompt_tok + comp_tok, dtype=torch.long, device=device).unsqueeze(0)
+            n_prompt = len(prompt_tok)
+            n_comp = len(comp_tok)
+
+            # Forward pass
+            outputs = model(full_ids)
+            logits = outputs.logits[0, n_prompt - 1: n_prompt + n_comp - 1, :]  # shifted
+            new_log_probs = F.log_softmax(logits, dim=-1)
+
+            comp_ids = torch.tensor(comp_tok, dtype=torch.long, device=device)
+            new_lp = new_log_probs[range(n_comp), comp_ids]
+            old_lp = torch.tensor(old_logprobs[:n_comp], dtype=torch.float32, device=device)
+
+            # Importance ratio
+            ratio = torch.exp(new_lp - old_lp)
+            clipped_ratio = torch.clamp(ratio, clip_low, clip_high)
+
+            # CISPO surrogate
+            adv_t = torch.tensor(adv, dtype=torch.float32, device=device)
+            if adv > 0:
+                surrogate = -torch.min(ratio * adv_t, clipped_ratio * adv_t)
+            else:
+                surrogate = -torch.max(ratio * adv_t, clipped_ratio * adv_t)
+
+            # KL penalty
+            kl = (old_lp - new_lp).mean()
+            total_kl += kl.item() * n_comp
+
+            turn_loss = surrogate.mean() + beta * kl
+            total_loss = total_loss + turn_loss * n_comp
+            n_tokens += n_comp
+
+    if n_tokens > 0:
+        total_loss = total_loss / n_tokens
+
+    metrics = {"kl": total_kl / max(n_tokens, 1), "n_tokens": n_tokens}
+    return total_loss, metrics
+
+
+# ---------------------------------------------------------------------------
+# Eval
+# ---------------------------------------------------------------------------
+
+def run_eval(model, tokenizer, problems, n_samples, max_new_tokens, temperature,
+             max_turns, sandbox_timeout, step):
+    """Lightweight eval: run episodes, report metrics."""
+    from code_repair.eval import evaluate
+    model.eval()
+    results = evaluate(
+        model=model, tokenizer=tokenizer, problems=problems,
+        n_samples=n_samples, max_new_tokens=max_new_tokens,
+        temperature=temperature, sandbox_timeout=sandbox_timeout, verbose=True,
+    )
+    model.train()
+    print(f"[eval] step={step}: pass@1={results['pass_at_1']:.3f} "
+          f"pass@k={results['pass_at_k']:.3f} format={results['format_rate']:.3f} "
+          f"unique={results['unique_solved']}/{results['n_problems']}", flush=True)
+    return results
+
+
+# ---------------------------------------------------------------------------
+# Main training loop
 # ---------------------------------------------------------------------------
 
 def main():
     args = parse_args()
-    global _SANDBOX_TIMEOUT
-    _SANDBOX_TIMEOUT = args.sandbox_timeout
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
 
     output_dir = args.output_dir or f"checkpoints/code_repair_{args.reward}_s{args.seed}"
+    os.makedirs(output_dir, exist_ok=True)
     use_wandb = _WANDB_AVAILABLE and not args.no_wandb
-    report_to = "wandb" if use_wandb else "none"
 
     print(f"[train] Reward      : {args.reward}")
     print(f"[train] Model       : {args.model_name}")
-    print(f"[train] LoRA        : rank={args.lora_rank} alpha={args.lora_alpha}")
+    print(f"[train] Max turns   : {args.max_turns}")
+    print(f"[train] Batch       : {args.batch_size} problems × {args.group_size} episodes")
     print(f"[train] Max steps   : {args.max_steps}")
-    print(f"[train] Generations : {args.num_generations}")
-    print(f"[train] Eval every  : {args.eval_steps} steps ({args.eval_samples} samples)")
     print(f"[train] Output dir  : {output_dir}")
-    print(f"[train] vLLM        : {args.use_vllm}")
 
     tokenizer = load_tokenizer(args.model_name)
     model = load_lora_model(args.model_name, args.lora_rank, args.lora_alpha)
-    dataset = build_dataset(args.problems_path, sandbox_timeout=args.sandbox_timeout)
     reward_fn = REWARD_FNS[args.reward]
 
-    # Load eval problems
+    with open(args.problems_path) as f:
+        problems = json.load(f)
+    print(f"[train] Loaded {len(problems)} training problems")
+
     eval_problems = []
     if os.path.exists(args.eval_problems_path):
         with open(args.eval_problems_path) as f:
             eval_problems = json.load(f)
         print(f"[train] Loaded {len(eval_problems)} eval problems")
-    else:
-        print(f"[train] WARNING: eval problems not found at {args.eval_problems_path}")
 
-    # Batch size: TRL requires generation_batch_size divisible by num_generations
-    train_batch = args.num_generations * args.per_device_batch_size
-
-    grpo_config = GRPOConfig(
-        output_dir=output_dir,
-        run_name=f"code-repair-{args.reward}-s{args.seed}",
-        seed=args.seed,
-
-        max_steps=args.max_steps,
-
-        per_device_train_batch_size=train_batch,
-        gradient_accumulation_steps=args.gradient_accumulation_steps,
-
-        num_generations=args.num_generations,
-        max_completion_length=args.max_completion_length,
-        temperature=args.temperature,
-        beta=args.beta,
-
-        learning_rate=args.lr,
-        bf16=True,
-        gradient_checkpointing=True,
-
-        logging_steps=1,
-        save_steps=args.save_steps,
-        report_to=report_to,
-        dataloader_num_workers=0,
-
-        # vLLM settings
-        use_vllm=args.use_vllm,
-        vllm_gpu_memory_utilization=0.5 if args.use_vllm else 0.3,
+    optimizer = torch.optim.Adam(
+        [p for p in model.parameters() if p.requires_grad],
+        lr=args.lr,
     )
 
     if use_wandb:
         os.environ.setdefault("WANDB_PROJECT", args.wandb_project)
-
-    # Build eval callback
-    callbacks = []
-    if eval_problems:
-        eval_cb = EvalCallback(
-            eval_problems=eval_problems,
-            tokenizer=tokenizer,
-            eval_steps=args.eval_steps,
-            n_samples=args.eval_samples,
-            max_new_tokens=args.max_completion_length,
-            temperature=args.eval_temperature,
-            sandbox_timeout=args.sandbox_timeout,
+        wandb.init(
+            project=args.wandb_project,
+            config=vars(args),
+            name=f"code-repair-{args.reward}-s{args.seed}",
         )
-        callbacks.append(eval_cb)
 
-    print("[train] Instantiating GRPOTrainer …")
-    trainer = GRPOTrainer(
-        model=model,
-        reward_funcs=[reward_fn],
-        args=grpo_config,
-        train_dataset=dataset,
-        processing_class=tokenizer,
-        callbacks=callbacks,
-    )
+    print("[train] Starting training...", flush=True)
 
-    print("[train] Starting training …")
-    trainer.train()
+    for step in range(1, args.max_steps + 1):
+        t0 = time.time()
 
-    # Final eval
-    if eval_problems:
-        print("\n[train] Running final eval...")
-        model.eval()
-        final_results = evaluate(
-            model=model,
-            tokenizer=tokenizer,
-            problems=eval_problems,
-            n_samples=args.eval_samples,
-            max_new_tokens=args.max_completion_length,
-            temperature=args.eval_temperature,
-            sandbox_timeout=args.sandbox_timeout,
+        # Sample batch of problems
+        batch = random.choices(problems, k=args.batch_size)
+
+        # Run episodes
+        model.eval()  # no dropout during rollout
+        all_episodes = []
+        for problem in batch:
+            for _ in range(args.group_size):
+                ep = run_episode(
+                    problem, model, tokenizer, reward_fn,
+                    max_turns=args.max_turns,
+                    max_new_tokens=args.max_new_tokens,
+                    temperature=args.temperature,
+                    sandbox_timeout=args.sandbox_timeout,
+                )
+                all_episodes.append(ep)
+        t_gen = time.time() - t0
+
+        # Compute episode rewards and GRPO advantages
+        episode_rewards = np.array([sum(ep["per_turn_rewards"]) for ep in all_episodes])
+        advantages = np.zeros_like(episode_rewards)
+        groups_skipped = 0
+        n_groups = args.batch_size
+        for g in range(n_groups):
+            start = g * args.group_size
+            end = start + args.group_size
+            group = episode_rewards[start:end]
+            std = group.std()
+            if std < 1e-8:
+                groups_skipped += 1
+            else:
+                advantages[start:end] = (group - group.mean()) / (std + 1e-8)
+
+        # Training step
+        model.train()
+        optimizer.zero_grad()
+        loss, loss_metrics = compute_grpo_loss(
+            model, all_episodes, advantages,
+            beta=args.beta, clip_low=args.clip_low, clip_high=args.clip_high,
         )
-        results_path = os.path.join(output_dir, "final_eval.json")
-        with open(results_path, "w") as f:
-            json.dump(final_results, f, indent=2)
-        print(f"[train] Final eval saved to {results_path}")
+        if loss.requires_grad:
+            loss.backward()
+            if args.grad_clip_norm > 0:
+                torch.nn.utils.clip_grad_norm_(model.parameters(), args.grad_clip_norm)
+            optimizer.step()
+        t_total = time.time() - t0
 
-    final_dir = os.path.join(output_dir, "final")
-    print(f"[train] Saving final model to: {final_dir}")
-    trainer.save_model(final_dir)
-    tokenizer.save_pretrained(final_dir)
-    print("[train] Training complete.")
+        # Metrics
+        solve_rate = np.mean([ep["all_passed"] for ep in all_episodes])
+        avg_turns = np.mean([ep["total_turns"] for ep in all_episodes])
+        avg_reward = episode_rewards.mean()
+        avg_hw = np.mean([ep["hw_passing"] for ep in all_episodes])
+        format_ok = np.mean([
+            1.0 if not any("format_violation" in str(r) for r in ep.get("completion_texts", []))
+            else 0.0
+            for ep in all_episodes
+        ])
+
+        log_msg = (
+            f"[step {step}/{args.max_steps}] "
+            f"solve={solve_rate:.3f} turns={avg_turns:.1f} "
+            f"reward={avg_reward:.2f}±{episode_rewards.std():.2f} "
+            f"hwm={avg_hw:.1f} loss={loss.item():.4f} "
+            f"kl={loss_metrics['kl']:.4f} "
+            f"gen={t_gen:.0f}s total={t_total:.0f}s"
+        )
+        print(log_msg, flush=True)
+
+        if use_wandb:
+            wandb.log({
+                "train/solve_rate": solve_rate,
+                "train/avg_turns": avg_turns,
+                "train/avg_reward": avg_reward,
+                "train/reward_std": episode_rewards.std(),
+                "train/avg_hwm": avg_hw,
+                "train/loss": loss.item(),
+                "train/kl": loss_metrics["kl"],
+                "train/n_tokens": loss_metrics["n_tokens"],
+                "train/groups_skipped": groups_skipped,
+                "train/gen_time": t_gen,
+                "train/step_time": t_total,
+            }, step=step)
+
+        # Eval
+        if eval_problems and step % args.eval_steps == 0:
+            eval_results = run_eval(
+                model, tokenizer, eval_problems,
+                n_samples=args.eval_samples,
+                max_new_tokens=args.max_new_tokens,
+                temperature=args.eval_temperature,
+                max_turns=args.max_turns,
+                sandbox_timeout=args.sandbox_timeout,
+                step=step,
+            )
+            if use_wandb:
+                wandb.log({
+                    "eval/pass_at_1": eval_results["pass_at_1"],
+                    "eval/pass_at_k": eval_results["pass_at_k"],
+                    "eval/format_rate": eval_results["format_rate"],
+                    "eval/unique_solved": eval_results["unique_solved"],
+                    "eval/unique_solved_frac": eval_results["unique_solved_frac"],
+                }, step=step)
+
+        # Save checkpoint
+        if step % args.save_steps == 0:
+            save_path = os.path.join(output_dir, f"step_{step}")
+            model.save_pretrained(save_path)
+            tokenizer.save_pretrained(save_path)
+            print(f"  Saved checkpoint to {save_path}")
+
+    # Final save
+    final_path = os.path.join(output_dir, "final")
+    model.save_pretrained(final_path)
+    tokenizer.save_pretrained(final_path)
+    print(f"[train] Training complete. Final model: {final_path}")
+
+    if use_wandb:
+        wandb.finish()
 
 
 if __name__ == "__main__":
