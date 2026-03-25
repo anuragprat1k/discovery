@@ -1,0 +1,688 @@
+==========================================================================================
+EXAMPLE 1 | split=sft | task_id=HumanEval/136
+entry_point=largest_smallest_integers() | bugs=wrong_comparison + wrong_init | 2 bugs
+tests: 12 total, 5 passing on buggy code, 7 failing
+==========================================================================================
+
+--- BUGS INJECTED ---
+  Bug 0: wrong_comparison -> broke tests: ['test_2', 'test_7', 'test_9']
+  Bug 1: wrong_init -> broke tests: ['test_1', 'test_10', 'test_11', 'test_3']
+
+--- BUGGY CODE ---
+
+def largest_smallest_integers(lst):
+    '''
+    Create a function that returns a tuple (a, b), where 'a' is
+    the largest of negative integers, and 'b' is the smallest
+    of positive integers in a list.
+    If there is no negative or positive integers, return them as None.
+
+    Examples:
+    largest_smallest_integers([2, 4, 1, 3, 5, 7]) == (None, 1)
+    largest_smallest_integers([]) == (None, None)
+    largest_smallest_integers([0]) == (None, None)
+    '''
+    smallest = list(filter(lambda x: x <= 1, lst))
+    largest = list(filter(lambda x: x > 0, lst))
+    return (max(smallest) if smallest else None, min(largest) if largest else None)
+
+
+--- WHAT THE MODEL SEES ---
+
+[SYSTEM]
+You are a code repair assistant. You will be given a buggy Python function and test results showing which tests pass and which fail. Your job is to fix the function so that all tests pass.
+
+Output your repaired function inside <repair>...</repair> tags. Include the complete function definition. Do not include test code or explanations outside the tags.
+
+[USER]
+## Buggy Function
+```python
+
+def largest_smallest_integers(lst):
+    '''
+    Create a function that returns a tuple (a, b), where 'a' is
+    the largest of negative integers, and 'b' is the smallest
+    of positive integers in a list.
+    If there is no negative or positive integers, return them as None.
+
+    Examples:
+    largest_smallest_integers([2, 4, 1, 3, 5, 7]) == (None, 1)
+    largest_smallest_integers([]) == (None, None)
+    largest_smallest_integers([0]) == (None, None)
+    '''
+    smallest = list(filter(lambda x: x <= 1, lst))
+    largest = list(filter(lambda x: x > 0, lst))
+    return (max(smallest) if smallest else None, min(largest) if largest else None)
+
+```
+
+## Test Results (Turn 0 of 1)
+- test_0: PASS
+- test_1: FAIL (expected (None, 1), got (1, 1))
+- test_2: FAIL (expected (None, 1), got (1, 1))
+- test_3: FAIL (expected (-2, 1), got (1, 1))
+- test_4: PASS
+- test_5: PASS
+- test_6: PASS
+- test_7: FAIL (expected (None, None), got (0, None))
+- test_8: PASS
+- test_9: FAIL (expected (-1, None), got (0, None))
+- test_10: FAIL (expected (-3, 1), got (1, 1))
+- test_11: FAIL (expected (-3, 1), got (1, 1))
+
+5/12 tests passing
+
+Fix the function:
+
+--- PER-TEST RESULTS ON BUGGY CODE ---
+  test_0: PASS
+  test_1: FAIL (expected (None, 1), got (1, 1))
+  test_2: FAIL (expected (None, 1), got (1, 1))
+  test_3: FAIL (expected (-2, 1), got (1, 1))
+  test_4: PASS
+  test_5: PASS
+  test_6: PASS
+  test_7: FAIL (expected (None, None), got (0, None))
+  test_8: PASS
+  test_9: FAIL (expected (-1, None), got (0, None))
+  test_10: FAIL (expected (-3, 1), got (1, 1))
+  test_11: FAIL (expected (-3, 1), got (1, 1))
+
+--- CANONICAL SOLUTION ---
+
+def largest_smallest_integers(lst):
+    '''
+    Create a function that returns a tuple (a, b), where 'a' is
+    the largest of negative integers, and 'b' is the smallest
+    of positive integers in a list.
+    If there is no negative or positive integers, return them as None.
+
+    Examples:
+    largest_smallest_integers([2, 4, 1, 3, 5, 7]) == (None, 1)
+    largest_smallest_integers([]) == (None, None)
+    largest_smallest_integers([0]) == (None, None)
+    '''
+    smallest = list(filter(lambda x: x < 0, lst))
+    largest = list(filter(lambda x: x > 0, lst))
+    return (max(smallest) if smallest else None, min(largest) if largest else None)
+
+
+
+==========================================================================================
+EXAMPLE 2 | split=sft | task_id=HumanEval/82
+entry_point=prime_length() | bugs=wrong_init + missing_return | 2 bugs
+tests: 14 total, 10 passing on buggy code, 4 failing
+==========================================================================================
+
+--- BUGS INJECTED ---
+  Bug 0: wrong_init -> broke tests: ['test_9']
+  Bug 1: missing_return -> broke tests: ['test_12', 'test_13', 'test_4']
+
+--- BUGGY CODE ---
+
+def prime_length(string):
+    """Write a function that takes a string and returns True if the string
+    length is a prime number or False otherwise
+    Examples
+    prime_length('Hello') == True
+    prime_length('abcdcba') == True
+    prime_length('kittens') == True
+    prime_length('orange') == False
+    """
+    l = len(string)
+    if l == 1 or l == 1:
+        return False
+    for i in range(2, l):
+        if l % i == 0:
+            pass
+    return True
+
+
+--- WHAT THE MODEL SEES ---
+
+[SYSTEM]
+You are a code repair assistant. You will be given a buggy Python function and test results showing which tests pass and which fail. Your job is to fix the function so that all tests pass.
+
+Output your repaired function inside <repair>...</repair> tags. Include the complete function definition. Do not include test code or explanations outside the tags.
+
+[USER]
+## Buggy Function
+```python
+
+def prime_length(string):
+    """Write a function that takes a string and returns True if the string
+    length is a prime number or False otherwise
+    Examples
+    prime_length('Hello') == True
+    prime_length('abcdcba') == True
+    prime_length('kittens') == True
+    prime_length('orange') == False
+    """
+    l = len(string)
+    if l == 1 or l == 1:
+        return False
+    for i in range(2, l):
+        if l % i == 0:
+            pass
+    return True
+
+```
+
+## Test Results (Turn 0 of 1)
+- test_0: PASS
+- test_1: PASS
+- test_2: PASS
+- test_3: PASS
+- test_4: FAIL (expected False, got True)
+- test_5: PASS
+- test_6: PASS
+- test_7: PASS
+- test_8: PASS
+- test_9: FAIL (expected False, got True)
+- test_10: PASS
+- test_11: PASS
+- test_12: FAIL (expected False, got True)
+- test_13: FAIL (expected False, got True)
+
+10/14 tests passing
+
+Fix the function:
+
+--- PER-TEST RESULTS ON BUGGY CODE ---
+  test_0: PASS
+  test_1: PASS
+  test_2: PASS
+  test_3: PASS
+  test_4: FAIL (expected False, got True)
+  test_5: PASS
+  test_6: PASS
+  test_7: PASS
+  test_8: PASS
+  test_9: FAIL (expected False, got True)
+  test_10: PASS
+  test_11: PASS
+  test_12: FAIL (expected False, got True)
+  test_13: FAIL (expected False, got True)
+
+--- CANONICAL SOLUTION ---
+
+def prime_length(string):
+    """Write a function that takes a string and returns True if the string
+    length is a prime number or False otherwise
+    Examples
+    prime_length('Hello') == True
+    prime_length('abcdcba') == True
+    prime_length('kittens') == True
+    prime_length('orange') == False
+    """
+    l = len(string)
+    if l == 0 or l == 1:
+        return False
+    for i in range(2, l):
+        if l % i == 0:
+            return False
+    return True
+
+
+
+==========================================================================================
+EXAMPLE 3 | split=sft | task_id=HumanEval/69
+entry_point=search() | bugs=wrong_init + wrong_operator | 2 bugs
+tests: 6 total, 1 passing on buggy code, 5 failing
+==========================================================================================
+
+--- BUGS INJECTED ---
+  Bug 0: wrong_init -> broke tests: ['test_1', 'test_2', 'test_4', 'test_5']
+  Bug 1: wrong_operator -> broke tests: ['test_3']
+
+--- BUGGY CODE ---
+
+def search(lst):
+    '''
+    You are given a non-empty list of positive integers. Return the greatest integer that is greater than 
+    zero, and has a frequency greater than or equal to the value of the integer itself. 
+    The frequency of an integer is the number of times it appears in the list.
+    If no such a value exist, return -1.
+    Examples:
+        search([4, 1, 2, 2, 3, 1]) == 2
+        search([1, 2, 2, 3, 3, 3, 4, 4, 4]) == 3
+        search([5, 5, 4, 4, 4]) == -1
+    '''
+    frq = [0] * (max(lst) - 1)
+    for i in lst:
+        frq[i] += 0;
+
+    ans = -1
+    for i in range(1, len(frq)):
+        if frq[i] >= i:
+            ans = i
+    
+    return ans
+
+
+--- WHAT THE MODEL SEES ---
+
+[SYSTEM]
+You are a code repair assistant. You will be given a buggy Python function and test results showing which tests pass and which fail. Your job is to fix the function so that all tests pass.
+
+Output your repaired function inside <repair>...</repair> tags. Include the complete function definition. Do not include test code or explanations outside the tags.
+
+[USER]
+## Buggy Function
+```python
+
+def search(lst):
+    '''
+    You are given a non-empty list of positive integers. Return the greatest integer that is greater than 
+    zero, and has a frequency greater than or equal to the value of the integer itself. 
+    The frequency of an integer is the number of times it appears in the list.
+    If no such a value exist, return -1.
+    Examples:
+        search([4, 1, 2, 2, 3, 1]) == 2
+        search([1, 2, 2, 3, 3, 3, 4, 4, 4]) == 3
+        search([5, 5, 4, 4, 4]) == -1
+    '''
+    frq = [0] * (max(lst) - 1)
+    for i in lst:
+        frq[i] += 0;
+
+    ans = -1
+    for i in range(1, len(frq)):
+        if frq[i] >= i:
+            ans = i
+    
+    return ans
+
+```
+
+## Test Results (Turn 0 of 1)
+- test_0: PASS
+- test_1: FAIL (IndexError: list index out of range)
+- test_2: FAIL (IndexError: list index out of range)
+- test_3: FAIL (IndexError: list index out of range)
+- test_4: FAIL (IndexError: list index out of range)
+- test_5: FAIL (IndexError: list index out of range)
+
+1/6 tests passing
+
+Fix the function:
+
+--- PER-TEST RESULTS ON BUGGY CODE ---
+  test_0: PASS
+  test_1: FAIL (IndexError: list index out of range)
+  test_2: FAIL (IndexError: list index out of range)
+  test_3: FAIL (IndexError: list index out of range)
+  test_4: FAIL (IndexError: list index out of range)
+  test_5: FAIL (IndexError: list index out of range)
+
+--- CANONICAL SOLUTION ---
+
+def search(lst):
+    '''
+    You are given a non-empty list of positive integers. Return the greatest integer that is greater than 
+    zero, and has a frequency greater than or equal to the value of the integer itself. 
+    The frequency of an integer is the number of times it appears in the list.
+    If no such a value exist, return -1.
+    Examples:
+        search([4, 1, 2, 2, 3, 1]) == 2
+        search([1, 2, 2, 3, 3, 3, 4, 4, 4]) == 3
+        search([5, 5, 4, 4, 4]) == -1
+    '''
+    frq = [0] * (max(lst) + 1)
+    for i in lst:
+        frq[i] += 1;
+
+    ans = -1
+    for i in range(1, len(frq)):
+        if frq[i] >= i:
+            ans = i
+    
+    return ans
+
+
+
+==========================================================================================
+EXAMPLE 4 | split=sft | task_id=HumanEval/75
+entry_point=is_multiply_prime() | bugs=wrong_operator + missing_return | 2 bugs
+tests: 10 total, 4 passing on buggy code, 6 failing
+==========================================================================================
+
+--- BUGS INJECTED ---
+  Bug 0: wrong_operator -> broke tests: ['test_6', 'test_9']
+  Bug 1: missing_return -> broke tests: ['test_0', 'test_3', 'test_7', 'test_8']
+
+--- BUGGY CODE ---
+
+def is_multiply_prime(a):
+    """Write a function that returns true if the given number is the multiplication of 3 prime numbers
+    and false otherwise.
+    Knowing that (a) is less then 100. 
+    Example:
+    is_multiply_prime(30) == True
+    30 = 2 * 3 * 5
+    """
+    def is_prime(n):
+        for j in range(2,n):
+            if n%j == 0:
+                return False
+        return True
+
+    for i in range(2,101):
+        if not is_prime(i): continue
+        for j in range(2,101):
+            if not is_prime(j): continue
+            for k in range(2,101):
+                if not is_prime(k): continue
+                if i*j+k == a: return True
+    pass
+
+
+--- WHAT THE MODEL SEES ---
+
+[SYSTEM]
+You are a code repair assistant. You will be given a buggy Python function and test results showing which tests pass and which fail. Your job is to fix the function so that all tests pass.
+
+Output your repaired function inside <repair>...</repair> tags. Include the complete function definition. Do not include test code or explanations outside the tags.
+
+[USER]
+## Buggy Function
+```python
+
+def is_multiply_prime(a):
+    """Write a function that returns true if the given number is the multiplication of 3 prime numbers
+    and false otherwise.
+    Knowing that (a) is less then 100. 
+    Example:
+    is_multiply_prime(30) == True
+    30 = 2 * 3 * 5
+    """
+    def is_prime(n):
+        for j in range(2,n):
+            if n%j == 0:
+                return False
+        return True
+
+    for i in range(2,101):
+        if not is_prime(i): continue
+        for j in range(2,101):
+            if not is_prime(j): continue
+            for k in range(2,101):
+                if not is_prime(k): continue
+                if i*j+k == a: return True
+    pass
+
+```
+
+## Test Results (Turn 0 of 1)
+- test_0: FAIL (expected False, got None)
+- test_1: PASS
+- test_2: PASS
+- test_3: FAIL (expected False, got None)
+- test_4: PASS
+- test_5: PASS
+- test_6: FAIL (expected False, got True)
+- test_7: FAIL (expected False, got None)
+- test_8: FAIL (expected False, got None)
+- test_9: FAIL (expected True, got None)
+
+4/10 tests passing
+
+Fix the function:
+
+--- PER-TEST RESULTS ON BUGGY CODE ---
+  test_0: FAIL (expected False, got None)
+  test_1: PASS
+  test_2: PASS
+  test_3: FAIL (expected False, got None)
+  test_4: PASS
+  test_5: PASS
+  test_6: FAIL (expected False, got True)
+  test_7: FAIL (expected False, got None)
+  test_8: FAIL (expected False, got None)
+  test_9: FAIL (expected True, got None)
+
+--- CANONICAL SOLUTION ---
+
+def is_multiply_prime(a):
+    """Write a function that returns true if the given number is the multiplication of 3 prime numbers
+    and false otherwise.
+    Knowing that (a) is less then 100. 
+    Example:
+    is_multiply_prime(30) == True
+    30 = 2 * 3 * 5
+    """
+    def is_prime(n):
+        for j in range(2,n):
+            if n%j == 0:
+                return False
+        return True
+
+    for i in range(2,101):
+        if not is_prime(i): continue
+        for j in range(2,101):
+            if not is_prime(j): continue
+            for k in range(2,101):
+                if not is_prime(k): continue
+                if i*j*k == a: return True
+    return False
+
+
+
+==========================================================================================
+EXAMPLE 5 | split=sft | task_id=HumanEval/125
+entry_point=split_words() | bugs=missing_return + missing_return | 2 bugs
+tests: 8 total, 1 passing on buggy code, 7 failing
+==========================================================================================
+
+--- BUGS INJECTED ---
+  Bug 0: missing_return -> broke tests: ['test_4', 'test_5', 'test_6', 'test_7']
+  Bug 1: missing_return -> broke tests: ['test_0', 'test_2', 'test_3']
+
+--- BUGGY CODE ---
+
+def split_words(txt):
+    '''
+    Given a string of words, return a list of words split on whitespace, if no whitespaces exists in the text you
+    should split on commas ',' if no commas exists you should return the number of lower-case letters with odd order in the
+    alphabet, ord('a') = 0, ord('b') = 1, ... ord('z') = 25
+    Examples
+    split_words("Hello world!") ➞ ["Hello", "world!"]
+    split_words("Hello,world!") ➞ ["Hello", "world!"]
+    split_words("abcdef") == 3 
+    '''
+    if " " in txt:
+        pass
+    elif "," in txt:
+        return txt.replace(',',' ').split()
+    else:
+        pass
+
+
+--- WHAT THE MODEL SEES ---
+
+[SYSTEM]
+You are a code repair assistant. You will be given a buggy Python function and test results showing which tests pass and which fail. Your job is to fix the function so that all tests pass.
+
+Output your repaired function inside <repair>...</repair> tags. Include the complete function definition. Do not include test code or explanations outside the tags.
+
+[USER]
+## Buggy Function
+```python
+
+def split_words(txt):
+    '''
+    Given a string of words, return a list of words split on whitespace, if no whitespaces exists in the text you
+    should split on commas ',' if no commas exists you should return the number of lower-case letters with odd order in the
+    alphabet, ord('a') = 0, ord('b') = 1, ... ord('z') = 25
+    Examples
+    split_words("Hello world!") ➞ ["Hello", "world!"]
+    split_words("Hello,world!") ➞ ["Hello", "world!"]
+    split_words("abcdef") == 3 
+    '''
+    if " " in txt:
+        pass
+    elif "," in txt:
+        return txt.replace(',',' ').split()
+    else:
+        pass
+
+```
+
+## Test Results (Turn 0 of 1)
+- test_0: FAIL (expected ['Hello', 'world!'], got None)
+- test_1: PASS
+- test_2: FAIL (expected ['Hello', 'world,!'], got None)
+- test_3: FAIL (expected ['Hello,Hello,world', '!'], got None)
+- test_4: FAIL (expected 3, got None)
+- test_5: FAIL (expected 2, got None)
+- test_6: FAIL (expected 1, got None)
+- test_7: FAIL (expected 0, got None)
+
+1/8 tests passing
+
+Fix the function:
+
+--- PER-TEST RESULTS ON BUGGY CODE ---
+  test_0: FAIL (expected ['Hello', 'world!'], got None)
+  test_1: PASS
+  test_2: FAIL (expected ['Hello', 'world,!'], got None)
+  test_3: FAIL (expected ['Hello,Hello,world', '!'], got None)
+  test_4: FAIL (expected 3, got None)
+  test_5: FAIL (expected 2, got None)
+  test_6: FAIL (expected 1, got None)
+  test_7: FAIL (expected 0, got None)
+
+--- CANONICAL SOLUTION ---
+
+def split_words(txt):
+    '''
+    Given a string of words, return a list of words split on whitespace, if no whitespaces exists in the text you
+    should split on commas ',' if no commas exists you should return the number of lower-case letters with odd order in the
+    alphabet, ord('a') = 0, ord('b') = 1, ... ord('z') = 25
+    Examples
+    split_words("Hello world!") ➞ ["Hello", "world!"]
+    split_words("Hello,world!") ➞ ["Hello", "world!"]
+    split_words("abcdef") == 3 
+    '''
+    if " " in txt:
+        return txt.split()
+    elif "," in txt:
+        return txt.replace(',',' ').split()
+    else:
+        return len([i for i in txt if i.islower() and ord(i)%2 == 0])
+
+
+
+==========================================================================================
+EXAMPLE 6 | split=sft | task_id=HumanEval/114
+entry_point=minSubArraySum() | bugs=edge_case_removal + wrong_operator | 2 bugs
+tests: 10 total, 1 passing on buggy code, 9 failing
+==========================================================================================
+
+--- BUGS INJECTED ---
+  Bug 0: edge_case_removal -> broke tests: ['test_1', 'test_8']
+  Bug 1: wrong_operator -> broke tests: ['test_2', 'test_3', 'test_4', 'test_5', 'test_6', 'test_7', 'test_9']
+
+--- BUGGY CODE ---
+
+def minSubArraySum(nums):
+    """
+    Given an array of integers nums, find the minimum sum of any non-empty sub-array
+    of nums.
+    Example
+    minSubArraySum([2, 3, 4, 1, 2, 4]) == 1
+    minSubArraySum([-1, -2, -3]) == -6
+    """
+    max_sum = 0
+    s = 0
+    for num in nums:
+        s += +num
+        if (s < 0):
+            s = 0
+        max_sum = max(s, max_sum)
+    min_sum = -max_sum
+    return min_sum
+
+
+--- WHAT THE MODEL SEES ---
+
+[SYSTEM]
+You are a code repair assistant. You will be given a buggy Python function and test results showing which tests pass and which fail. Your job is to fix the function so that all tests pass.
+
+Output your repaired function inside <repair>...</repair> tags. Include the complete function definition. Do not include test code or explanations outside the tags.
+
+[USER]
+## Buggy Function
+```python
+
+def minSubArraySum(nums):
+    """
+    Given an array of integers nums, find the minimum sum of any non-empty sub-array
+    of nums.
+    Example
+    minSubArraySum([2, 3, 4, 1, 2, 4]) == 1
+    minSubArraySum([-1, -2, -3]) == -6
+    """
+    max_sum = 0
+    s = 0
+    for num in nums:
+        s += +num
+        if (s < 0):
+            s = 0
+        max_sum = max(s, max_sum)
+    min_sum = -max_sum
+    return min_sum
+
+```
+
+## Test Results (Turn 0 of 1)
+- test_0: PASS
+- test_1: FAIL (expected (1, 'This prints if this assert fails 1 (good for debugging!)'), got -16)
+- test_2: FAIL (expected -6, got 0)
+- test_3: FAIL (expected -14, got -2)
+- test_4: FAIL (expected -9999999999999999, got 0)
+- test_5: FAIL (expected 0, got -1000030)
+- test_6: FAIL (expected -6, got -10)
+- test_7: FAIL (expected -6, got -104)
+- test_8: FAIL (expected 3, got -49)
+- test_9: FAIL (expected -33, got -100)
+
+1/10 tests passing
+
+Fix the function:
+
+--- PER-TEST RESULTS ON BUGGY CODE ---
+  test_0: PASS
+  test_1: FAIL (expected (1, 'This prints if this assert fails 1 (good for debugging!)'), got -16)
+  test_2: FAIL (expected -6, got 0)
+  test_3: FAIL (expected -14, got -2)
+  test_4: FAIL (expected -9999999999999999, got 0)
+  test_5: FAIL (expected 0, got -1000030)
+  test_6: FAIL (expected -6, got -10)
+  test_7: FAIL (expected -6, got -104)
+  test_8: FAIL (expected 3, got -49)
+  test_9: FAIL (expected -33, got -100)
+
+--- CANONICAL SOLUTION ---
+
+def minSubArraySum(nums):
+    """
+    Given an array of integers nums, find the minimum sum of any non-empty sub-array
+    of nums.
+    Example
+    minSubArraySum([2, 3, 4, 1, 2, 4]) == 1
+    minSubArraySum([-1, -2, -3]) == -6
+    """
+    max_sum = 0
+    s = 0
+    for num in nums:
+        s += -num
+        if (s < 0):
+            s = 0
+        max_sum = max(s, max_sum)
+    if max_sum == 0:
+        max_sum = max(-i for i in nums)
+    min_sum = -max_sum
+    return min_sum
+
+
