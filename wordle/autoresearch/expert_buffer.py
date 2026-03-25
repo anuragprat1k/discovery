@@ -147,7 +147,7 @@ def generate_expert_buffer(
         from wordle.data.split_words import get_word_splits
         answers = get_word_splits()["sft"]
     extra_guesses = load_word_list(data_dir / "wordle_guesses.txt")
-    valid_guesses = list(set(answers) | set(extra_guesses) | set(load_word_list(data_dir / "wordle_answers.txt")))
+    valid_guesses = sorted(set(answers) | set(extra_guesses) | set(load_word_list(data_dir / "wordle_answers.txt")))
 
     rng = random.Random(seed)
     wins = 0
