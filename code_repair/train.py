@@ -241,9 +241,19 @@ def run_episode(
         gen_ids = output.sequences[0, n_prompt:]  # completion tokens only
 
         # Compute logprobs from logits
-        logits_stack = torch.stack(output.logits, dim=0)  # (gen_len, vocab)
+        # output.logits is a tuple of (vocab_size,) tensors, one per generated token
+        n_logits = len(output.logits)
+        n_gen = len(gen_ids)
+        # Truncate to the shorter of the two (can differ by 1 near EOS)
+        n_use = min(n_logits, n_gen)
+        logits_stack = torch.stack(output.logits[:n_use], dim=0)  # (n_use, vocab)
         log_probs_all = F.log_softmax(logits_stack, dim=-1)
-        token_logprobs = log_probs_all[range(len(gen_ids)), gen_ids].cpu().tolist()
+        gen_ids_trunc = gen_ids[:n_use]
+        token_logprobs = log_probs_all[range(n_use), gen_ids_trunc].cpu().tolist()
+        # Pad if gen_ids was longer (unlikely but safe)
+        if n_gen > n_use:
+            token_logprobs.extend([-100.0] * (n_gen - n_use))
+        gen_ids = gen_ids[:n_gen]  # keep original length
 
         completion_text = tokenizer.decode(gen_ids, skip_special_tokens=True)
 
@@ -379,8 +389,15 @@ def compute_grpo_loss(
             new_log_probs = F.log_softmax(logits, dim=-1)
 
             comp_ids = torch.tensor(comp_tok, dtype=torch.long, device=device)
+            # Safety: clamp comp_ids to vocab range
+            vocab_size = new_log_probs.shape[-1]
+            comp_ids = comp_ids.clamp(0, vocab_size - 1)
             new_lp = new_log_probs[range(n_comp), comp_ids]
             old_lp = torch.tensor(old_logprobs[:n_comp], dtype=torch.float32, device=device)
+            # Replace padding values with current logprobs (no gradient signal)
+            pad_mask = old_lp < -99.0
+            if pad_mask.any():
+                old_lp[pad_mask] = new_lp[pad_mask].detach()
 
             # Importance ratio
             ratio = torch.exp(new_lp - old_lp)
