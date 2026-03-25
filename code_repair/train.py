@@ -263,7 +263,7 @@ REWARD_FNS = {
 # ---------------------------------------------------------------------------
 
 class EvalCallback(TrainerCallback):
-    """Runs eval on held-out problems every N steps, logs to wandb."""
+    """Runs eval on held-out problems every N steps, logs to wandb with trajectory samples."""
 
     def __init__(
         self,
@@ -274,6 +274,7 @@ class EvalCallback(TrainerCallback):
         max_new_tokens: int = 2048,
         temperature: float = 0.6,
         sandbox_timeout: int = 5,
+        n_trace_problems: int = 5,
     ):
         self.eval_problems = eval_problems
         self.tokenizer = tokenizer
@@ -282,6 +283,68 @@ class EvalCallback(TrainerCallback):
         self.max_new_tokens = max_new_tokens
         self.temperature = temperature
         self.sandbox_timeout = sandbox_timeout
+        self.n_trace_problems = n_trace_problems
+
+    def _collect_traces(self, model, step: int) -> list[dict]:
+        """Generate one sample per problem for a subset, capturing full rollouts."""
+        device = next(model.parameters()).device
+        traces = []
+        subset = self.eval_problems[:self.n_trace_problems]
+
+        for p in subset:
+            initial_results = run_tests(
+                p["buggy_code"], p["test_code"], p["entry_point"],
+                timeout=self.sandbox_timeout, detailed=True,
+            )
+            user_msg = format_initial_prompt(
+                p["buggy_code"], initial_results, max_turns=1,
+            )
+            messages = [
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": user_msg},
+            ]
+            input_ids = self.tokenizer.apply_chat_template(
+                messages, add_generation_prompt=True, tokenize=True,
+                return_tensors="pt",
+            ).to(device)
+
+            with torch.no_grad():
+                output = model.generate(
+                    input_ids, max_new_tokens=self.max_new_tokens,
+                    temperature=self.temperature, do_sample=True,
+                )
+            completion = self.tokenizer.decode(
+                output[0][input_ids.shape[1]:], skip_special_tokens=True,
+            )
+            repair = extract_repair(completion)
+
+            test_summary = "no <repair> tag"
+            passed = 0
+            total = 0
+            solved = False
+            if repair:
+                results = run_tests(
+                    repair, p["test_code"], p["entry_point"],
+                    timeout=self.sandbox_timeout, detailed=True,
+                )
+                passed = sum(1 for r in results if r.passed)
+                total = len(results)
+                solved = passed == total and total > 0
+                test_summary = f"{passed}/{total}" + (" SOLVED" if solved else "")
+
+            traces.append({
+                "step": step,
+                "task_id": p["task_id"],
+                "bug_type": p.get("bug_type", ""),
+                "test_result": test_summary,
+                "solved": solved,
+                "passed": passed,
+                "total_tests": total,
+                "user_prompt": user_msg[:2000],
+                "completion": completion[:3000],
+                "repair": (repair or "")[:2000],
+            })
+        return traces
 
     def on_step_end(self, args, state, control, model=None, **kwargs):
         if state.global_step % self.eval_steps != 0:
@@ -301,6 +364,9 @@ class EvalCallback(TrainerCallback):
             sandbox_timeout=self.sandbox_timeout,
             verbose=True,
         )
+
+        # Collect trajectory samples
+        traces = self._collect_traces(model, state.global_step)
         model.train()
 
         print(f"[eval] step={state.global_step}: "
@@ -323,6 +389,16 @@ class EvalCallback(TrainerCallback):
             # Per bug-type pass@1
             for bt, info in results.get("by_bug_type", {}).items():
                 log_dict[f"eval/pass1_{bt}"] = info["pass_at_1"]
+
+            # Log trajectory table
+            if traces:
+                columns = ["step", "task_id", "bug_type", "test_result", "solved",
+                           "passed", "total_tests", "user_prompt", "completion", "repair"]
+                table = wandb.Table(columns=columns)
+                for t in traces:
+                    table.add_data(*[t[c] for c in columns])
+                log_dict["eval/trajectories"] = table
+
             wandb.log(log_dict, step=state.global_step)
 
 
