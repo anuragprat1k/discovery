@@ -340,6 +340,12 @@ def grpo_step(
     avg_turns = np.mean([len(ep["per_turn_rewards"]) for ep in episodes])
     avg_hw = np.mean([ep["env"].hw_passing for ep in episodes])
 
+    # Per-problem solve tracking (for discovery/mastery)
+    batch_solved = set()
+    for ep in episodes:
+        if ep["all_passed"]:
+            batch_solved.add(ep["problem"]["task_id"])
+
     return {
         "step": step,
         "mean_reward": float(episode_rewards.mean()),
@@ -351,6 +357,7 @@ def grpo_step(
         "groups_skipped": groups_skipped,
         "n_train_samples": len(data),
         "n_completion_tokens": total_completion_tokens,
+        "batch_solved": batch_solved,
         "time_gen": round(t_gen, 1),
         "time_total": round(t_total, 1),
     }
@@ -483,10 +490,11 @@ def run_eval(
           f"raw={total_solved}/{total_samples}", flush=True)
 
     return {
-        "pass_at_1": float(overall_pass1),
-        "unique_solved": len(unique_solved),
-        "n_problems": len(problems),
-        "raw_solve_rate": raw_solve_rate,
+        "eval_pass_at_1": float(overall_pass1),
+        "eval_unique_solved": len(unique_solved),
+        "eval_n_problems": len(problems),
+        "eval_raw_solve_rate": raw_solve_rate,
+        "eval_unique_solved_set": sorted(unique_solved),
         "traces": traces,
         "per_problem": per_problem,
     }
@@ -551,6 +559,10 @@ def main():
     rng = random.Random(args.seed)
     t_start = time.time()
 
+    # Discovery/mastery tracking (cumulative across all steps)
+    ever_solved: set[str] = set()      # unique problems ever solved (discovery)
+    solve_counts: dict[str, int] = {}  # task_id -> times solved (for mastery)
+
     for step in range(1, args.max_steps + 1):
         batch = [rng.choice(problems) for _ in range(args.batch_size)]
 
@@ -563,11 +575,26 @@ def main():
             args=args,
         )
 
+        # Update discovery/mastery tracking
+        batch_solved = metrics.pop("batch_solved", set())
+        new_discoveries = batch_solved - ever_solved
+        ever_solved |= batch_solved
+        for tid in batch_solved:
+            solve_counts[tid] = solve_counts.get(tid, 0) + 1
+        mastered = sum(1 for c in solve_counts.values() if c >= 3)
+
+        metrics["discovery"] = len(ever_solved)
+        metrics["mastery"] = mastered
+        metrics["new_discoveries"] = len(new_discoveries)
+        metrics["batch_unique_solved"] = len(batch_solved)
+
         print(
             f"[step {step:4d}/{args.max_steps}] "
             f"solve={metrics['solve_rate']:.3f}  reward={metrics['mean_reward']:.2f}±{metrics['reward_std']:.2f}  "
             f"turns={metrics['avg_turns']:.1f}  hwm={metrics['avg_hwm']:.1f}  "
-            f"loss={metrics['loss']:.4f}  time={metrics['time_total']}s"
+            f"loss={metrics['loss']:.4f}  "
+            f"discovery={len(ever_solved)}  mastery={mastered}  "
+            f"time={metrics['time_total']}s"
         )
 
         with open(log_file, "a") as f:
@@ -575,6 +602,12 @@ def main():
 
         if use_wandb:
             wandb.log({f"train/{k}": v for k, v in metrics.items()}, step=step)
+            # Log discovery set as artifact periodically
+            if step % 10 == 0:
+                wandb.log({
+                    "discovery/ever_solved": sorted(ever_solved),
+                    "discovery/solve_counts": dict(solve_counts),
+                }, step=step)
 
         # Refresh sampling client for near-on-policy rollouts
         if step % args.refresh_steps == 0:
@@ -599,9 +632,9 @@ def main():
             eval_results = run_eval(sampling_client, tokenizer, eval_problems, args, step)
             if use_wandb:
                 wandb.log({
-                    "eval/pass_at_1": eval_results["pass_at_1"],
-                    "eval/unique_solved": eval_results["unique_solved"],
-                    "eval/raw_solve_rate": eval_results["raw_solve_rate"],
+                    "eval/pass_at_1": eval_results["eval_pass_at_1"],
+                    "eval/unique_solved": eval_results["eval_unique_solved"],
+                    "eval/raw_solve_rate": eval_results["eval_raw_solve_rate"],
                 }, step=step)
 
                 # Log trajectory table
