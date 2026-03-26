@@ -452,19 +452,62 @@ def compute_grpo_loss_and_step(
 # ---------------------------------------------------------------------------
 
 def run_eval(model, tokenizer, problems, n_samples, max_new_tokens, temperature,
-             max_turns, sandbox_timeout, step):
-    """Lightweight eval: run episodes, report metrics."""
+             max_turns, sandbox_timeout, step, use_wandb=False):
+    """Multi-turn eval with trajectory logging."""
     from code_repair.eval import evaluate
     model.eval()
     results = evaluate(
         model=model, tokenizer=tokenizer, problems=problems,
-        n_samples=n_samples, max_new_tokens=max_new_tokens,
-        temperature=temperature, sandbox_timeout=sandbox_timeout, verbose=True,
+        n_samples=n_samples, max_turns=max_turns,
+        max_new_tokens=max_new_tokens, temperature=temperature,
+        sandbox_timeout=sandbox_timeout, verbose=True,
+        collect_traces=True, n_trace_problems=5,
     )
     model.train()
+
     print(f"[eval] step={step}: pass@1={results['pass_at_1']:.3f} "
           f"pass@k={results['pass_at_k']:.3f} format={results['format_rate']:.3f} "
+          f"turns={results['avg_turns']:.1f} "
           f"unique={results['unique_solved']}/{results['n_problems']}", flush=True)
+
+    if use_wandb and _WANDB_AVAILABLE and wandb.run is not None:
+        log_dict = {
+            "eval/pass_at_1": results["pass_at_1"],
+            "eval/pass_at_k": results["pass_at_k"],
+            "eval/format_rate": results["format_rate"],
+            "eval/avg_turns": results["avg_turns"],
+            "eval/unique_solved": results["unique_solved"],
+            "eval/unique_solved_frac": results["unique_solved_frac"],
+        }
+        for nb, info in results.get("by_n_bugs", {}).items():
+            log_dict[f"eval/pass1_{nb}bug"] = info["pass_at_1"]
+
+        # Log trajectory table
+        traces = results.get("traces", [])
+        if traces:
+            columns = ["step", "task_id", "n_bugs", "solved", "total_turns",
+                        "hw_passing", "num_tests"]
+            # Add per-turn columns
+            max_t = max(t["total_turns"] for t in traces)
+            for ti in range(max_t):
+                columns.extend([f"t{ti+1}_passing", f"t{ti+1}_repair"])
+
+            table = wandb.Table(columns=columns)
+            for t in traces:
+                row = [step, t["task_id"], t["n_bugs"], t["solved"],
+                       t["total_turns"], t["hw_passing"], t["num_tests"]]
+                for ti in range(max_t):
+                    if ti < len(t["turns"]):
+                        turn = t["turns"][ti]
+                        row.append(f"{turn['curr_passing']}/{turn['num_tests']}")
+                        row.append(turn["repair"][:500] if turn["repair_found"] else "(no tag)")
+                    else:
+                        row.extend(["", ""])
+                table.add_data(*row)
+            log_dict["eval/trajectories"] = table
+
+        wandb.log(log_dict, step=step)
+
     return results
 
 
@@ -601,23 +644,15 @@ def main():
 
         # Eval
         if eval_problems and step % args.eval_steps == 0:
-            eval_results = run_eval(
+            run_eval(
                 model, tokenizer, eval_problems,
                 n_samples=args.eval_samples,
                 max_new_tokens=args.max_new_tokens,
                 temperature=args.eval_temperature,
                 max_turns=args.max_turns,
                 sandbox_timeout=args.sandbox_timeout,
-                step=step,
+                step=step, use_wandb=use_wandb,
             )
-            if use_wandb:
-                wandb.log({
-                    "eval/pass_at_1": eval_results["pass_at_1"],
-                    "eval/pass_at_k": eval_results["pass_at_k"],
-                    "eval/format_rate": eval_results["format_rate"],
-                    "eval/unique_solved": eval_results["unique_solved"],
-                    "eval/unique_solved_frac": eval_results["unique_solved_frac"],
-                }, step=step)
 
         # Save checkpoint
         if step % args.save_steps == 0:
