@@ -794,7 +794,12 @@ with open('code.py', 'r') as fin:
     code = fin.read()
 
 result, metadata = run_test(sample, code, debug=False, timeout=%(timeout)s)
-if any(x != True for x in result):
+passed = sum(1 for x in result if x == True)
+total = len(result)
+all_passed = passed == total
+# Always print per-test summary as JSON on the first line
+print(json.dumps({"passed": passed, "total": total, "all_passed": all_passed, "per_test": [x == True for x in result]}))
+if not all_passed:
     print(metadata)
     sys.exit(-1)
 else:

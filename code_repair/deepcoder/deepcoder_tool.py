@@ -4,7 +4,7 @@ import json
 from dataclasses import dataclass
 from typing import Annotated, Any
 
-from tinker_cookbook.recipes.code_rl.code_grading import (
+from code_repair.deepcoder.code_grading import (
     extract_code_from_model,
     sandbox_check_correctness,
 )
@@ -67,12 +67,15 @@ class DeepcoderTool:
 
 @dataclass
 class DeepcoderReward:
-    """Reward function for code tasks.
+    """Reward function for code tasks with sparse/dense/dense_full modes.
 
     Grades the final answer by extracting code from the last assistant message
     and running it against the task's tests.
 
-    Formula: format_coef * (has_code_block - 1) + correct
+    Reward modes:
+    - sparse: format_coef * (has_code - 1) + all_correct (binary)
+    - dense: format_coef * (has_code - 1) + tests_passed / tests_total
+    - dense_full: dense + 0.1 * (code ran without crash for failing tests)
 
     Called once at episode end with the full message history.
     """
@@ -81,6 +84,7 @@ class DeepcoderReward:
     sandbox_backend: SandboxBackend | None = None
     timeout: int = 6
     format_coef: float = 0.1
+    reward_type: str = "sparse"  # "sparse", "dense", "dense_full"
 
     async def __call__(self, history: list[Message]) -> tuple[float, dict[str, float]]:
         """Grade the completed episode by extracting code from final assistant message."""
@@ -93,43 +97,60 @@ class DeepcoderReward:
 
         if final_message is None:
             logtree.log_text("No assistant message found in history.")
-            return 0.0, {"format": 0.0, "correct": 0.0}
+            return 0.0, {"format": 0.0, "correct": 0.0, "tests_passed": 0.0, "tests_total": 0.0}
 
-        # Use get_text_content to properly handle thinking models (o1, o3)
         content = get_text_content(final_message)
-
-        # Extract code from content
         code = extract_code_from_model(content)
         has_code_block = code is not None
 
-        # Grade the code by running tests
+        tests_passed = 0
+        tests_total = len(self.task.tests) or 1
+        all_correct = False
+
         if code is not None:
             try:
-                passed, _details = await sandbox_check_correctness(
+                passed, details = await sandbox_check_correctness(
                     self.task.tests,
                     code,
                     timeout=self.timeout,
                     backend=self.sandbox_backend,
                 )
-                correct = float(passed)
+                all_correct = passed
+                tests_passed = details.get("tests_passed", tests_total if passed else 0)
+                tests_total = details.get("tests_total", tests_total)
             except Exception as e:
                 logtree.log_text(f"Error running tests: {e}")
-                correct = 0.0
         else:
             logtree.log_text("No code block detected in response.")
-            correct = 0.0
 
-        # Reward formula
+        # Compute reward based on mode
         format_score = float(has_code_block)
-        reward = self.format_coef * (format_score - 1.0) + correct
+        format_reward = self.format_coef * (format_score - 1.0)
 
-        # Log results
-        logtree.log_text(f"Problem: {self.task.problem}")
-        logtree.log_text(f"Response: {content}")
+        if self.reward_type == "sparse":
+            reward = format_reward + float(all_correct)
+        elif self.reward_type == "dense":
+            reward = format_reward + (tests_passed / max(tests_total, 1))
+        elif self.reward_type == "dense_full":
+            frac = tests_passed / max(tests_total, 1)
+            # Bonus: code ran at all (didn't crash on import/syntax)
+            ran_at_all = 0.1 if (has_code_block and tests_passed > 0) else 0.0
+            reward = format_reward + frac + ran_at_all
+        else:
+            reward = format_reward + float(all_correct)
+
+        metrics = {
+            "format": format_score,
+            "correct": float(all_correct),
+            "tests_passed": float(tests_passed),
+            "tests_total": float(tests_total),
+            "test_frac": float(tests_passed / max(tests_total, 1)),
+        }
+
         logtree.log_text(
-            f"Format Valid: {'✓' if has_code_block else '✗'}, "
-            f"Correct: {'✓' if correct > 0 else '✗'}, "
-            f"Reward: {reward:.2f}"
+            f"Format: {'✓' if has_code_block else '✗'}, "
+            f"Tests: {tests_passed}/{tests_total}, "
+            f"Reward ({self.reward_type}): {reward:.3f}"
         )
 
-        return reward, {"format": format_score, "correct": correct}
+        return reward, metrics
