@@ -44,6 +44,7 @@ from code_repair.env.sandbox import run_tests
 from code_repair.env.code_repair_env import (
     SYSTEM_PROMPT,
     CodeRepairMessageEnv,
+    MessageStepResult,
     extract_repair,
     format_initial_prompt,
     format_feedback,
@@ -216,13 +217,23 @@ def grpo_step(
         print(f"  [step {step} turn {turn}] fired {len(futures)} requests "
               f"in {t_fired - t0:.1f}s, waiting...", flush=True)
 
-        # Collect results — env handles sandbox tests and feedback
+        # Collect Tinker results (fast — already computed server-side)
+        collected = []
         for i, future, prompt_tokens in futures:
-            ep = episodes[i]
             result = future.result()
             seq = result.sequences[0]
             completion_text = tokenizer.decode(seq.tokens, skip_special_tokens=True)
+            collected.append((i, prompt_tokens, seq, completion_text))
 
+        t_collected = time.time()
+
+        # Step environments — sandbox tests run in parallel via ProcessPool
+        import concurrent.futures
+
+        def _run_env_step(item):
+            """Run env.step synchronously (sandbox is subprocess-based, not truly async)."""
+            i, prompt_tokens, seq, completion_text = item
+            ep = episodes[i]
             ep["prompt_tokens_per_turn"].append(prompt_tokens)
             ep["completion_tokens_per_turn"].append(list(seq.tokens))
             ep["logprobs_per_turn"].append(
@@ -230,15 +241,67 @@ def grpo_step(
             )
             ep["completion_texts"].append(completion_text)
 
-            # Step the environment
-            step_result = loop.run_until_complete(
-                ep["env"].step({"role": "assistant", "content": completion_text})
-            )
+            # Call the sync version of step directly to avoid asyncio-in-thread issues
+            env = ep["env"]
+            env.turn += 1
+            repair = extract_repair(completion_text)
 
-            # Compute turn reward from metrics
+            if repair is None:
+                step_result = env._make_format_error_result()
+            else:
+                # Inline the sandbox call — this is the expensive part
+                from code_repair.env.sandbox import run_tests as _run_tests
+                test_results = _run_tests(
+                    repair, env.problem["test_code"], env.problem["entry_point"],
+                    timeout=env.sandbox_timeout, detailed=True,
+                )
+                env.repairs.append(repair)
+                env.test_results_history.append(test_results)
+
+                prev_results = env.test_results_history[-2]
+                prev_passing = {r.name for r in prev_results if r.passed}
+                curr_passing = {r.name for r in test_results if r.passed}
+                num_tests = max(len(test_results), 1)
+                old_hw = env.hw_passing
+                env.hw_passing = max(env.hw_passing, len(curr_passing))
+                all_passed = (
+                    len(curr_passing) == len(test_results) and len(test_results) > 0
+                    and not (len(test_results) == 1 and test_results[0].name in
+                             ("timeout", "syntax_error", "runtime_error", "import_error"))
+                )
+                env.all_passed = all_passed
+                no_crash = sum(1 for r in test_results if r.no_crash and not r.passed)
+                type_match = sum(1 for r in test_results if not r.passed and r.no_crash and r.return_type)
+                shape_match = sum(1 for r in test_results if not r.passed and r.return_shape is not None)
+                episode_done = all_passed or env.turn >= env.max_turns
+
+                metrics = {
+                    "turn": float(env.turn), "max_turns": float(env.max_turns),
+                    "num_tests": float(num_tests),
+                    "curr_passing": float(len(curr_passing)),
+                    "hw_passing": float(env.hw_passing), "old_hw": float(old_hw),
+                    "all_passed": 1.0 if all_passed else 0.0,
+                    "no_crash_failing": float(no_crash),
+                    "type_match_failing": float(type_match),
+                    "shape_match_failing": float(shape_match),
+                }
+
+                if all_passed:
+                    feedback = f"All {num_tests} tests passing! Fixed in {env.turn} turn(s)."
+                else:
+                    feedback = format_feedback(
+                        test_results, repair, turn=env.turn, max_turns=env.max_turns,
+                        prev_passing=prev_passing,
+                    )
+                next_msgs = env._build_conversation_sync(feedback)
+                step_result = MessageStepResult(
+                    reward=0.0, episode_done=episode_done,
+                    next_messages=next_msgs, metrics=metrics,
+                )
+
             m = step_result.metrics
             info = {
-                "turn": int(m.get("turn", turn)),
+                "turn": int(m.get("turn", env.turn)),
                 "max_turns": int(m.get("max_turns", args.max_turns)),
                 "num_tests": int(m.get("num_tests", 0)),
                 "hw_passing": int(m.get("hw_passing", 0)),
@@ -256,6 +319,10 @@ def grpo_step(
                 ep["done"] = True
             else:
                 ep["messages"] = step_result.next_messages
+
+        # Run sandbox tests in parallel (subprocess-based, releases GIL)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=min(len(collected), 16)) as pool:
+            list(pool.map(_run_env_step, collected))
 
         n_done = sum(1 for ep in episodes if ep["done"])
         print(f"  [step {step} turn {turn}] collected {len(futures)} results "
