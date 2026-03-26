@@ -43,6 +43,7 @@ except ImportError:
 from code_repair.env.sandbox import run_tests
 from code_repair.env.code_repair_env import (
     SYSTEM_PROMPT,
+    CodeRepairMessageEnv,
     extract_repair,
     format_initial_prompt,
     format_feedback,
@@ -156,6 +157,9 @@ def grpo_step(
     reward_fn,
     args,
 ) -> dict:
+    import asyncio
+    loop = asyncio.new_event_loop()
+
     t0 = time.time()
     n_total = len(batch_problems) * args.group_size
 
@@ -164,37 +168,23 @@ def grpo_step(
         temperature=args.temperature,
     )
 
-    # --- Phase A: Initialize episode states ---
-    # Cache initial test results per problem (identical across group)
-    initial_results_cache = {}
-    for p in batch_problems:
-        tid = p["task_id"]
-        if tid not in initial_results_cache:
-            initial_results_cache[tid] = run_tests(
-                p["buggy_code"], p["test_code"], p["entry_point"],
-                timeout=args.sandbox_timeout, detailed=True,
-            )
-
+    # --- Phase A: Initialize episode states via MessageEnv ---
     episodes = []
-    group_indices = []  # (start, end) per group for advantage computation
+    group_indices = []
     for p_idx, p in enumerate(batch_problems):
         start = len(episodes)
-        initial_results = initial_results_cache[p["task_id"]]
-        user_msg = format_initial_prompt(p["buggy_code"], initial_results, args.max_turns)
         for _ in range(args.group_size):
+            env = CodeRepairMessageEnv(p, max_turns=args.max_turns, sandbox_timeout=args.sandbox_timeout)
+            messages = loop.run_until_complete(env.initial_observation())
             episodes.append({
+                "env": env,
                 "problem": p,
-                "messages": [
-                    {"role": "system", "content": SYSTEM_PROMPT},
-                    {"role": "user", "content": user_msg},
-                ],
+                "messages": messages,
                 "prompt_tokens_per_turn": [],
                 "completion_tokens_per_turn": [],
                 "logprobs_per_turn": [],
                 "completion_texts": [],
                 "per_turn_rewards": [],
-                "test_results_history": [initial_results],
-                "hw_passing": 0,
                 "all_passed": False,
                 "done": False,
             })
@@ -226,10 +216,9 @@ def grpo_step(
         print(f"  [step {step} turn {turn}] fired {len(futures)} requests "
               f"in {t_fired - t0:.1f}s, waiting...", flush=True)
 
-        # Collect results and run sandbox tests
+        # Collect results — env handles sandbox tests and feedback
         for i, future, prompt_tokens in futures:
             ep = episodes[i]
-            p = ep["problem"]
             result = future.result()
             seq = result.sequences[0]
             completion_text = tokenizer.decode(seq.tokens, skip_special_tokens=True)
@@ -241,80 +230,38 @@ def grpo_step(
             )
             ep["completion_texts"].append(completion_text)
 
-            # Parse repair
-            repair = extract_repair(completion_text)
+            # Step the environment
+            step_result = loop.run_until_complete(
+                ep["env"].step({"role": "assistant", "content": completion_text})
+            )
 
-            if repair is None:
-                # Format violation
-                prev_results = ep["test_results_history"][-1]
-                info = {
-                    "turn": turn, "max_turns": args.max_turns,
-                    "format_violation": True,
-                    "num_tests": len(prev_results),
-                    "hw_passing": ep["hw_passing"], "old_hw": ep["hw_passing"],
-                    "all_passed": False,
-                    "no_crash_failing": 0, "type_match_failing": 0, "shape_match_failing": 0,
-                }
-                is_terminal = turn >= args.max_turns
-                ep["per_turn_rewards"].append(reward_fn(info, is_terminal))
-                remaining = args.max_turns - turn
-                feedback = (f"ERROR: No <repair> tags found. You MUST wrap your code in "
-                           f"<repair>...</repair> tags. Do NOT use markdown code blocks. "
-                           f"({remaining} turn(s) remaining)")
-            else:
-                # Run tests in sandbox
-                test_results = run_tests(
-                    repair, p["test_code"], p["entry_point"],
-                    timeout=args.sandbox_timeout, detailed=True,
-                )
-                ep["test_results_history"].append(test_results)
+            # Compute turn reward from metrics
+            m = step_result.metrics
+            info = {
+                "turn": int(m.get("turn", turn)),
+                "max_turns": int(m.get("max_turns", args.max_turns)),
+                "num_tests": int(m.get("num_tests", 0)),
+                "hw_passing": int(m.get("hw_passing", 0)),
+                "old_hw": int(m.get("old_hw", 0)),
+                "all_passed": m.get("all_passed", 0.0) > 0,
+                "format_violation": m.get("format_violation", 0.0) > 0,
+                "no_crash_failing": int(m.get("no_crash_failing", 0)),
+                "type_match_failing": int(m.get("type_match_failing", 0)),
+                "shape_match_failing": int(m.get("shape_match_failing", 0)),
+            }
+            ep["per_turn_rewards"].append(reward_fn(info, step_result.episode_done))
+            ep["all_passed"] = info["all_passed"]
 
-                prev_results = ep["test_results_history"][-2]
-                prev_passing = {r.name for r in prev_results if r.passed}
-                curr_passing = {r.name for r in test_results if r.passed}
-                num_tests = max(len(test_results), 1)
-
-                old_hw = ep["hw_passing"]
-                ep["hw_passing"] = max(ep["hw_passing"], len(curr_passing))
-
-                all_passed = (
-                    len(curr_passing) == len(test_results) and len(test_results) > 0
-                    and not (len(test_results) == 1 and test_results[0].name in
-                             ("timeout", "syntax_error", "runtime_error", "import_error"))
-                )
-                ep["all_passed"] = all_passed
-
-                no_crash = sum(1 for r in test_results if r.no_crash and not r.passed)
-                type_match = sum(1 for r in test_results if not r.passed and r.no_crash and r.return_type)
-                shape_match = sum(1 for r in test_results if not r.passed and r.return_shape is not None)
-
-                is_terminal = all_passed or turn >= args.max_turns
-                info = {
-                    "turn": turn, "max_turns": args.max_turns, "num_tests": num_tests,
-                    "hw_passing": ep["hw_passing"], "old_hw": old_hw,
-                    "all_passed": all_passed,
-                    "no_crash_failing": no_crash, "type_match_failing": type_match,
-                    "shape_match_failing": shape_match,
-                }
-                ep["per_turn_rewards"].append(reward_fn(info, is_terminal))
-
-                if all_passed:
-                    feedback = f"All {num_tests} tests passing! Fixed in {turn} turn(s)."
-                else:
-                    feedback = format_feedback(
-                        test_results, repair, turn=turn, max_turns=args.max_turns,
-                        prev_passing=prev_passing,
-                    )
-
-            ep["messages"].append({"role": "assistant", "content": completion_text})
-            ep["messages"].append({"role": "user", "content": feedback})
-
-            if is_terminal:
+            if step_result.episode_done:
                 ep["done"] = True
+            else:
+                ep["messages"] = step_result.next_messages
 
         n_done = sum(1 for ep in episodes if ep["done"])
         print(f"  [step {step} turn {turn}] collected {len(futures)} results "
               f"({n_done}/{n_total} episodes done)", flush=True)
+
+    loop.close()
 
     t_gen = time.time() - t0
 
@@ -391,7 +338,7 @@ def grpo_step(
     # Metrics
     solve_rate = np.mean([ep["all_passed"] for ep in episodes])
     avg_turns = np.mean([len(ep["per_turn_rewards"]) for ep in episodes])
-    avg_hw = np.mean([ep["hw_passing"] for ep in episodes])
+    avg_hw = np.mean([ep["env"].hw_passing for ep in episodes])
 
     return {
         "step": step,
