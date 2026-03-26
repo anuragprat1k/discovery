@@ -24,8 +24,13 @@ test results showing which tests pass and which fail. Your job is to fix the \
 function so that all tests pass.
 
 Output your repaired function inside <repair>...</repair> tags. Include the \
-complete function definition. Do not include test code or explanations outside \
-the tags."""
+complete function definition.
+
+Example:
+<repair>
+def add(a, b):
+    return a + b
+</repair>"""
 
 
 # ---------------------------------------------------------------------------
