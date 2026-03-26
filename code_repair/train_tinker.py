@@ -258,7 +258,9 @@ def grpo_step(
                 is_terminal = turn >= args.max_turns
                 ep["per_turn_rewards"].append(reward_fn(info, is_terminal))
                 remaining = args.max_turns - turn
-                feedback = f"No valid <repair> tag found. ({remaining} turn(s) remaining)"
+                feedback = (f"ERROR: No <repair> tags found. You MUST wrap your code in "
+                           f"<repair>...</repair> tags. Do NOT use markdown code blocks. "
+                           f"({remaining} turn(s) remaining)")
             else:
                 # Run tests in sandbox
                 test_results = run_tests(
@@ -461,7 +463,8 @@ def run_eval(
                 repair = extract_repair(completion_text)
                 if repair is None:
                     is_terminal = turn >= args.max_turns
-                    feedback = f"No valid <repair> tag. ({args.max_turns - turn} remaining)"
+                    feedback = (f"ERROR: No <repair> tags found. You MUST wrap your code in "
+                               f"<repair>...</repair> tags. ({args.max_turns - turn} remaining)")
                     turns_data.append({
                         "turn": turn, "repair_found": False,
                         "curr_passing": 0, "num_tests": 0, "all_passed": False,

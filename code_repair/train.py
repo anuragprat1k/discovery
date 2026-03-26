@@ -282,7 +282,9 @@ def run_episode(
             per_turn_rewards.append(reward_fn(info, is_terminal))
 
             remaining = max_turns - turn
-            feedback = f"No valid <repair> tag found. ({remaining} turn(s) remaining)"
+            feedback = (f"ERROR: No <repair> tags found. You MUST wrap your code in "
+                       f"<repair>...</repair> tags. Do NOT use markdown code blocks. "
+                       f"({remaining} turn(s) remaining)")
             messages.append({"role": "assistant", "content": completion_text})
             messages.append({"role": "user", "content": feedback})
             if is_terminal:
