@@ -337,13 +337,17 @@ def grpo_step(
     advantages = np.zeros_like(episode_rewards)
     groups_skipped = 0
 
-    for start, end in group_indices:
+    for g_idx, (start, end) in enumerate(group_indices):
         group = episode_rewards[start:end]
         std = group.std()
         if std < 1e-8:
             groups_skipped += 1
         else:
             advantages[start:end] = (group - group.mean()) / (std + 1e-8)
+        # Log per-group rewards for diagnostics
+        tid = episodes[start]["problem"]["task_id"]
+        print(f"    group {g_idx} ({tid}): rewards={[f'{r:.2f}' for r in group]} "
+              f"std={std:.3f} {'SKIP' if std < 1e-8 else 'TRAIN'}", flush=True)
 
     # --- Phase D: Build Datum objects ---
     data = []
