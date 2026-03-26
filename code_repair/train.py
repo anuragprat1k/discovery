@@ -107,6 +107,7 @@ def load_lora_model(model_name: str, lora_rank: int, lora_alpha: int):
         bias="none",
     )
     model = get_peft_model(model, lora_config)
+    model.gradient_checkpointing_enable()
     model.print_trainable_parameters()
     return model
 
@@ -354,19 +355,22 @@ def run_episode(
 # GRPO loss (CISPO variant)
 # ---------------------------------------------------------------------------
 
-def compute_grpo_loss(
-    model, episodes: list[dict], advantages: np.ndarray,
+def compute_grpo_loss_and_step(
+    model, optimizer, episodes: list[dict], advantages: np.ndarray,
     beta: float, clip_low: float, clip_high: float,
-) -> tuple[torch.Tensor, dict]:
-    """Compute GRPO/CISPO loss over a batch of multi-turn episodes.
+    grad_clip_norm: float = 1.0,
+) -> dict:
+    """Compute GRPO/CISPO loss with per-turn gradient accumulation.
 
-    Each turn is a separate forward pass: prompt + completion tokens.
-    Advantage is per-episode, applied uniformly to all turns' completion tokens.
+    Each turn is a separate forward+backward pass to avoid OOM.
+    Gradients accumulate across all turns, then optimizer steps once.
     """
     device = next(model.parameters()).device
-    total_loss = torch.tensor(0.0, device=device)
+    optimizer.zero_grad()
+    total_loss_val = 0.0
     n_tokens = 0
     total_kl = 0.0
+    n_turns_processed = 0
 
     for ep_idx, ep in enumerate(episodes):
         adv = advantages[ep_idx]
@@ -381,50 +385,66 @@ def compute_grpo_loss(
             if not comp_tok:
                 continue
 
-            full_ids = torch.tensor(prompt_tok + comp_tok, dtype=torch.long, device=device).unsqueeze(0)
+            full_ids = torch.tensor(
+                prompt_tok + comp_tok, dtype=torch.long, device=device,
+            ).unsqueeze(0)
             n_prompt = len(prompt_tok)
             n_comp = len(comp_tok)
 
             # Forward pass
             outputs = model(full_ids)
-            logits = outputs.logits[0, n_prompt - 1: n_prompt + n_comp - 1, :]  # shifted
+            logits = outputs.logits[0, n_prompt - 1: n_prompt + n_comp - 1, :]
             new_log_probs = F.log_softmax(logits, dim=-1)
 
             comp_ids = torch.tensor(comp_tok, dtype=torch.long, device=device)
-            # Safety: clamp comp_ids to vocab range
             vocab_size = new_log_probs.shape[-1]
             comp_ids = comp_ids.clamp(0, vocab_size - 1)
             new_lp = new_log_probs[range(n_comp), comp_ids]
             old_lp = torch.tensor(old_logprobs[:n_comp], dtype=torch.float32, device=device)
-            # Replace padding values with current logprobs (no gradient signal)
             pad_mask = old_lp < -99.0
             if pad_mask.any():
                 old_lp[pad_mask] = new_lp[pad_mask].detach()
 
-            # Importance ratio
+            # Importance ratio + CISPO surrogate
             ratio = torch.exp(new_lp - old_lp)
             clipped_ratio = torch.clamp(ratio, clip_low, clip_high)
-
-            # CISPO surrogate
             adv_t = torch.tensor(adv, dtype=torch.float32, device=device)
             if adv > 0:
                 surrogate = -torch.min(ratio * adv_t, clipped_ratio * adv_t)
             else:
                 surrogate = -torch.max(ratio * adv_t, clipped_ratio * adv_t)
 
-            # KL penalty
             kl = (old_lp - new_lp).mean()
-            total_kl += kl.item() * n_comp
-
             turn_loss = surrogate.mean() + beta * kl
-            total_loss = total_loss + turn_loss * n_comp
+
+            # Backward immediately (micro-batch gradient accumulation)
+            turn_loss.backward()
+
+            total_loss_val += turn_loss.item() * n_comp
+            total_kl += kl.item() * n_comp
             n_tokens += n_comp
+            n_turns_processed += 1
 
+    # Normalize gradients by total tokens and step
     if n_tokens > 0:
-        total_loss = total_loss / n_tokens
+        scale = 1.0 / n_tokens
+        for p in model.parameters():
+            if p.grad is not None:
+                p.grad.mul_(scale)
 
-    metrics = {"kl": total_kl / max(n_tokens, 1), "n_tokens": n_tokens}
-    return total_loss, metrics
+    if grad_clip_norm > 0:
+        torch.nn.utils.clip_grad_norm_(model.parameters(), grad_clip_norm)
+
+    if n_turns_processed > 0:
+        optimizer.step()
+
+    avg_loss = total_loss_val / max(n_tokens, 1)
+    return {
+        "loss": avg_loss,
+        "kl": total_kl / max(n_tokens, 1),
+        "n_tokens": n_tokens,
+        "n_turns": n_turns_processed,
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -534,18 +554,13 @@ def main():
             else:
                 advantages[start:end] = (group - group.mean()) / (std + 1e-8)
 
-        # Training step
+        # Training step (per-turn gradient accumulation to avoid OOM)
         model.train()
-        optimizer.zero_grad()
-        loss, loss_metrics = compute_grpo_loss(
-            model, all_episodes, advantages,
+        loss_metrics = compute_grpo_loss_and_step(
+            model, optimizer, all_episodes, advantages,
             beta=args.beta, clip_low=args.clip_low, clip_high=args.clip_high,
+            grad_clip_norm=args.grad_clip_norm,
         )
-        if loss.requires_grad:
-            loss.backward()
-            if args.grad_clip_norm > 0:
-                torch.nn.utils.clip_grad_norm_(model.parameters(), args.grad_clip_norm)
-            optimizer.step()
         t_total = time.time() - t0
 
         # Metrics
@@ -563,7 +578,7 @@ def main():
             f"[step {step}/{args.max_steps}] "
             f"solve={solve_rate:.3f} turns={avg_turns:.1f} "
             f"reward={avg_reward:.2f}±{episode_rewards.std():.2f} "
-            f"hwm={avg_hw:.1f} loss={loss.item():.4f} "
+            f"hwm={avg_hw:.1f} loss={loss_metrics['loss']:.4f} "
             f"kl={loss_metrics['kl']:.4f} "
             f"gen={t_gen:.0f}s total={t_total:.0f}s"
         )
@@ -576,7 +591,7 @@ def main():
                 "train/avg_reward": avg_reward,
                 "train/reward_std": episode_rewards.std(),
                 "train/avg_hwm": avg_hw,
-                "train/loss": loss.item(),
+                "train/loss": loss_metrics["loss"],
                 "train/kl": loss_metrics["kl"],
                 "train/n_tokens": loss_metrics["n_tokens"],
                 "train/groups_skipped": groups_skipped,
