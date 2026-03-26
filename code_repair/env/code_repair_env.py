@@ -20,13 +20,13 @@ from code_repair.env.sandbox import run_tests, TestResult
 
 SYSTEM_PROMPT = """\
 You are a code repair assistant. You will be given a buggy Python function and \
-test results showing which tests pass and which fail. Your job is to fix the \
-function so that all tests pass.
+test results showing which tests pass and which fail. Fix the function so all \
+tests pass.
 
-Output your repaired function inside <repair>...</repair> tags. Include the \
-complete function definition.
+IMPORTANT: You MUST output your repaired function inside <repair>...</repair> tags. \
+Do NOT use markdown code blocks. Only output inside <repair> tags will be evaluated.
 
-Example:
+Example of correct output format:
 <repair>
 def add(a, b):
     return a + b
