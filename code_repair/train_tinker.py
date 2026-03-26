@@ -320,9 +320,12 @@ def grpo_step(
     if not data:
         loss_val = 0.0
     else:
+        loss_fn_config = {}
+        if args.loss_fn == "cispo":
+            loss_fn_config = {"clip_low_threshold": 0.8, "clip_high_threshold": 1.2}
         fwdbwd_future = training_client.forward_backward(
             data=data, loss_fn=args.loss_fn,
-            loss_fn_config={"clip_low_threshold": 0.8, "clip_high_threshold": 1.2},
+            loss_fn_config=loss_fn_config if loss_fn_config else None,
         )
         optim_future = training_client.optim_step(
             tinker.AdamParams(learning_rate=args.lr, grad_clip_norm=args.grad_clip_norm)
@@ -504,6 +507,83 @@ def run_eval(
 # Main
 # ---------------------------------------------------------------------------
 
+def save_trajectories(
+    step: int,
+    probe_problems: list[dict],
+    sampling_client,
+    tokenizer,
+    args,
+    output_dir: str,
+):
+    """Run one episode per probe problem and save full conversations to disk."""
+    import asyncio
+    loop = asyncio.new_event_loop()
+
+    sampling_params = tinker.SamplingParams(
+        max_tokens=args.max_completion_tokens,
+        temperature=args.eval_temperature,
+    )
+
+    traces = []
+    for p in probe_problems:
+        env = CodeRepairMessageEnv(p, max_turns=args.max_turns, sandbox_timeout=args.sandbox_timeout)
+        messages = loop.run_until_complete(env.initial_observation())
+        turns = []
+
+        for turn in range(1, args.max_turns + 1):
+            prompt_text = tokenizer.apply_chat_template(
+                messages, add_generation_prompt=True,
+                tokenize=False, enable_thinking=False,
+            )
+            prompt_tokens = tokenizer.encode(prompt_text, add_special_tokens=False)
+            result = sampling_client.sample(
+                prompt=tinker.ModelInput.from_ints(prompt_tokens),
+                num_samples=1, sampling_params=sampling_params,
+            ).result()
+            completion = tokenizer.decode(result.sequences[0].tokens, skip_special_tokens=True)
+
+            step_result = loop.run_until_complete(
+                env.step({"role": "assistant", "content": completion})
+            )
+            m = step_result.metrics
+            turns.append({
+                "turn": int(m.get("turn", turn)),
+                "completion": completion[:3000],
+                "curr_passing": int(m.get("curr_passing", 0)),
+                "hw_passing": int(m.get("hw_passing", 0)),
+                "num_tests": int(m.get("num_tests", 0)),
+                "all_passed": m.get("all_passed", 0) > 0,
+                "format_violation": m.get("format_violation", 0) > 0,
+                "feedback": step_result.next_messages[-1]["content"][:500] if step_result.next_messages else "",
+            })
+
+            if step_result.episode_done:
+                break
+            messages = step_result.next_messages
+
+        traces.append({
+            "task_id": p["task_id"],
+            "bug_types": p.get("bug_types", []),
+            "n_bugs": p.get("n_bugs", 1),
+            "solved": env.all_passed,
+            "total_turns": env.turn,
+            "hw_passing": env.hw_passing,
+            "turns": turns,
+        })
+
+    loop.close()
+
+    trace_dir = os.path.join(output_dir, "trajectories")
+    os.makedirs(trace_dir, exist_ok=True)
+    trace_path = os.path.join(trace_dir, f"step_{step:04d}.json")
+    with open(trace_path, "w") as f:
+        json.dump(traces, f, indent=2)
+
+    n_solved = sum(1 for t in traces if t["solved"])
+    print(f"[code-repair] Saved {len(traces)} trajectories to {trace_path} "
+          f"({n_solved}/{len(traces)} solved)", flush=True)
+
+
 def main():
     args = parse_args()
     random.seed(args.seed)
@@ -544,6 +624,22 @@ def main():
         print(f"[code-repair] Loaded {len(eval_problems)} eval problems")
 
     reward_fn = REWARD_FNS[args.reward]
+
+    # Select probe problems for trajectory saving (mix of easy + hard)
+    probe_rng = random.Random(args.seed + 1)
+    probe_single = [p for p in eval_problems if p.get("n_bugs", 1) == 1][:3]
+    probe_multi = [p for p in eval_problems if p.get("n_bugs", 1) >= 2][:3]
+    probe_problems = probe_single + probe_multi
+    if not probe_problems:
+        probe_problems = eval_problems[:5]
+    print(f"[code-repair] Probe problems: {[p['task_id'] for p in probe_problems]}")
+
+    # Save step-0 trajectories (before any training)
+    save_trajectories(
+        step=0, probe_problems=probe_problems,
+        sampling_client=sampling_client, tokenizer=tokenizer,
+        args=args, output_dir=output_dir,
+    )
 
     # W&B
     use_wandb = _WANDB and not args.no_wandb
@@ -615,7 +711,7 @@ def main():
                 name=f"step_{step:04d}"
             )
 
-        # Checkpoint
+        # Checkpoint + save trajectories
         if step % args.save_steps == 0:
             ckpt_name = f"step_{step:04d}"
             print(f"[code-repair] Saving checkpoint: {ckpt_name} ...")
@@ -626,6 +722,16 @@ def main():
             manifest = os.path.join(output_dir, "checkpoints.jsonl")
             with open(manifest, "a") as f:
                 f.write(json.dumps({"step": step, "name": ckpt_name, "path": ckpt_path}) + "\n")
+
+            # Save probe trajectories for offline inspection
+            save_trajectories(
+                step=step,
+                probe_problems=probe_problems,
+                sampling_client=sampling_client,
+                tokenizer=tokenizer,
+                args=args,
+                output_dir=output_dir,
+            )
 
         # Eval
         if eval_problems and step % args.eval_steps == 0:
