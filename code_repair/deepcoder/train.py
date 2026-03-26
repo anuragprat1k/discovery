@@ -5,20 +5,22 @@ from datetime import datetime
 import chz
 
 from tinker_cookbook import checkpoint_utils, cli_utils
-from tinker_cookbook.recipes.code_rl.code_env import DeepcoderDatasetBuilder
 from tinker_cookbook.rl.rollout_strategy import RetryOnFailure
 from tinker_cookbook.rl.train import AsyncConfig, Config, main
 from tinker_cookbook.sandbox import SandboxBackend
+
+# Use our local modified code_env (not tinker_cookbook's)
+from code_repair.deepcoder.code_env import DeepcoderDatasetBuilder
 
 logger = logging.getLogger(__name__)
 
 
 @chz.chz
 class CLIConfig:
-    """Command-line configuration for DeepCoder RL training."""
+    """Command-line configuration for DeepCoder RL training with reward ablation."""
 
     # Model configuration
-    model_name: str = "meta-llama/Llama-3.1-8B-Instruct"
+    model_name: str = "Qwen/Qwen3-4B-Instruct-2507"
     lora_rank: int = 32
     renderer_name: str | None = None
     load_checkpoint_path: str | None = None
@@ -26,21 +28,24 @@ class CLIConfig:
     # Data / environment configuration
     seed: int = 0
 
+    # Reward ablation
+    reward_type: str = "sparse"  # "sparse", "dense", "dense_full"
+
     # Training hyperparameters
-    group_size: int = 4
-    groups_per_batch: int = 100
-    learning_rate: float = 1e-5
-    max_tokens: int = 4096
+    group_size: int = 8
+    groups_per_batch: int = 128
+    learning_rate: float = 4e-5
+    max_tokens: int = 24576
     kl_penalty_coef: float = 0.0
     num_substeps: int = 1
 
     # Logging / eval / checkpoints
     log_dir: str | None = None
     log_path: str | None = None
-    wandb_project: str | None = None
+    wandb_project: str | None = "discovery-code-repair"
     wandb_name: str | None = None
     compute_post_kl: bool = False
-    eval_every: int = 20
+    eval_every: int = 10
     save_every: int = 20
 
     # Service configuration
@@ -54,11 +59,9 @@ class CLIConfig:
     # Code execution sandbox configuration
     sandbox_backend: SandboxBackend = SandboxBackend.SANDBOXFUSION
 
-    max_steps: int | None = None
+    max_steps: int | None = 200
 
-    # Maximum number of times to retry a failed trajectory rollout (container crash,
-    # sandbox flake, etc.). None (default) = crash on any error. 0+ = retry budget.
-    rollout_max_retries: int | None = None
+    rollout_max_retries: int | None = 3
 
 
 async def cli_main(cli_config: CLIConfig) -> None:
@@ -71,13 +74,11 @@ async def cli_main(cli_config: CLIConfig) -> None:
 
     model_tag = cli_config.model_name.replace("/", "-")
     run_name = (
-        f"deepcoder-{model_tag}-{cli_config.lora_rank}rank-"
-        f"{cli_config.learning_rate}lr-{cli_config.group_size}group-"
-        f"{cli_config.groups_per_batch}batch-seed{cli_config.seed}-"
+        f"deepcoder-{cli_config.reward_type}-{model_tag}-"
+        f"seed{cli_config.seed}-"
         f"{datetime.now().strftime('%Y-%m-%d-%H-%M')}"
     )
 
-    # Set log path
     if cli_config.log_path is not None:
         log_path = cli_config.log_path
     else:
@@ -93,6 +94,7 @@ async def cli_main(cli_config: CLIConfig) -> None:
         seed=cli_config.seed,
         sandbox_backend=cli_config.sandbox_backend,
         max_generation_tokens=cli_config.max_tokens,
+        reward_type=cli_config.reward_type,
     )
 
     config = Config(

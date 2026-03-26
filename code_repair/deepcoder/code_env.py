@@ -9,13 +9,13 @@ import chz
 from datasets import Dataset, concatenate_datasets, load_dataset
 
 from tinker_cookbook import model_info, tokenizer_utils
-from tinker_cookbook.recipes.code_rl.code_grading import taco_to_lcb_format
-from tinker_cookbook.recipes.code_rl.deepcoder_tool import (
+from code_repair.deepcoder.code_grading import taco_to_lcb_format
+from code_repair.deepcoder.deepcoder_tool import (
     DeepcoderReward,
     DeepcoderTask,
     DeepcoderTool,
 )
-from tinker_cookbook.recipes.code_rl.lcb_utils import fetch_live_code_bench_system_prompt
+from code_repair.deepcoder.lcb_utils import fetch_live_code_bench_system_prompt
 from tinker_cookbook.renderers import get_renderer
 from tinker_cookbook.renderers.base import Message, Renderer
 from tinker_cookbook.rl.types import Env, EnvGroupBuilder, RLDataset, RLDatasetBuilder
@@ -179,6 +179,7 @@ class DeepcoderEnvGroupBuilder(EnvGroupBuilder):
     sandbox_backend: SandboxBackend | None
     timeout: int = 6
     format_coef: float = 0.1
+    reward_type: str = "sparse"  # "sparse", "dense", "dense_full"
     max_trajectory_tokens: int = 32 * 1024
     max_generation_tokens: int | None = None
     context_overflow_reward: float = -0.1
@@ -204,6 +205,7 @@ class DeepcoderEnvGroupBuilder(EnvGroupBuilder):
                         sandbox_backend=self.sandbox_backend,
                         timeout=self.timeout,
                         format_coef=self.format_coef,
+                        reward_type=self.reward_type,
                     ),
                     max_trajectory_tokens=self.max_trajectory_tokens,
                     max_generation_tokens=self.max_generation_tokens,
@@ -247,6 +249,7 @@ class DeepcoderDatasetBuilder(RLDatasetBuilder):
     renderer_name: str | None = None
     max_turns: int = 2
     format_coef: float = 0.1
+    reward_type: str = "sparse"
     timeout: int = 6
     sandbox_backend: SandboxBackend | None = None
     seed: int = 0
@@ -266,6 +269,7 @@ class DeepcoderDatasetBuilder(RLDatasetBuilder):
                 sandbox_backend=self.sandbox_backend,
                 timeout=self.timeout,
                 format_coef=self.format_coef,
+                reward_type=self.reward_type,
                 max_generation_tokens=self.max_generation_tokens,
                 context_overflow_reward=self.context_overflow_reward,
             )
@@ -288,6 +292,7 @@ class DeepcoderDatasetBuilder(RLDatasetBuilder):
                 sandbox_backend=self.sandbox_backend,
                 timeout=self.timeout,
                 format_coef=self.format_coef,
+                reward_type=self.reward_type,
                 max_generation_tokens=self.max_generation_tokens,
                 context_overflow_reward=self.context_overflow_reward,
             )

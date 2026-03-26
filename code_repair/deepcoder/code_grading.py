@@ -12,7 +12,7 @@ import json
 import re
 from typing import Any
 
-from tinker_cookbook.recipes.code_rl.lcb_utils import TEST_CODE, TEST_UTIL
+from code_repair.deepcoder.lcb_utils import TEST_CODE, TEST_UTIL
 from tinker_cookbook.sandbox import SandboxBackend, SandboxFusionClient
 
 # Global sandbox backend clients (lazily initialized)
@@ -133,6 +133,7 @@ async def sandbox_check_correctness(
 
     Returns:
         Tuple of (all_passed: bool, details: dict)
+        details includes "tests_passed", "tests_total", "per_test" when available.
     """
     assert len(sample) >= 1, "Sample must contain at least one test case"
 
@@ -145,14 +146,32 @@ async def sandbox_check_correctness(
         total_timeout = (timeout + 1) * test_cnt + 5
 
         if use_backend == SandboxBackend.MODAL:
-            return await _check_with_modal(test_cases, generation, timeout, total_timeout)
+            passed, details = await _check_with_modal(test_cases, generation, timeout, total_timeout)
         elif use_backend == SandboxBackend.SANDBOXFUSION:
-            return await _check_with_sandboxfusion(test_cases, generation, timeout, total_timeout)
+            passed, details = await _check_with_sandboxfusion(test_cases, generation, timeout, total_timeout)
         else:
             raise ValueError(f"Invalid sandbox backend: {use_backend}")
 
+        # Parse per-test results from stdout (first line is JSON summary)
+        stdout = details.get("stdout", "")
+        if stdout:
+            first_line = stdout.strip().split("\n")[0]
+            try:
+                summary = json.loads(first_line)
+                details["tests_passed"] = summary.get("passed", 0)
+                details["tests_total"] = summary.get("total", test_cnt)
+                details["per_test"] = summary.get("per_test", [])
+            except (json.JSONDecodeError, TypeError):
+                details["tests_passed"] = test_cnt if passed else 0
+                details["tests_total"] = test_cnt
+        else:
+            details["tests_passed"] = test_cnt if passed else 0
+            details["tests_total"] = test_cnt
+
+        return passed, details
+
     except Exception as e:
-        return False, {"error": str(e)}
+        return False, {"error": str(e), "tests_passed": 0, "tests_total": len(sample)}
 
 
 def taco_to_lcb_format(tests: dict[str, Any]) -> list[dict[str, Any]]:
