@@ -172,7 +172,7 @@ def grpo_step(
             ep = episodes[i]
             pt = tokenizer.apply_chat_template(
                 ep["messages"], add_generation_prompt=True,
-                tokenize=False, enable_thinking=False,
+                tokenize=False,
             )
             ptok = tokenizer.encode(pt, add_special_tokens=False)
             future = sampling_client.sample(
