@@ -99,21 +99,23 @@ def reward_dense(info: dict, is_terminal: bool) -> float:
 
 
 def reward_dense_full(info: dict, is_terminal: bool) -> float:
-    """Dense potential (HWM) + non-potential (current state) signals."""
+    """Green (HWM, potential) + Yellow (current passing, non-potential).
+
+    Green: +0.4 × (hwm_delta / N) — locked progress, can only go up
+    Yellow: +0.2 × (curr_passed / N) — current state, can regress if
+            model rewrites working code and breaks it
+    """
     if info.get("no_code"):
         return -0.1
     n = max(info["tests_total"], 1)
     r = 0.0
-    # Potential-based: HWM delta (can only go up)
+    # Green: HWM delta (potential-based, monotonic)
     hwm_delta = info["hw_passed"] - info["old_hw"]
     if hwm_delta > 0:
-        r += 0.5 * (hwm_delta / n)
-    # Non-potential: current pass fraction (can regress turn-over-turn)
+        r += 0.4 * (hwm_delta / n)
+    # Yellow: current pass fraction (non-potential, can regress)
     curr_passed = info.get("tests_passed", 0)
-    r += 0.1 * (curr_passed / n)
-    # Non-potential: code ran without crash (can regress)
-    if curr_passed > 0 or info["all_passed"]:
-        r += 0.05
+    r += 0.2 * (curr_passed / n)
     # Terminal
     if is_terminal:
         r += 1.0 if info["all_passed"] else 0.0

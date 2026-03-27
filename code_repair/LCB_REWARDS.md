@@ -34,24 +34,23 @@ Same as dense but adds a speed bonus for solving early. Still potential-based �
 
 **However**, in multi-turn there ARE non-potential signals we could add:
 
-### Proposed: Dense Non-Potential
+### Dense Full (Green + Yellow)
 ```
-Per-turn: +0.5 × (HWM_delta / num_tests)     [potential, same as dense]
-        + 0.1 × (curr_passed / num_tests)     [NON-POTENTIAL: current state, not HWM]
-        + 0.05 if code compiles and runs       [NON-POTENTIAL: can regress]
+Per-turn: +0.4 × (HWM_delta / N)       [GREEN: potential, locked progress]
+        + 0.2 × (curr_passed / N)       [YELLOW: non-potential, can regress]
 Terminal: +1 if all tests pass
 Format:  -0.1 if no code block
 ```
 
-The non-potential components:
-1. **Current pass fraction** (not HWM): If turn 1 passes 5/10 tests but turn 2 regresses to 2/10 due to a bad edit, reward decreases. This penalizes careless rewrites.
-2. **Code runs without crash**: A repair can go from "returns wrong answer" to "crashes on import" — losing this bonus. Rewards maintaining functional code.
+**Green signal** (potential): HWM delta. Once you've proven you can pass a test, that's locked. Even if you regress on the next turn, the HWM stays.
+
+**Yellow signal** (non-potential): Current pass fraction. If the model rewrites working code and breaks it, this drops — penalizing careless rewrites. If the model fixes one bug but introduces another, the yellow signal captures the regression.
 
 **Wordle parallel:**
-| Wordle | Code Repair (potential) | Code Repair (non-potential) |
-|--------|------------------------|---------------------------|
-| Green tiles (locked positions) | HWM of tests passing | — |
-| Yellow tiles (can regress) | — | Current pass fraction + code-runs bonus |
+| Wordle | Code Repair |
+|--------|-------------|
+| Green tiles (position locked, can't lose) | HWM of tests passing (+0.4/N per new HWM test) |
+| Yellow tiles (info about word, can lose by not using letter) | Current tests passing (+0.2/N, drops if model regresses) |
 
 ## Observation from Baseline Eval
 
