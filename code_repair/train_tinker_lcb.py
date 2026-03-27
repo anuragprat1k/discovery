@@ -203,9 +203,10 @@ def grpo_step(
             )
             futures.append((i, future, ptok))
 
-        print(f"  [step {step} t{turn}] fired {len(futures)}", end=" ", flush=True)
+        print(f"  [step {step} t{turn}] fired {len(futures)}", flush=True)
 
         # Collect generation results
+        t_gen_start = time.time()
         collected = []
         for i, future, ptok in futures:
             result = future.result()
@@ -214,9 +215,16 @@ def grpo_step(
             collected.append((i, ptok, list(seq.tokens),
                               [lp if lp is not None else 0.0 for lp in (seq.logprobs or [])],
                               ct))
+        t_gen_done = time.time()
+        print(f"    gen: {len(collected)} results in {t_gen_done - t_gen_start:.1f}s "
+              f"(avg {sum(len(c[2]) for c in collected)/max(len(collected),1):.0f} tok/ep)", flush=True)
 
-        # Run sandbox tests (could parallelize with ThreadPool if needed)
-        for i, ptok, comp_tokens, logprobs, ct in collected:
+        # Run sandbox tests + compute rewards
+        t_sandbox_start = time.time()
+        n_no_code = 0
+        n_passed = 0
+        n_failed = 0
+        for j, (i, ptok, comp_tokens, logprobs, ct) in enumerate(collected):
             ep = episodes[i]
             ep["prompt_tokens_per_turn"].append(ptok)
             ep["completion_tokens_per_turn"].append(comp_tokens)
@@ -224,6 +232,7 @@ def grpo_step(
 
             code = extract_code_from_model(ct)
             if code is None:
+                n_no_code += 1
                 info = {"no_code": True, "turn": turn, "max_turns": args.max_turns,
                         "tests_total": len(ep["task"].tests), "hw_passed": ep["hw_passed"],
                         "old_hw": ep["hw_passed"], "all_passed": False}
@@ -250,19 +259,26 @@ def grpo_step(
                     "tests_total": tt, "tests_passed": tp,
                     "hw_passed": ep["hw_passed"], "old_hw": old_hw,
                     "all_passed": ap, "no_code": False}
-            ep["per_turn_rewards"].append(reward_fn(info, is_terminal))
+            r = reward_fn(info, is_terminal)
+            ep["per_turn_rewards"].append(r)
 
             if ap:
+                n_passed += 1
                 ep["done"] = True
             elif turn < args.max_turns:
+                n_failed += 1
                 ep["messages"].append({"role": "assistant", "content": ct})
                 ep["messages"].append({"role": "user", "content":
                     FEEDBACK_TEMPLATE.format(passed=tp, total=tt)})
             else:
+                n_failed += 1
                 ep["done"] = True
 
+        t_sandbox_done = time.time()
         n_done = sum(1 for ep in episodes if ep["done"])
-        print(f"-> {n_done}/{n_total} done", flush=True)
+        print(f"    sandbox: {t_sandbox_done - t_sandbox_start:.1f}s | "
+              f"pass={n_passed} fail={n_failed} no_code={n_no_code} | "
+              f"{n_done}/{n_total} done", flush=True)
 
     loop.close()
     t_gen = time.time() - t0
@@ -314,6 +330,8 @@ def grpo_step(
             total_comp_tokens += n_c
 
     # --- Phase E: Train ---
+    print(f"  [step {step}] training: {len(data)} datums, {total_comp_tokens} comp tokens", flush=True)
+    t_train_start = time.time()
     loss_val = 0.0
     if data:
         cfg = {}
@@ -329,6 +347,9 @@ def grpo_step(
         fbr = fb.result()
         ls = fbr.metrics.get("loss:sum", fbr.metrics.get("loss", 0))
         loss_val = ls / total_comp_tokens if total_comp_tokens > 0 else 0.0
+        print(f"  [step {step}] train done: loss={loss_val:.4f} in {time.time()-t_train_start:.1f}s", flush=True)
+    else:
+        print(f"  [step {step}] no data to train (all groups skipped)", flush=True)
 
     t_total = time.time() - t0
     solve_rate = np.mean([ep["all_passed"] for ep in episodes])
