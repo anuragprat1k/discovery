@@ -50,7 +50,7 @@ def parse_args():
     p.add_argument("--max_steps", type=int, default=200)
     p.add_argument("--max_turns", type=int, default=4)
     p.add_argument("--group_size", type=int, default=8)
-    p.add_argument("--batch_size", type=int, default=4, help="Problems per step.")
+    p.add_argument("--batch_size", type=int, default=32, help="Problems per step.")
     p.add_argument("--lora_rank", type=int, default=32)
     p.add_argument("--lr", type=float, default=4e-5)
     p.add_argument("--grad_clip_norm", type=float, default=1.0)
@@ -219,11 +219,14 @@ def grpo_step(
         print(f"    gen: {len(collected)} results in {t_gen_done - t_gen_start:.1f}s "
               f"(avg {sum(len(c[2]) for c in collected)/max(len(collected),1):.0f} tok/ep)", flush=True)
 
-        # Run sandbox tests + compute rewards
+        # Run sandbox tests in parallel + compute rewards
         t_sandbox_start = time.time()
         n_no_code = 0
         n_passed = 0
         n_failed = 0
+
+        # First pass: extract code, store tokens
+        sandbox_items = []  # (idx_in_collected, episode_idx, code)
         for j, (i, ptok, comp_tokens, logprobs, ct) in enumerate(collected):
             ep = episodes[i]
             ep["prompt_tokens_per_turn"].append(ptok)
@@ -242,37 +245,59 @@ def grpo_step(
                 ep["messages"].append({"role": "user", "content": "No code block found. Use ```python```."})
                 if is_terminal:
                     ep["done"] = True
-                continue
-
-            ap, details = loop.run_until_complete(
-                sandbox_check_correctness(ep["task"].tests, code, timeout=args.sandbox_timeout)
-            )
-            tp = details.get("tests_passed", len(ep["task"].tests) if ap else 0)
-            tt = details.get("tests_total", len(ep["task"].tests))
-
-            old_hw = ep["hw_passed"]
-            ep["hw_passed"] = max(ep["hw_passed"], tp)
-            ep["all_passed"] = ap
-            is_terminal = ap or turn >= args.max_turns
-
-            info = {"turn": turn, "max_turns": args.max_turns,
-                    "tests_total": tt, "tests_passed": tp,
-                    "hw_passed": ep["hw_passed"], "old_hw": old_hw,
-                    "all_passed": ap, "no_code": False}
-            r = reward_fn(info, is_terminal)
-            ep["per_turn_rewards"].append(r)
-
-            if ap:
-                n_passed += 1
-                ep["done"] = True
-            elif turn < args.max_turns:
-                n_failed += 1
-                ep["messages"].append({"role": "assistant", "content": ct})
-                ep["messages"].append({"role": "user", "content":
-                    FEEDBACK_TEMPLATE.format(passed=tp, total=tt)})
             else:
-                n_failed += 1
-                ep["done"] = True
+                sandbox_items.append((j, i, code))
+
+        # Run all sandbox calls concurrently
+        if sandbox_items:
+            async def _run_all_sandbox():
+                tasks = [
+                    sandbox_check_correctness(
+                        episodes[i]["task"].tests, code, timeout=args.sandbox_timeout
+                    )
+                    for _, i, code in sandbox_items
+                ]
+                return await asyncio.gather(*tasks, return_exceptions=True)
+
+            sandbox_results = loop.run_until_complete(_run_all_sandbox())
+
+            # Process results
+            for (j, i, code), result in zip(sandbox_items, sandbox_results):
+                ep = episodes[i]
+                ct = collected[j][4]  # completion text
+
+                if isinstance(result, Exception):
+                    ap, details = False, {"error": str(result), "tests_passed": 0,
+                                          "tests_total": len(ep["task"].tests)}
+                else:
+                    ap, details = result
+
+                tp = details.get("tests_passed", len(ep["task"].tests) if ap else 0)
+                tt = details.get("tests_total", len(ep["task"].tests))
+
+                old_hw = ep["hw_passed"]
+                ep["hw_passed"] = max(ep["hw_passed"], tp)
+                ep["all_passed"] = ap
+                is_terminal = ap or turn >= args.max_turns
+
+                info = {"turn": turn, "max_turns": args.max_turns,
+                        "tests_total": tt, "tests_passed": tp,
+                        "hw_passed": ep["hw_passed"], "old_hw": old_hw,
+                        "all_passed": ap, "no_code": False}
+                r = reward_fn(info, is_terminal)
+                ep["per_turn_rewards"].append(r)
+
+                if ap:
+                    n_passed += 1
+                    ep["done"] = True
+                elif turn < args.max_turns:
+                    n_failed += 1
+                    ep["messages"].append({"role": "assistant", "content": ct})
+                    ep["messages"].append({"role": "user", "content":
+                        FEEDBACK_TEMPLATE.format(passed=tp, total=tt)})
+                else:
+                    n_failed += 1
+                    ep["done"] = True
 
         t_sandbox_done = time.time()
         n_done = sum(1 for ep in episodes if ep["done"])
