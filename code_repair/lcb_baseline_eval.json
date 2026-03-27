@@ -1,0 +1,1026 @@
+{
+  "no_thinking": [
+    {
+      "solved": true,
+      "turns": 1,
+      "best_passed": 307,
+      "total": 307,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 307,
+          "total": 307,
+          "solved": true
+        }
+      ]
+    },
+    {
+      "solved": false,
+      "turns": 4,
+      "best_passed": 0,
+      "total": 110,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 0,
+          "total": 110,
+          "solved": false
+        },
+        {
+          "turn": 2,
+          "code": true,
+          "passed": 0,
+          "total": 110,
+          "solved": false
+        },
+        {
+          "turn": 3,
+          "code": true,
+          "passed": 0,
+          "total": 110,
+          "solved": false
+        },
+        {
+          "turn": 4,
+          "code": true,
+          "passed": 0,
+          "total": 110,
+          "solved": false
+        }
+      ]
+    },
+    {
+      "solved": true,
+      "turns": 1,
+      "best_passed": 202,
+      "total": 202,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 202,
+          "total": 202,
+          "solved": true
+        }
+      ]
+    },
+    {
+      "solved": true,
+      "turns": 2,
+      "best_passed": 116,
+      "total": 116,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 0,
+          "total": 116,
+          "solved": false
+        },
+        {
+          "turn": 2,
+          "code": true,
+          "passed": 116,
+          "total": 116,
+          "solved": true
+        }
+      ]
+    },
+    {
+      "solved": true,
+      "turns": 2,
+      "best_passed": 111,
+      "total": 111,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 0,
+          "total": 111,
+          "solved": false
+        },
+        {
+          "turn": 2,
+          "code": true,
+          "passed": 111,
+          "total": 111,
+          "solved": true
+        }
+      ]
+    },
+    {
+      "solved": true,
+      "turns": 2,
+      "best_passed": 84,
+      "total": 84,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 0,
+          "total": 84,
+          "solved": false
+        },
+        {
+          "turn": 2,
+          "code": true,
+          "passed": 84,
+          "total": 84,
+          "solved": true
+        }
+      ]
+    },
+    {
+      "solved": false,
+      "turns": 4,
+      "best_passed": 0,
+      "total": 102,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 0,
+          "total": 102,
+          "solved": false
+        },
+        {
+          "turn": 2,
+          "code": true,
+          "passed": 0,
+          "total": 102,
+          "solved": false
+        },
+        {
+          "turn": 3,
+          "code": true,
+          "passed": 0,
+          "total": 102,
+          "solved": false
+        },
+        {
+          "turn": 4,
+          "code": true,
+          "passed": 0,
+          "total": 102,
+          "solved": false
+        }
+      ]
+    },
+    {
+      "solved": true,
+      "turns": 1,
+      "best_passed": 27,
+      "total": 27,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 27,
+          "total": 27,
+          "solved": true
+        }
+      ]
+    },
+    {
+      "solved": false,
+      "turns": 4,
+      "best_passed": 0,
+      "total": 202,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 0,
+          "total": 202,
+          "solved": false
+        },
+        {
+          "turn": 2,
+          "code": true,
+          "passed": 0,
+          "total": 202,
+          "solved": false
+        },
+        {
+          "turn": 3,
+          "code": true,
+          "passed": 0,
+          "total": 202,
+          "solved": false
+        },
+        {
+          "turn": 4,
+          "code": true,
+          "passed": 0,
+          "total": 202,
+          "solved": false
+        }
+      ]
+    },
+    {
+      "solved": false,
+      "turns": 4,
+      "best_passed": 0,
+      "total": 128,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 0,
+          "total": 128,
+          "solved": false
+        },
+        {
+          "turn": 2,
+          "code": true,
+          "passed": 0,
+          "total": 128,
+          "solved": false
+        },
+        {
+          "turn": 3,
+          "code": true,
+          "passed": 0,
+          "total": 128,
+          "solved": false
+        },
+        {
+          "turn": 4,
+          "code": true,
+          "passed": 0,
+          "total": 128,
+          "solved": false
+        }
+      ]
+    },
+    {
+      "solved": false,
+      "turns": 4,
+      "best_passed": 0,
+      "total": 98,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 0,
+          "total": 98,
+          "solved": false
+        },
+        {
+          "turn": 2,
+          "code": true,
+          "passed": 0,
+          "total": 98,
+          "solved": false
+        },
+        {
+          "turn": 3,
+          "code": true,
+          "passed": 0,
+          "total": 98,
+          "solved": false
+        },
+        {
+          "turn": 4,
+          "code": true,
+          "passed": 0,
+          "total": 98,
+          "solved": false
+        }
+      ]
+    },
+    {
+      "solved": false,
+      "turns": 4,
+      "best_passed": 0,
+      "total": 7,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 0,
+          "total": 7,
+          "solved": false
+        },
+        {
+          "turn": 2,
+          "code": true,
+          "passed": 0,
+          "total": 7,
+          "solved": false
+        },
+        {
+          "turn": 3,
+          "code": true,
+          "passed": 0,
+          "total": 7,
+          "solved": false
+        },
+        {
+          "turn": 4,
+          "code": true,
+          "passed": 0,
+          "total": 7,
+          "solved": false
+        }
+      ]
+    },
+    {
+      "solved": true,
+      "turns": 1,
+      "best_passed": 20,
+      "total": 20,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 20,
+          "total": 20,
+          "solved": true
+        }
+      ]
+    },
+    {
+      "solved": true,
+      "turns": 1,
+      "best_passed": 191,
+      "total": 191,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 191,
+          "total": 191,
+          "solved": true
+        }
+      ]
+    },
+    {
+      "solved": true,
+      "turns": 1,
+      "best_passed": 15,
+      "total": 15,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 15,
+          "total": 15,
+          "solved": true
+        }
+      ]
+    },
+    {
+      "solved": true,
+      "turns": 2,
+      "best_passed": 102,
+      "total": 102,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 0,
+          "total": 102,
+          "solved": false
+        },
+        {
+          "turn": 2,
+          "code": true,
+          "passed": 102,
+          "total": 102,
+          "solved": true
+        }
+      ]
+    },
+    {
+      "solved": true,
+      "turns": 1,
+      "best_passed": 79,
+      "total": 79,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 79,
+          "total": 79,
+          "solved": true
+        }
+      ]
+    },
+    {
+      "solved": false,
+      "turns": 4,
+      "best_passed": 0,
+      "total": 122,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 0,
+          "total": 122,
+          "solved": false
+        },
+        {
+          "turn": 2,
+          "code": true,
+          "passed": 0,
+          "total": 122,
+          "solved": false
+        },
+        {
+          "turn": 3,
+          "code": true,
+          "passed": 0,
+          "total": 122,
+          "solved": false
+        },
+        {
+          "turn": 4,
+          "code": true,
+          "passed": 0,
+          "total": 122,
+          "solved": false
+        }
+      ]
+    },
+    {
+      "solved": true,
+      "turns": 1,
+      "best_passed": 91,
+      "total": 91,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 91,
+          "total": 91,
+          "solved": true
+        }
+      ]
+    },
+    {
+      "solved": true,
+      "turns": 1,
+      "best_passed": 219,
+      "total": 219,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 219,
+          "total": 219,
+          "solved": true
+        }
+      ]
+    }
+  ],
+  "thinking": [
+    {
+      "solved": false,
+      "turns": 4,
+      "best_passed": 0,
+      "total": 307,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 0,
+          "total": 307,
+          "solved": false
+        },
+        {
+          "turn": 2,
+          "code": true,
+          "passed": 0,
+          "total": 307,
+          "solved": false
+        },
+        {
+          "turn": 3,
+          "code": true,
+          "passed": 0,
+          "total": 307,
+          "solved": false
+        },
+        {
+          "turn": 4,
+          "code": true,
+          "passed": 0,
+          "total": 307,
+          "solved": false
+        }
+      ]
+    },
+    {
+      "solved": true,
+      "turns": 1,
+      "best_passed": 110,
+      "total": 110,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 110,
+          "total": 110,
+          "solved": true
+        }
+      ]
+    },
+    {
+      "solved": false,
+      "turns": 4,
+      "best_passed": 0,
+      "total": 202,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 0,
+          "total": 202,
+          "solved": false
+        },
+        {
+          "turn": 2,
+          "code": true,
+          "passed": 0,
+          "total": 202,
+          "solved": false
+        },
+        {
+          "turn": 3,
+          "code": true,
+          "passed": 0,
+          "total": 202,
+          "solved": false
+        },
+        {
+          "turn": 4,
+          "code": true,
+          "passed": 0,
+          "total": 202,
+          "solved": false
+        }
+      ]
+    },
+    {
+      "solved": true,
+      "turns": 1,
+      "best_passed": 116,
+      "total": 116,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 116,
+          "total": 116,
+          "solved": true
+        }
+      ]
+    },
+    {
+      "solved": true,
+      "turns": 2,
+      "best_passed": 111,
+      "total": 111,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 0,
+          "total": 111,
+          "solved": false
+        },
+        {
+          "turn": 2,
+          "code": true,
+          "passed": 111,
+          "total": 111,
+          "solved": true
+        }
+      ]
+    },
+    {
+      "solved": true,
+      "turns": 2,
+      "best_passed": 84,
+      "total": 84,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 0,
+          "total": 84,
+          "solved": false
+        },
+        {
+          "turn": 2,
+          "code": true,
+          "passed": 84,
+          "total": 84,
+          "solved": true
+        }
+      ]
+    },
+    {
+      "solved": false,
+      "turns": 4,
+      "best_passed": 0,
+      "total": 102,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 0,
+          "total": 102,
+          "solved": false
+        },
+        {
+          "turn": 2,
+          "code": true,
+          "passed": 0,
+          "total": 102,
+          "solved": false
+        },
+        {
+          "turn": 3,
+          "code": true,
+          "passed": 0,
+          "total": 102,
+          "solved": false
+        },
+        {
+          "turn": 4,
+          "code": true,
+          "passed": 0,
+          "total": 102,
+          "solved": false
+        }
+      ]
+    },
+    {
+      "solved": true,
+      "turns": 1,
+      "best_passed": 27,
+      "total": 27,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 27,
+          "total": 27,
+          "solved": true
+        }
+      ]
+    },
+    {
+      "solved": false,
+      "turns": 4,
+      "best_passed": 0,
+      "total": 202,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 0,
+          "total": 202,
+          "solved": false
+        },
+        {
+          "turn": 2,
+          "code": true,
+          "passed": 0,
+          "total": 202,
+          "solved": false
+        },
+        {
+          "turn": 3,
+          "code": true,
+          "passed": 0,
+          "total": 202,
+          "solved": false
+        },
+        {
+          "turn": 4,
+          "code": true,
+          "passed": 0,
+          "total": 202,
+          "solved": false
+        }
+      ]
+    },
+    {
+      "solved": false,
+      "turns": 4,
+      "best_passed": 0,
+      "total": 128,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 0,
+          "total": 128,
+          "solved": false
+        },
+        {
+          "turn": 2,
+          "code": true,
+          "passed": 0,
+          "total": 128,
+          "solved": false
+        },
+        {
+          "turn": 3,
+          "code": true,
+          "passed": 0,
+          "total": 128,
+          "solved": false
+        },
+        {
+          "turn": 4,
+          "code": true,
+          "passed": 0,
+          "total": 128,
+          "solved": false
+        }
+      ]
+    },
+    {
+      "solved": false,
+      "turns": 4,
+      "best_passed": 0,
+      "total": 98,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 0,
+          "total": 98,
+          "solved": false
+        },
+        {
+          "turn": 2,
+          "code": true,
+          "passed": 0,
+          "total": 98,
+          "solved": false
+        },
+        {
+          "turn": 3,
+          "code": true,
+          "passed": 0,
+          "total": 98,
+          "solved": false
+        },
+        {
+          "turn": 4,
+          "code": true,
+          "passed": 0,
+          "total": 98,
+          "solved": false
+        }
+      ]
+    },
+    {
+      "solved": false,
+      "turns": 4,
+      "best_passed": 0,
+      "total": 7,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 0,
+          "total": 7,
+          "solved": false
+        },
+        {
+          "turn": 2,
+          "code": true,
+          "passed": 0,
+          "total": 7,
+          "solved": false
+        },
+        {
+          "turn": 3,
+          "code": true,
+          "passed": 0,
+          "total": 7,
+          "solved": false
+        },
+        {
+          "turn": 4,
+          "code": true,
+          "passed": 0,
+          "total": 7,
+          "solved": false
+        }
+      ]
+    },
+    {
+      "solved": true,
+      "turns": 1,
+      "best_passed": 20,
+      "total": 20,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 20,
+          "total": 20,
+          "solved": true
+        }
+      ]
+    },
+    {
+      "solved": true,
+      "turns": 1,
+      "best_passed": 191,
+      "total": 191,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 191,
+          "total": 191,
+          "solved": true
+        }
+      ]
+    },
+    {
+      "solved": true,
+      "turns": 1,
+      "best_passed": 15,
+      "total": 15,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 15,
+          "total": 15,
+          "solved": true
+        }
+      ]
+    },
+    {
+      "solved": false,
+      "turns": 4,
+      "best_passed": 0,
+      "total": 102,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 0,
+          "total": 102,
+          "solved": false
+        },
+        {
+          "turn": 2,
+          "code": true,
+          "passed": 0,
+          "total": 102,
+          "solved": false
+        },
+        {
+          "turn": 3,
+          "code": true,
+          "passed": 0,
+          "total": 102,
+          "solved": false
+        },
+        {
+          "turn": 4,
+          "code": true,
+          "passed": 0,
+          "total": 102,
+          "solved": false
+        }
+      ]
+    },
+    {
+      "solved": true,
+      "turns": 1,
+      "best_passed": 79,
+      "total": 79,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 79,
+          "total": 79,
+          "solved": true
+        }
+      ]
+    },
+    {
+      "solved": false,
+      "turns": 4,
+      "best_passed": 0,
+      "total": 122,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 0,
+          "total": 122,
+          "solved": false
+        },
+        {
+          "turn": 2,
+          "code": true,
+          "passed": 0,
+          "total": 122,
+          "solved": false
+        },
+        {
+          "turn": 3,
+          "code": true,
+          "passed": 0,
+          "total": 122,
+          "solved": false
+        },
+        {
+          "turn": 4,
+          "code": true,
+          "passed": 0,
+          "total": 122,
+          "solved": false
+        }
+      ]
+    },
+    {
+      "solved": false,
+      "turns": 4,
+      "best_passed": 0,
+      "total": 91,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 0,
+          "total": 91,
+          "solved": false
+        },
+        {
+          "turn": 2,
+          "code": true,
+          "passed": 0,
+          "total": 91,
+          "solved": false
+        },
+        {
+          "turn": 3,
+          "code": true,
+          "passed": 0,
+          "total": 91,
+          "solved": false
+        },
+        {
+          "turn": 4,
+          "code": true,
+          "passed": 0,
+          "total": 91,
+          "solved": false
+        }
+      ]
+    },
+    {
+      "solved": false,
+      "turns": 4,
+      "best_passed": 0,
+      "total": 219,
+      "turns_data": [
+        {
+          "turn": 1,
+          "code": true,
+          "passed": 0,
+          "total": 219,
+          "solved": false
+        },
+        {
+          "turn": 2,
+          "code": true,
+          "passed": 0,
+          "total": 219,
+          "solved": false
+        },
+        {
+          "turn": 3,
+          "code": true,
+          "passed": 0,
+          "total": 219,
+          "solved": false
+        },
+        {
+          "turn": 4,
+          "code": true,
+          "passed": 0,
+          "total": 219,
+          "solved": false
+        }
+      ]
+    }
+  ]
+}
