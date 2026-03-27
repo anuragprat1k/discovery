@@ -267,13 +267,19 @@ def grpo_step(
     episode_rewards = np.array([sum(ep["per_turn_rewards"]) for ep in episodes], dtype=np.float32)
     advantages = np.zeros_like(episode_rewards)
     groups_skipped = 0
-    for start, end in group_indices:
+    for g_idx, (start, end) in enumerate(group_indices):
         group = episode_rewards[start:end]
         std = group.std()
+        solved_in_group = sum(1 for ep in episodes[start:end] if ep["all_passed"])
+        task_problem = episodes[start]["task"].problem[:60].replace("\n", " ")
         if std < 1e-8:
             groups_skipped += 1
+            print(f"    g{g_idx}: {solved_in_group}/{end-start} solved, "
+                  f"rewards=[{','.join(f'{r:.2f}' for r in group)}] SKIP", flush=True)
         else:
             advantages[start:end] = (group - group.mean()) / (std + 1e-8)
+            print(f"    g{g_idx}: {solved_in_group}/{end-start} solved, "
+                  f"rewards=[{','.join(f'{r:.2f}' for r in group)}] TRAIN std={std:.3f}", flush=True)
 
     # --- Phase D: Build Datum objects ---
     data = []
