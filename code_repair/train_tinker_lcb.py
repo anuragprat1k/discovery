@@ -126,9 +126,38 @@ def reward_dense_full(info: dict, is_terminal: bool) -> float:
 
 REWARD_FNS = {"sparse": reward_sparse, "dense": reward_dense, "dense_full": reward_dense_full}
 
-FEEDBACK_TEMPLATE = """Your solution failed some tests.
-- Tests passed: {passed}/{total}
-Fix your solution. Output corrected code in a ```python``` code block."""
+def _build_feedback(details: dict, tp: int, tt: int) -> str:
+    """Build feedback with actual error info from sandbox."""
+    lines = [f"Your solution failed some tests ({tp}/{tt} passed)."]
+
+    # Parse test errors from sandbox stdout
+    run_result = details.get("run_result", {})
+    stdout = run_result.get("stdout", "") if isinstance(run_result, dict) else ""
+    if stdout:
+        # stdout has JSON summary on line 1, then error dicts on subsequent lines
+        for line in stdout.strip().split("\n")[1:4]:  # show up to 3 failing test details
+            try:
+                err = eval(line) if line.startswith("{") else None  # sandbox uses repr not json
+                if err and isinstance(err, dict):
+                    msg = err.get("error_message", "")
+                    inp = err.get("inputs", "")[:100]
+                    expected = err.get("expected", "")[:100]
+                    output = err.get("output", "")[:100]
+                    if msg == "Wrong Answer":
+                        lines.append(f"- Input: {inp.strip()} → Expected: {expected.strip()}, Got: {output.strip()}")
+                    elif msg:
+                        lines.append(f"- Error: {msg}")
+            except Exception:
+                pass
+
+    # Fallback: show stderr if no parsed errors
+    if len(lines) == 1:
+        stderr = run_result.get("stderr", "") if isinstance(run_result, dict) else ""
+        if stderr:
+            lines.append(f"- Error: {stderr[:300]}")
+
+    lines.append("\nFix your solution. Output corrected code in a ```python``` code block.")
+    return "\n".join(lines)
 
 
 # ---------------------------------------------------------------------------
@@ -294,7 +323,7 @@ def grpo_step(
                     n_failed += 1
                     ep["messages"].append({"role": "assistant", "content": ct})
                     ep["messages"].append({"role": "user", "content":
-                        FEEDBACK_TEMPLATE.format(passed=tp, total=tt)})
+                        _build_feedback(details, tp, tt)})
                 else:
                     n_failed += 1
                     ep["done"] = True
