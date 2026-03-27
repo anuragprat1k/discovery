@@ -128,7 +128,9 @@ REWARD_FNS = {"sparse": reward_sparse, "dense": reward_dense, "dense_full": rewa
 
 def _build_feedback(details: dict, tp: int, tt: int) -> str:
     """Build feedback with actual error info from sandbox."""
-    lines = [f"Your solution failed some tests ({tp}/{tt} passed)."]
+    if tp == tt and tt > 0:
+        return f"All {tt} tests passed!"
+    lines = [f"Your solution failed {tt - tp}/{tt} tests ({tp} passed)."]
 
     # Parse test errors from sandbox stdout
     run_result = details.get("run_result", {})
