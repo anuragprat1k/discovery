@@ -166,7 +166,8 @@ def grpo_step(
         if not active:
             break
 
-        # Fire Tinker futures
+        # Fire Tinker futures (cap max_tokens to fit context window)
+        MODEL_CTX = 32768
         futures = []
         for i in active:
             ep = episodes[i]
@@ -175,9 +176,19 @@ def grpo_step(
                 tokenize=False,
             )
             ptok = tokenizer.encode(pt, add_special_tokens=False)
+            # Ensure prompt + max_tokens fits context window
+            available = MODEL_CTX - len(ptok) - 64  # small buffer
+            if available < 256:
+                # Prompt too long, skip this episode this turn
+                ep["done"] = True
+                continue
+            turn_max_tokens = min(args.max_tokens, available)
+            turn_params = tinker.SamplingParams(
+                max_tokens=turn_max_tokens, temperature=args.temperature,
+            )
             future = sampling_client.sample(
                 prompt=tinker.ModelInput.from_ints(ptok),
-                num_samples=1, sampling_params=sampling_params,
+                num_samples=1, sampling_params=turn_params,
             )
             futures.append((i, future, ptok))
 
@@ -408,17 +419,22 @@ def main():
         if eval_tasks and step % args.eval_steps == 0:
             print(f"[eval] Running on {len(eval_tasks)} problems...", flush=True)
             loop = asyncio.new_event_loop()
-            eval_params = tinker.SamplingParams(max_tokens=args.max_tokens, temperature=args.eval_temperature)
+            MODEL_CTX_EVAL = 32768
             solved = 0
             for ei, et in enumerate(eval_tasks):
                 msgs = [{"role": "user", "content": et.problem}]
                 ep_solved = False
                 for turn in range(1, args.max_turns + 1):
                     pt = tok.apply_chat_template(msgs, add_generation_prompt=True,
-                                                  tokenize=False, enable_thinking=False)
+                                                  tokenize=False)
                     ptok = tok.encode(pt, add_special_tokens=False)
+                    avail = MODEL_CTX_EVAL - len(ptok) - 64
+                    if avail < 256:
+                        break
+                    ep = tinker.SamplingParams(max_tokens=min(args.max_tokens, avail),
+                                               temperature=args.eval_temperature)
                     r = sc.sample(prompt=tinker.ModelInput.from_ints(ptok),
-                                  num_samples=1, sampling_params=eval_params).result()
+                                  num_samples=1, sampling_params=ep).result()
                     ct = tok.decode(r.sequences[0].tokens, skip_special_tokens=True)
                     code = extract_code_from_model(ct)
                     if code is None:
