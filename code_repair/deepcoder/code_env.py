@@ -25,9 +25,14 @@ from tinker_cookbook.tool_use import build_agent_tool_env
 logger = logging.getLogger(__name__)
 
 
-def _load_deepcoder_split(split: Literal["train", "test"]) -> Dataset:
+def _load_deepcoder_split(
+    split: Literal["train", "test"],
+    sources: tuple[str, ...] | None = None,
+) -> Dataset:
     logger.info("Loading DeepCoder dataset split: %s", split)
-    if split == "train":
+    if sources is not None:
+        names = sources
+    elif split == "train":
         names = ("primeintellect", "taco", "lcbv5")
     else:
         names = ("codeforces", "lcbv5")
@@ -35,8 +40,11 @@ def _load_deepcoder_split(split: Literal["train", "test"]) -> Dataset:
     datasets = []
     for name in names:
         logger.info(f"  Loading {name}...")
-        ds = load_dataset("agentica-org/DeepCoder-Preview-Dataset", name=name, split=split)
-        datasets.append(cast(Dataset, ds))
+        try:
+            ds = load_dataset("agentica-org/DeepCoder-Preview-Dataset", name=name, split=split)
+            datasets.append(cast(Dataset, ds))
+        except Exception as e:
+            logger.warning(f"  Skipping {name}/{split}: {e}")
 
     return cast(Dataset, concatenate_datasets(datasets))
 
@@ -102,17 +110,20 @@ def _build_question(example: dict[str, Any]) -> str | None:
 def load_deepcoder_tasks(
     split: Literal["train", "test"] = "train",
     seed: int = 0,
+    sources: tuple[str, ...] | None = None,
 ) -> list[DeepcoderTask]:
     """Load tasks from the DeepCoder dataset.
 
     Args:
         split: Which split to load ("train" or "test")
         seed: Random seed for shuffling (train split only)
+        sources: Tuple of dataset source names to load (e.g. ("lcbv5",)).
+                 None = load all sources for the split.
 
     Returns:
         List of DeepcoderTask instances with normalized test cases
     """
-    ds: Dataset = _load_deepcoder_split(split)
+    ds: Dataset = _load_deepcoder_split(split, sources=sources)
     if split == "train":
         ds = ds.shuffle(seed=seed)
 
