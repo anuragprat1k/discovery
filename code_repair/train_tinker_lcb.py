@@ -99,17 +99,24 @@ def reward_dense(info: dict, is_terminal: bool) -> float:
 
 
 def reward_dense_full(info: dict, is_terminal: bool) -> float:
-    """Dense + speed bonus for solving early."""
+    """Dense potential (HWM) + non-potential (current state) signals."""
     if info.get("no_code"):
         return -0.1
     n = max(info["tests_total"], 1)
+    r = 0.0
+    # Potential-based: HWM delta (can only go up)
     hwm_delta = info["hw_passed"] - info["old_hw"]
-    r = 0.5 * (hwm_delta / n) if hwm_delta > 0 else 0.0
-    if is_terminal and info["all_passed"]:
-        speed_bonus = 0.2 * (info["max_turns"] - info["turn"]) / info["max_turns"]
-        r += 1.0 + speed_bonus
-    elif is_terminal:
-        r += 0.0
+    if hwm_delta > 0:
+        r += 0.5 * (hwm_delta / n)
+    # Non-potential: current pass fraction (can regress turn-over-turn)
+    curr_passed = info.get("tests_passed", 0)
+    r += 0.1 * (curr_passed / n)
+    # Non-potential: code ran without crash (can regress)
+    if curr_passed > 0 or info["all_passed"]:
+        r += 0.05
+    # Terminal
+    if is_terminal:
+        r += 1.0 if info["all_passed"] else 0.0
     return r
 
 
