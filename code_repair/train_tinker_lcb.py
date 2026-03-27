@@ -66,6 +66,8 @@ def parse_args():
     p.add_argument("--sandbox_timeout", type=int, default=6)
     p.add_argument("--min_tests", type=int, default=5,
                    help="Only use problems with >= this many test cases.")
+    p.add_argument("--sources", type=str, nargs="+", default=None,
+                   help="Dataset sources to use (e.g. lcbv5). None = all.")
     p.add_argument("--output_dir", default=None)
     p.add_argument("--no_wandb", action="store_true")
     p.add_argument("--wandb_project", default="discovery-code-repair")
@@ -372,11 +374,12 @@ def main():
     print("[lcb] Tinker connected.")
 
     # Load tasks
-    all_tasks = load_deepcoder_tasks("train", seed=args.seed)
+    sources = tuple(args.sources) if args.sources else None
+    all_tasks = load_deepcoder_tasks("train", seed=args.seed, sources=sources)
     tasks = [t for t in all_tasks if len(t.tests) >= args.min_tests]
-    print(f"[lcb] {len(tasks)} train tasks (>= {args.min_tests} tests)")
+    print(f"[lcb] {len(tasks)} train tasks (>= {args.min_tests} tests, sources={sources or 'all'})")
 
-    eval_tasks_all = load_deepcoder_tasks("test", seed=args.seed)
+    eval_tasks_all = load_deepcoder_tasks("test", seed=args.seed, sources=sources)
     eval_tasks = [t for t in eval_tasks_all if len(t.tests) >= args.min_tests][:args.eval_n_problems]
     print(f"[lcb] {len(eval_tasks)} eval tasks")
 
