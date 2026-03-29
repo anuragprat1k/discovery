@@ -132,9 +132,13 @@ def _build_feedback(details: dict, tp: int, tt: int) -> str:
         return f"All {tt} tests passed!"
     lines = [f"Your solution failed {tt - tp}/{tt} tests ({tp} passed)."]
 
-    # Parse test errors from sandbox stdout
+    # Parse test errors from sandbox stdout (works for both Modal and SandboxFusion)
     run_result = details.get("run_result", {})
-    stdout = run_result.get("stdout", "") if isinstance(run_result, dict) else ""
+    stdout = ""
+    if isinstance(run_result, dict):
+        stdout = run_result.get("stdout", "")
+    if not stdout:
+        stdout = details.get("stdout", "")
     if stdout:
         # stdout has JSON summary on line 1, then error dicts on subsequent lines
         for line in stdout.strip().split("\n")[1:4]:  # show up to 3 failing test details
