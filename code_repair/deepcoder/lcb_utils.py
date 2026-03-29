@@ -785,25 +785,106 @@ def reliability_guard(maximum_memory_bytes=None):
 TEST_CODE = """
 import json
 import sys
+import signal
+import faulthandler
 
-from testing_util import run_test
+# Run ALL tests even if some fail (don't short-circuit)
 
 with open('test_cases.txt', 'r') as fin:
     sample = json.load(fin)
 with open('code.py', 'r') as fin:
     code = fin.read()
 
-result, metadata = run_test(sample, code, debug=False, timeout=%(timeout)s)
-passed = sum(1 for x in result if x == True)
-total = len(result)
-all_passed = passed == total
-# Always print per-test summary as JSON on the first line
-print(json.dumps({"passed": passed, "total": total, "all_passed": all_passed, "per_test": [x == True for x in result]}))
-if not all_passed:
-    print(metadata)
-    sys.exit(-1)
+in_outs = json.loads(sample["input_output"])
+fn_name = in_outs.get("fn_name")
+is_call_based = fn_name is not None
+
+# Compile the code
+sol_prefix = "from typing import *\\nfrom collections import *\\nfrom itertools import *\\nfrom functools import *\\nfrom heapq import *\\nfrom bisect import *\\nfrom math import *\\nimport sys\\nimport json\\nimport re\\n"
+
+results = []
+errors = []
+
+if is_call_based:
+    # Load module once
+    try:
+        from runtime_module import RuntimeModule
+    except ImportError:
+        from testing_util import RuntimeModule
+    try:
+        tmp_sol = RuntimeModule.from_string("tmp_sol", "", sol_prefix + code)
+        if "class Solution" in code:
+            obj = tmp_sol.Solution()
+        else:
+            obj = tmp_sol
+        method = getattr(obj, fn_name)
+    except Exception as e:
+        # Can't even load — all tests fail
+        n = len(in_outs["inputs"])
+        print(json.dumps({"passed": 0, "total": n, "all_passed": False, "per_test": [False]*n}))
+        print({"error": str(e), "error_code": -1, "error_message": "Compilation Error"})
+        sys.exit(-1)
+
+    for idx, raw_input in enumerate(in_outs["inputs"]):
+        try:
+            inputs = [json.loads(line) for line in raw_input.split("\\n")]
+            expected = json.loads(in_outs["outputs"][idx])
+            signal.alarm(%(timeout)s)
+            output = method(*inputs)
+            signal.alarm(0)
+            if isinstance(output, tuple):
+                output = list(output)
+            passed = (output == expected)
+            if not passed and isinstance(expected, list) and expected:
+                passed = (output == expected[0])
+            results.append(passed)
+            if not passed:
+                errors.append({"inputs": raw_input[:200], "expected": str(expected)[:200], "output": str(output)[:200], "error_message": "Wrong Answer"})
+        except Exception as e:
+            signal.alarm(0)
+            results.append(False)
+            msg = "Time Limit Exceeded" if "timeout" in repr(e).lower() else "Runtime Error"
+            errors.append({"inputs": raw_input[:100], "error": str(e)[:200], "error_message": msg})
 else:
-    sys.exit(0)
+    # stdin/stdout based
+    import io
+    try:
+        from testing_util import RuntimeModule
+    except ImportError:
+        pass
+    for idx, raw_input in enumerate(in_outs["inputs"]):
+        try:
+            signal.alarm(%(timeout)s)
+            old_stdin = sys.stdin
+            old_stdout = sys.stdout
+            sys.stdin = io.StringIO(raw_input)
+            sys.stdout = io.StringIO()
+            exec_globals = {}
+            exec(sol_prefix + code, exec_globals)
+            output = sys.stdout.getvalue()
+            sys.stdin = old_stdin
+            sys.stdout = old_stdout
+            signal.alarm(0)
+            expected = in_outs["outputs"][idx]
+            passed = output.strip() == expected.strip()
+            results.append(passed)
+            if not passed:
+                errors.append({"inputs": raw_input[:200], "expected": expected[:200], "output": output[:200], "error_message": "Wrong Answer"})
+        except Exception as e:
+            signal.alarm(0)
+            sys.stdin = sys.__stdin__
+            sys.stdout = sys.__stdout__
+            results.append(False)
+            msg = "Time Limit Exceeded" if "timeout" in repr(e).lower() else "Runtime Error"
+            errors.append({"inputs": raw_input[:100], "error": str(e)[:200], "error_message": msg})
+
+passed = sum(1 for x in results if x)
+total = len(results)
+all_passed = passed == total and total > 0
+print(json.dumps({"passed": passed, "total": total, "all_passed": all_passed, "per_test": results}))
+for err in errors[:3]:
+    print(json.dumps(err))
+sys.exit(0 if all_passed else -1)
 """
 
 LCB_SYSTEM_MESSAGE_GENERIC = "You are an expert Python programmer. You will be given a question (problem specification) and will generate a correct Python program that matches the specification and passes all tests."
