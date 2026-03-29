@@ -37,6 +37,7 @@ except ImportError:
 from code_repair.deepcoder.code_env import load_deepcoder_tasks
 from code_repair.deepcoder.code_grading import sandbox_check_correctness, extract_code_from_model
 from code_repair.deepcoder.deepcoder_tool import DeepcoderTask
+from tinker_cookbook.sandbox import SandboxBackend
 
 
 # ---------------------------------------------------------------------------
@@ -68,6 +69,9 @@ def parse_args():
                    help="Only use problems with >= this many test cases.")
     p.add_argument("--sources", type=str, nargs="+", default=None,
                    help="Dataset sources to use (e.g. lcbv5). None = all.")
+    p.add_argument("--sandbox_backend", default="modal",
+                   choices=["modal", "sandboxfusion"],
+                   help="Sandbox backend for code execution.")
     p.add_argument("--output_dir", default=None)
     p.add_argument("--no_wandb", action="store_true")
     p.add_argument("--wandb_project", default="discovery-code-repair")
@@ -125,6 +129,8 @@ def reward_dense_full(info: dict, is_terminal: bool) -> float:
 
 
 REWARD_FNS = {"sparse": reward_sparse, "dense": reward_dense, "dense_full": reward_dense_full}
+
+_SANDBOX_BACKEND = SandboxBackend.MODAL  # set from args in main()
 
 def _build_feedback(details: dict, tp: int, tt: int) -> str:
     """Build feedback with actual error info from sandbox."""
@@ -288,7 +294,8 @@ def grpo_step(
             async def _run_all_sandbox():
                 tasks = [
                     sandbox_check_correctness(
-                        episodes[i]["task"].tests, code, timeout=args.sandbox_timeout
+                        episodes[i]["task"].tests, code, timeout=args.sandbox_timeout,
+                        backend=_SANDBOX_BACKEND,
                     )
                     for _, i, code in sandbox_items
                 ]
@@ -436,9 +443,13 @@ def grpo_step(
 # ---------------------------------------------------------------------------
 
 def main():
+    global _SANDBOX_BACKEND
     args = parse_args()
     random.seed(args.seed)
     np.random.seed(args.seed)
+
+    _SANDBOX_BACKEND = SandboxBackend.MODAL if args.sandbox_backend == "modal" else SandboxBackend.SANDBOXFUSION
+    print(f"[lcb] Sandbox: {args.sandbox_backend}", flush=True)
 
     output_dir = args.output_dir or f"checkpoints/lcb_{args.reward}_s{args.seed}"
     os.makedirs(output_dir, exist_ok=True)
@@ -541,7 +552,8 @@ def main():
                         msgs.append({"role": "user", "content": "No code block. Use ```python```."})
                         continue
                     ap, det = loop.run_until_complete(
-                        sandbox_check_correctness(et.tests, code, timeout=args.sandbox_timeout))
+                        sandbox_check_correctness(et.tests, code, timeout=args.sandbox_timeout,
+                                                 backend=_SANDBOX_BACKEND))
                     if ap:
                         ep_solved = True
                         break
