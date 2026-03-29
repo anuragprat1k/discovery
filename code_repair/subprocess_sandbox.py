@@ -42,23 +42,29 @@ async def check_correctness(
     # Build test runner script
     script = _build_runner(code, tests, fn_name, timeout)
 
-    # Run in subprocess
+    # Run in async subprocess (non-blocking, enables true parallelism)
     total_timeout = (timeout + 2) * len(tests) + 10
     try:
-        result = subprocess.run(
-            [sys.executable, "-c", script],
-            capture_output=True, text=True,
-            timeout=total_timeout,
+        proc = await asyncio.create_subprocess_exec(
+            sys.executable, "-c", script,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
         )
-        stdout = result.stdout.strip()
-        stderr = result.stderr.strip()
-    except subprocess.TimeoutExpired:
-        return False, {
-            "tests_passed": 0, "tests_total": len(tests),
-            "per_test": [False] * len(tests),
-            "errors": ["Global timeout"],
-            "stdout": "", "stderr": "Global timeout",
-        }
+        try:
+            stdout_bytes, stderr_bytes = await asyncio.wait_for(
+                proc.communicate(), timeout=total_timeout,
+            )
+        except asyncio.TimeoutError:
+            proc.kill()
+            await proc.wait()
+            return False, {
+                "tests_passed": 0, "tests_total": len(tests),
+                "per_test": [False] * len(tests),
+                "errors": ["Global timeout"],
+                "stdout": "", "stderr": "Global timeout",
+            }
+        stdout = stdout_bytes.decode().strip()
+        stderr = stderr_bytes.decode().strip()
     except Exception as e:
         return False, {
             "tests_passed": 0, "tests_total": len(tests),
