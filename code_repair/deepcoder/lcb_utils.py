@@ -882,7 +882,7 @@ passed = sum(1 for x in results if x)
 total = len(results)
 all_passed = passed == total and total > 0
 print(json.dumps({"passed": passed, "total": total, "all_passed": all_passed, "per_test": results}))
-for err in errors[:3]:
+for err in errors[:10]:
     print(json.dumps(err))
 sys.exit(0 if all_passed else -1)
 """
