@@ -141,7 +141,7 @@ def _build_feedback(details: dict, tp: int, tt: int) -> str:
         stdout = details.get("stdout", "")
     if stdout:
         # stdout has JSON summary on line 1, then error dicts on subsequent lines
-        for line in stdout.strip().split("\n")[1:4]:  # show up to 3 failing test details
+        for line in stdout.strip().split("\n")[1:11]:  # show up to 10 failing test details
             try:
                 err = eval(line) if line.startswith("{") else None  # sandbox uses repr not json
                 if err and isinstance(err, dict):
