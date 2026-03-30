@@ -566,7 +566,7 @@ def main():
                     tt = det.get("tests_total", len(et.tests))
                     msgs.append({"role": "assistant", "content": ct})
                     msgs.append({"role": "user", "content":
-                        FEEDBACK_TEMPLATE.format(passed=tp, total=tt)})
+                        _build_feedback(det, tp, tt)})
                 if ep_solved:
                     solved += 1
             loop.close()
