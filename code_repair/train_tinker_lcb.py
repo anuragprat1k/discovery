@@ -441,6 +441,12 @@ def grpo_step(
 
     batch_solved = {hash(ep["task"].problem) for ep in episodes if ep["all_passed"]}
 
+    # Completion length stats
+    all_comp_tokens = []
+    for ep in episodes:
+        for ctok in ep["completion_tokens_per_turn"]:
+            all_comp_tokens.append(len(ctok))
+
     # Reward component tracking
     all_newly_passing = []
     all_targeted_fixes = []
@@ -475,6 +481,10 @@ def grpo_step(
         "targeted_fix_avg": float(np.mean(all_targeted_fixes)) if all_targeted_fixes else 0,
         "targeted_fix_max": float(max(all_targeted_fixes)) if all_targeted_fixes else 0,
         "n_groups_with_targeted": n_groups_with_targeted,
+        "comp_tokens_mean": float(np.mean(all_comp_tokens)) if all_comp_tokens else 0,
+        "comp_tokens_median": float(np.median(all_comp_tokens)) if all_comp_tokens else 0,
+        "comp_tokens_p95": float(np.percentile(all_comp_tokens, 95)) if all_comp_tokens else 0,
+        "comp_tokens_max": float(max(all_comp_tokens)) if all_comp_tokens else 0,
     }
 
 
