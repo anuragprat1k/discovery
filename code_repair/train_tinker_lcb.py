@@ -120,7 +120,7 @@ def reward_path_dep(info: dict, is_terminal: bool) -> float:
     # Targeted fix bonus: tests shown in feedback that now pass
     targeted_fixes = info.get("targeted_fixes", 0)
     n_shown = max(info.get("n_feedback_tests", 1), 1)
-    r += 0.3 * (targeted_fixes / n_shown)
+    r += 1.5 * (targeted_fixes / n_shown)
     # Terminal: solve bonus + speed bonus
     if is_terminal and info["all_passed"]:
         r += 1.0 + 0.2 * (info["max_turns"] - info["turn"]) / info["max_turns"]
@@ -337,6 +337,7 @@ def grpo_step(
                         "n_feedback_tests": ep["n_feedback_tests"]}
                 r = reward_fn(info, is_terminal)
                 ep["per_turn_rewards"].append(r)
+                ep.setdefault("_reward_infos", []).append(info)
 
                 # Update episode state for next turn
                 ep["prev_passing_set"] = curr_passing_set
@@ -440,6 +441,25 @@ def grpo_step(
 
     batch_solved = {hash(ep["task"].problem) for ep in episodes if ep["all_passed"]}
 
+    # Reward component tracking
+    all_newly_passing = []
+    all_targeted_fixes = []
+    all_n_feedback = []
+    n_groups_with_targeted = 0
+    for g_start, g_end in group_indices:
+        group_has_targeted = False
+        for ep in episodes[g_start:g_end]:
+            # Sum across turns
+            for info_key in ep.get("_reward_infos", []):
+                all_newly_passing.append(info_key.get("newly_passing", 0))
+                tf = info_key.get("targeted_fixes", 0)
+                all_targeted_fixes.append(tf)
+                all_n_feedback.append(info_key.get("n_feedback_tests", 0))
+                if tf > 0:
+                    group_has_targeted = True
+        if group_has_targeted:
+            n_groups_with_targeted += 1
+
     return {
         "mean_reward": float(episode_rewards.mean()),
         "reward_std": float(episode_rewards.std()),
@@ -451,6 +471,10 @@ def grpo_step(
         "batch_solved": batch_solved,
         "time_gen": round(t_gen, 1),
         "time_total": round(t_total, 1),
+        "newly_passing_avg": float(np.mean(all_newly_passing)) if all_newly_passing else 0,
+        "targeted_fix_avg": float(np.mean(all_targeted_fixes)) if all_targeted_fixes else 0,
+        "targeted_fix_max": float(max(all_targeted_fixes)) if all_targeted_fixes else 0,
+        "n_groups_with_targeted": n_groups_with_targeted,
     }
 
 
