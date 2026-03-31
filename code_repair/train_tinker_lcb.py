@@ -54,7 +54,7 @@ async def sandbox_check_correctness(tests, code, timeout=6, backend=None):
 
 def parse_args():
     p = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    p.add_argument("--reward", required=True, choices=["sparse", "dense", "dense_full"])
+    p.add_argument("--reward", required=True, choices=["path_indep", "path_dep"])
     p.add_argument("--model", default="Qwen/Qwen3-4B-Instruct-2507")
     p.add_argument("--max_steps", type=int, default=200)
     p.add_argument("--max_turns", type=int, default=4)
@@ -91,52 +91,43 @@ def parse_args():
 # Reward functions
 # ---------------------------------------------------------------------------
 
-def reward_sparse(info: dict, is_terminal: bool) -> float:
-    """Terminal only: +1 if solved, 0 otherwise. Format penalty."""
+def reward_path_indep(info: dict, is_terminal: bool) -> float:
+    """Path-independent: outcome-only. No per-turn shaping.
+    Only the final state matters — same outcome = same reward regardless of path."""
     if info.get("no_code"):
-        return -0.1  # format penalty
+        return -0.1
     if is_terminal:
-        return 1.0 if info["all_passed"] else 0.0
+        n = max(info["tests_total"], 1)
+        return info["tests_passed"] / n + (1.0 if info["all_passed"] else 0.0)
     return 0.0
 
 
-def reward_dense(info: dict, is_terminal: bool) -> float:
-    """Per-turn HWM of test fraction (potential-based) + terminal."""
-    if info.get("no_code"):
-        return -0.1
-    n = max(info["tests_total"], 1)
-    hwm_delta = info["hw_passed"] - info["old_hw"]
-    r = 0.5 * (hwm_delta / n) if hwm_delta > 0 else 0.0
-    if is_terminal:
-        r += 1.0 if info["all_passed"] else 0.0
-    return r
+def reward_path_dep(info: dict, is_terminal: bool) -> float:
+    """Path-dependent: per-turn progress + targeted fix bonus.
 
-
-def reward_dense_full(info: dict, is_terminal: bool) -> float:
-    """Green (HWM, potential) + Yellow (current passing, non-potential).
-
-    Green: +0.4 × (hwm_delta / N) — locked progress, can only go up
-    Yellow: +0.2 × (curr_passed / N) — current state, can regress if
-            model rewrites working code and breaks it
+    Non-potential because:
+    1. targeted_fixes depends on which tests were shown in feedback (prior state)
+    2. Same final state reached via different paths gets different reward
+    3. Speed bonus rewards solving earlier
     """
     if info.get("no_code"):
         return -0.1
     n = max(info["tests_total"], 1)
     r = 0.0
-    # Green: HWM delta (potential-based, monotonic)
-    hwm_delta = info["hw_passed"] - info["old_hw"]
-    if hwm_delta > 0:
-        r += 0.4 * (hwm_delta / n)
-    # Yellow: current pass fraction (non-potential, can regress)
-    curr_passed = info.get("tests_passed", 0)
-    r += 0.2 * (curr_passed / n)
-    # Terminal
-    if is_terminal:
-        r += 1.0 if info["all_passed"] else 0.0
+    # Credit for newly passing tests this turn
+    newly_passing = info.get("newly_passing", 0)
+    r += 0.5 * (newly_passing / n)
+    # Targeted fix bonus: tests shown in feedback that now pass
+    targeted_fixes = info.get("targeted_fixes", 0)
+    n_shown = max(info.get("n_feedback_tests", 1), 1)
+    r += 0.3 * (targeted_fixes / n_shown)
+    # Terminal: solve bonus + speed bonus
+    if is_terminal and info["all_passed"]:
+        r += 1.0 + 0.2 * (info["max_turns"] - info["turn"]) / info["max_turns"]
     return r
 
 
-REWARD_FNS = {"sparse": reward_sparse, "dense": reward_dense, "dense_full": reward_dense_full}
+REWARD_FNS = {"path_indep": reward_path_indep, "path_dep": reward_path_dep}
 
 def _build_feedback(details: dict, tp: int, tt: int) -> str:
     """Build feedback with actual error info from sandbox."""
@@ -215,6 +206,9 @@ def grpo_step(
                 "hw_passed": 0,
                 "all_passed": False,
                 "done": False,
+                "prev_passing_set": set(),       # test indices that passed last turn
+                "feedback_test_indices": set(),   # test indices shown in feedback
+                "n_feedback_tests": 0,            # count of tests shown in feedback
             })
         group_indices.append((start, start + args.group_size))
 
@@ -315,12 +309,19 @@ def grpo_step(
 
                 if isinstance(result, Exception):
                     ap, details = False, {"error": str(result), "tests_passed": 0,
-                                          "tests_total": len(ep["task"].tests)}
+                                          "tests_total": len(ep["task"].tests),
+                                          "per_test": []}
                 else:
                     ap, details = result
 
                 tp = details.get("tests_passed", len(ep["task"].tests) if ap else 0)
                 tt = details.get("tests_total", len(ep["task"].tests))
+                per_test = details.get("per_test", [])
+
+                # Compute per-test state for path-dependent reward
+                curr_passing_set = set(idx for idx, p in enumerate(per_test) if p)
+                newly_passing = len(curr_passing_set - ep["prev_passing_set"])
+                targeted_fixes = len(curr_passing_set & ep["feedback_test_indices"])
 
                 old_hw = ep["hw_passed"]
                 ep["hw_passed"] = max(ep["hw_passed"], tp)
@@ -330,18 +331,28 @@ def grpo_step(
                 info = {"turn": turn, "max_turns": args.max_turns,
                         "tests_total": tt, "tests_passed": tp,
                         "hw_passed": ep["hw_passed"], "old_hw": old_hw,
-                        "all_passed": ap, "no_code": False}
+                        "all_passed": ap, "no_code": False,
+                        "newly_passing": newly_passing,
+                        "targeted_fixes": targeted_fixes,
+                        "n_feedback_tests": ep["n_feedback_tests"]}
                 r = reward_fn(info, is_terminal)
                 ep["per_turn_rewards"].append(r)
+
+                # Update episode state for next turn
+                ep["prev_passing_set"] = curr_passing_set
 
                 if ap:
                     n_passed += 1
                     ep["done"] = True
                 elif turn < args.max_turns:
                     n_failed += 1
+                    feedback = _build_feedback(details, tp, tt)
                     ep["messages"].append({"role": "assistant", "content": ct})
-                    ep["messages"].append({"role": "user", "content":
-                        _build_feedback(details, tp, tt)})
+                    ep["messages"].append({"role": "user", "content": feedback})
+                    # Track which failing test indices were shown in feedback
+                    failing_indices = set(idx for idx, p in enumerate(per_test) if not p)
+                    ep["feedback_test_indices"] = set(list(failing_indices)[:10])
+                    ep["n_feedback_tests"] = len(ep["feedback_test_indices"])
                 else:
                     n_failed += 1
                     ep["done"] = True
@@ -427,7 +438,7 @@ def grpo_step(
     solve_rate = np.mean([ep["all_passed"] for ep in episodes])
     avg_turns = np.mean([len(ep["per_turn_rewards"]) for ep in episodes])
 
-    batch_solved = {ep["task"].problem[:50] for ep in episodes if ep["all_passed"]}
+    batch_solved = {hash(ep["task"].problem) for ep in episodes if ep["all_passed"]}
 
     return {
         "mean_reward": float(episode_rewards.mean()),
