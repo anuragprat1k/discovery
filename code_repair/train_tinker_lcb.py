@@ -75,7 +75,7 @@ def parse_args():
     p.add_argument("--sandbox_timeout", type=int, default=6)
     p.add_argument("--min_tests", type=int, default=5,
                    help="Only use problems with >= this many test cases.")
-    p.add_argument("--sources", type=str, nargs="+", default=None,
+    p.add_argument("--sources", type=str, nargs="+", default=["lcbv5"],
                    help="Dataset sources to use (e.g. lcbv5). None = all.")
     p.add_argument("--sandbox_backend", default="subprocess",
                    choices=["modal", "sandboxfusion", "subprocess"],
@@ -98,7 +98,10 @@ def reward_path_indep(info: dict, is_terminal: bool) -> float:
         return -0.1
     if is_terminal:
         n = max(info["tests_total"], 1)
-        return info["tests_passed"] / n + (1.0 if info["all_passed"] else 0.0)
+        r = info["tests_passed"] / n + (1.0 if info["all_passed"] else 0.0)
+        if info["all_passed"]:
+            r += 0.2 * (info["max_turns"] - info["turn"]) / info["max_turns"]
+        return r
     return 0.0
 
 
@@ -114,16 +117,20 @@ def reward_path_dep(info: dict, is_terminal: bool) -> float:
         return -0.1
     n = max(info["tests_total"], 1)
     r = 0.0
-    # Credit for newly passing tests this turn
-    newly_passing = info.get("newly_passing", 0)
-    r += 0.5 * (newly_passing / n)
-    # Targeted fix bonus: tests shown in feedback that now pass
-    targeted_fixes = info.get("targeted_fixes", 0)
-    n_shown = max(info.get("n_feedback_tests", 1), 1)
-    r += 1.5 * (targeted_fixes / n_shown)
-    # Terminal: solve bonus + speed bonus
-    if is_terminal and info["all_passed"]:
-        r += 1.0 + 0.2 * (info["max_turns"] - info["turn"]) / info["max_turns"]
+    is_terminal_turn = is_terminal or info.get("all_passed", False)
+    if not is_terminal_turn:
+        # Per-turn shaping (non-terminal only)
+        newly_passing = info.get("newly_passing", 0)
+        r += 0.5 * (newly_passing / n)
+        # Targeted fix bonus: tests shown in feedback that now pass
+        targeted_fixes = info.get("targeted_fixes", 0)
+        n_shown = max(info.get("n_feedback_tests", 1), 1)
+        r += 1.0 * (targeted_fixes / n_shown)
+    else:
+        # Terminal: same structure as path_indep
+        r += info["tests_passed"] / n
+        if info["all_passed"]:
+            r += 1.0 + 0.2 * (info["max_turns"] - info["turn"]) / info["max_turns"]
     return r
 
 
@@ -213,6 +220,9 @@ def grpo_step(
         group_indices.append((start, start + args.group_size))
 
     # --- Phase B: Turn-depth batched rollouts ---
+    total_sandbox_pass = 0
+    total_sandbox_fail = 0
+    total_sandbox_no_code = 0
     for turn in range(1, args.max_turns + 1):
         active = [i for i, ep in enumerate(episodes) if not ep["done"]]
         if not active:
@@ -225,7 +235,7 @@ def grpo_step(
             ep = episodes[i]
             pt = tokenizer.apply_chat_template(
                 ep["messages"], add_generation_prompt=True,
-                tokenize=False,
+                tokenize=False, enable_thinking=True,
             )
             ptok = tokenizer.encode(pt, add_special_tokens=False)
             # Ensure prompt + max_tokens fits context window
@@ -289,13 +299,17 @@ def grpo_step(
             else:
                 sandbox_items.append((j, i, code))
 
-        # Run all sandbox calls concurrently
+        # Run sandbox calls with bounded concurrency
         if sandbox_items:
             async def _run_all_sandbox():
+                sem = asyncio.Semaphore(16)  # cap concurrent subprocesses
+                async def _run_one(tests, code):
+                    async with sem:
+                        return await sandbox_check_correctness(
+                            tests, code, timeout=args.sandbox_timeout,
+                        )
                 tasks = [
-                    sandbox_check_correctness(
-                        episodes[i]["task"].tests, code, timeout=args.sandbox_timeout,
-                    )
+                    _run_one(episodes[i]["task"].tests, code)
                     for _, i, code in sandbox_items
                 ]
                 return await asyncio.gather(*tasks, return_exceptions=True)
@@ -360,6 +374,9 @@ def grpo_step(
 
         t_sandbox_done = time.time()
         n_done = sum(1 for ep in episodes if ep["done"])
+        total_sandbox_pass += n_passed
+        total_sandbox_fail += n_failed
+        total_sandbox_no_code += n_no_code
         print(f"    sandbox: {t_sandbox_done - t_sandbox_start:.1f}s | "
               f"pass={n_passed} fail={n_failed} no_code={n_no_code} | "
               f"{n_done}/{n_total} done", flush=True)
@@ -485,6 +502,10 @@ def grpo_step(
         "comp_tokens_median": float(np.median(all_comp_tokens)) if all_comp_tokens else 0,
         "comp_tokens_p95": float(np.percentile(all_comp_tokens, 95)) if all_comp_tokens else 0,
         "comp_tokens_max": float(max(all_comp_tokens)) if all_comp_tokens else 0,
+        "sandbox_pass": total_sandbox_pass,
+        "sandbox_fail": total_sandbox_fail,
+        "sandbox_no_code": total_sandbox_no_code,
+        "sandbox_no_code_rate": float(total_sandbox_no_code / max(total_sandbox_pass + total_sandbox_fail + total_sandbox_no_code, 1)),
     }
 
 
@@ -581,12 +602,15 @@ def main():
             loop = asyncio.new_event_loop()
             MODEL_CTX_EVAL = 32768
             solved = 0
+            eval_trajectories = []
             for ei, et in enumerate(eval_tasks):
                 msgs = [{"role": "user", "content": et.problem}]
                 ep_solved = False
+                traj = {"problem_idx": ei, "problem": et.problem[:500],
+                        "n_tests": len(et.tests), "turns": []}
                 for turn in range(1, args.max_turns + 1):
                     pt = tok.apply_chat_template(msgs, add_generation_prompt=True,
-                                                  tokenize=False)
+                                                  tokenize=False, enable_thinking=True)
                     ptok = tok.encode(pt, add_special_tokens=False)
                     avail = MODEL_CTX_EVAL - len(ptok) - 64
                     if avail < 256:
@@ -596,27 +620,50 @@ def main():
                     r = sc.sample(prompt=tinker.ModelInput.from_ints(ptok),
                                   num_samples=1, sampling_params=ep).result()
                     ct = tok.decode(r.sequences[0].tokens, skip_special_tokens=True)
+                    ct_full = tok.decode(r.sequences[0].tokens, skip_special_tokens=False)
+                    comp_tokens = len(r.sequences[0].tokens)
                     code = extract_code_from_model(ct)
+                    turn_data = {"turn": turn, "comp_tokens": comp_tokens,
+                                 "code_found": code is not None,
+                                 "completion": ct_full}
                     if code is None:
                         msgs.append({"role": "assistant", "content": ct})
                         msgs.append({"role": "user", "content": "No code block. Use ```python```."})
+                        turn_data["feedback"] = "No code block. Use ```python```."
+                        traj["turns"].append(turn_data)
                         continue
+                    turn_data["code"] = code
                     ap, det = loop.run_until_complete(
                         sandbox_check_correctness(et.tests, code, timeout=args.sandbox_timeout,
 ))
-                    if ap:
-                        ep_solved = True
-                        break
                     tp = det.get("tests_passed", 0)
                     tt = det.get("tests_total", len(et.tests))
+                    turn_data.update({"tests_passed": tp, "tests_total": tt,
+                                      "all_passed": ap})
+                    if ap:
+                        ep_solved = True
+                        turn_data["feedback"] = f"All {tt} tests passed!"
+                        traj["turns"].append(turn_data)
+                        break
+                    feedback = _build_feedback(det, tp, tt)
+                    turn_data["feedback"] = feedback
+                    traj["turns"].append(turn_data)
                     msgs.append({"role": "assistant", "content": ct})
-                    msgs.append({"role": "user", "content":
-                        _build_feedback(det, tp, tt)})
+                    msgs.append({"role": "user", "content": feedback})
+                traj["solved"] = ep_solved
+                traj["total_turns"] = len(traj["turns"])
+                eval_trajectories.append(traj)
                 if ep_solved:
                     solved += 1
             loop.close()
             pass1 = solved / len(eval_tasks) if eval_tasks else 0
             print(f"[eval] step={step}: {solved}/{len(eval_tasks)} = {pass1:.2f}", flush=True)
+            # Save trajectories
+            traj_path = os.path.join(output_dir, f"eval_trajectories_step_{step:04d}.jsonl")
+            with open(traj_path, "w") as f:
+                for traj in eval_trajectories:
+                    f.write(json.dumps(traj) + "\n")
+            print(f"[eval] Trajectories saved to {traj_path}", flush=True)
             if use_wandb:
                 wandb.log({"eval/pass_at_1": pass1, "eval/solved": solved}, step=step)
 
