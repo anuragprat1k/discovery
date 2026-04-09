@@ -44,6 +44,7 @@ async def check_correctness(
 
     # Run in async subprocess (non-blocking, enables true parallelism)
     total_timeout = (timeout + 2) * len(tests) + 10
+    proc = None
     try:
         proc = await asyncio.create_subprocess_exec(
             sys.executable, "-c", script,
@@ -72,6 +73,13 @@ async def check_correctness(
             "errors": [str(e)],
             "stdout": "", "stderr": str(e),
         }
+    finally:
+        if proc is not None and proc.returncode is None:
+            try:
+                proc.kill()
+                await proc.wait()
+            except ProcessLookupError:
+                pass
 
     # Parse results from stdout — find the JSON summary line
     if stdout:
