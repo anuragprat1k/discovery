@@ -130,6 +130,14 @@ def _build_runner(code: str, tests: list[dict], fn_name: str | None, timeout: in
     parts = [
         "import json, sys, signal, io",
         "signal.alarm = lambda x: None  # noop if no SIGALRM",
+        # Cap subprocess address space to 1 GiB so user code with unbounded
+        # caches/allocations crashes itself with MemoryError instead of OOMing
+        # the parent container.
+        "try:",
+        "    import resource",
+        "    _MEM_LIMIT = 1024 * 1024 * 1024  # 1 GiB",
+        "    resource.setrlimit(resource.RLIMIT_AS, (_MEM_LIMIT, _MEM_LIMIT))",
+        "except Exception: pass",
         "",
         "# Common imports",
         "from typing import *",
