@@ -333,7 +333,7 @@ def grpo_step(
         # Run sandbox calls with bounded concurrency
         if sandbox_items:
             async def _run_all_sandbox():
-                sem = asyncio.Semaphore(16)  # cap concurrent subprocesses (2 runs × 16 = 32 vCPUs)
+                sem = asyncio.Semaphore(8)  # cap concurrent subprocesses (2 runs × 8 = 16, fits 64GB cap)
                 async def _run_one(tests, code):
                     async with sem:
                         return await sandbox_check_correctness(
@@ -706,4 +706,12 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    import traceback
+    try:
+        main()
+    except SystemExit:
+        raise
+    except BaseException:
+        print("\n[lcb] FATAL: unhandled exception", flush=True)
+        traceback.print_exc()
+        raise
