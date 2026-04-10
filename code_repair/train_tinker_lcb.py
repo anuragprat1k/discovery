@@ -230,38 +230,69 @@ def grpo_step(
 
         # Fire Tinker futures (cap max_tokens to fit context window)
         MODEL_CTX = 32768
-        futures = []
-        for i in active:
-            ep = episodes[i]
-            pt = tokenizer.apply_chat_template(
-                ep["messages"], add_generation_prompt=True,
-                tokenize=False, enable_thinking=True,
-            )
-            ptok = tokenizer.encode(pt, add_special_tokens=False)
-            # Ensure prompt + max_tokens fits context window
-            available = MODEL_CTX - len(ptok) - 64  # small buffer
-            if available < 256:
-                # Prompt too long, skip this episode this turn
-                ep["done"] = True
-                continue
-            turn_max_tokens = min(args.max_tokens, available)
-            turn_params = tinker.SamplingParams(
-                max_tokens=turn_max_tokens, temperature=args.temperature,
-            )
-            future = sampling_client.sample(
-                prompt=tinker.ModelInput.from_ints(ptok),
-                num_samples=1, sampling_params=turn_params,
-            )
-            futures.append((i, future, ptok))
+        futures = []  # list of (episode_idx, future, ptok, seq_idx)
+        if turn == 1:
+            # Turn 1 batching: all group_size episodes per task share the same prompt.
+            # Fire one future per task with num_samples=group_size to amortize per-call
+            # overhead and let Tinker batch sequences from the same prompt efficiently.
+            for g_start, g_end in group_indices:
+                ep0 = episodes[g_start]
+                pt = tokenizer.apply_chat_template(
+                    ep0["messages"], add_generation_prompt=True,
+                    tokenize=False, enable_thinking=True,
+                )
+                ptok = tokenizer.encode(pt, add_special_tokens=False)
+                available = MODEL_CTX - len(ptok) - 64  # small buffer
+                if available < 256:
+                    # Prompt too long, skip all episodes in this group
+                    for i in range(g_start, g_end):
+                        episodes[i]["done"] = True
+                    continue
+                turn_max_tokens = min(args.max_tokens, available)
+                turn_params = tinker.SamplingParams(
+                    max_tokens=turn_max_tokens, temperature=args.temperature,
+                )
+                # Single API call yielding group_size sequences
+                future = sampling_client.sample(
+                    prompt=tinker.ModelInput.from_ints(ptok),
+                    num_samples=args.group_size, sampling_params=turn_params,
+                )
+                for seq_idx, i in enumerate(range(g_start, g_end)):
+                    futures.append((i, future, ptok, seq_idx))
+        else:
+            # Turn 2+: prompts diverge per episode (feedback differs), so fire per-episode.
+            for i in active:
+                ep = episodes[i]
+                pt = tokenizer.apply_chat_template(
+                    ep["messages"], add_generation_prompt=True,
+                    tokenize=False, enable_thinking=True,
+                )
+                ptok = tokenizer.encode(pt, add_special_tokens=False)
+                # Ensure prompt + max_tokens fits context window
+                available = MODEL_CTX - len(ptok) - 64  # small buffer
+                if available < 256:
+                    # Prompt too long, skip this episode this turn
+                    ep["done"] = True
+                    continue
+                turn_max_tokens = min(args.max_tokens, available)
+                turn_params = tinker.SamplingParams(
+                    max_tokens=turn_max_tokens, temperature=args.temperature,
+                )
+                future = sampling_client.sample(
+                    prompt=tinker.ModelInput.from_ints(ptok),
+                    num_samples=1, sampling_params=turn_params,
+                )
+                futures.append((i, future, ptok, 0))
 
-        print(f"  [step {step} t{turn}] fired {len(futures)}", flush=True)
+        n_api_calls = len({id(fut) for _, fut, _, _ in futures})
+        print(f"  [step {step} t{turn}] fired {len(futures)} ({n_api_calls} API calls)", flush=True)
 
         # Collect generation results
         t_gen_start = time.time()
         collected = []
-        for i, future, ptok in futures:
+        for i, future, ptok, seq_idx in futures:
             result = future.result()
-            seq = result.sequences[0]
+            seq = result.sequences[seq_idx]
             ct = tokenizer.decode(seq.tokens, skip_special_tokens=True)
             collected.append((i, ptok, list(seq.tokens),
                               [lp if lp is not None else 0.0 for lp in (seq.logprobs or [])],
