@@ -135,7 +135,7 @@ def _build_runner(code: str, tests: list[dict], fn_name: str | None, timeout: in
         # the parent container.
         "try:",
         "    import resource",
-        "    _MEM_LIMIT = 1024 * 1024 * 1024  # 1 GiB",
+        "    _MEM_LIMIT = 2 * 1024 * 1024 * 1024  # 2 GiB (1 GiB starves OpenBLAS at numpy import)",
         "    resource.setrlimit(resource.RLIMIT_AS, (_MEM_LIMIT, _MEM_LIMIT))",
         "except Exception: pass",
         "",
