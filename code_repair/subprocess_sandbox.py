@@ -155,6 +155,17 @@ def _build_runner(code: str, tests: list[dict], fn_name: str | None, timeout: in
         "try:\n    from sortedcontainers import SortedList, SortedDict, SortedSet\nexcept ImportError: pass",
         "sys.setrecursionlimit(10**5)",
         "",
+        # Helper: format exception as 'ExcType: msg @ line N' so feedback
+        # is informative across multiple turns of multi-turn repair.
+        "import traceback as _tb",
+        "def _fmt_exc(e):",
+        "    _et = type(e).__name__",
+        "    _msg = str(e)[:160]",
+        "    _frames = _tb.extract_tb(e.__traceback__)",
+        "    _user_frames = [fr for fr in _frames if fr.filename == '<string>']",
+        "    _line = _user_frames[-1].lineno if _user_frames else (_frames[-1].lineno if _frames else None)",
+        "    return f'{_et}: {_msg}' + (f' @ line {_line}' if _line is not None else '')",
+        "",
         "# User code",
         code,
         "",
@@ -173,7 +184,7 @@ try:
         _obj.{fn_name} = {fn_name}
 except Exception as e:
     # Can't instantiate — all tests fail
-    print(json.dumps({{"passed": 0, "total": {len(tests)}, "per_test": [False]*{len(tests)}, "errors": [str(e)[:200]]}}))
+    print(json.dumps({{"passed": 0, "total": {len(tests)}, "per_test": [False]*{len(tests)}, "errors": [{{"error_message": "Setup Error", "error": _fmt_exc(e), "inputs": ""}}]}}))
     sys.exit(0)
 """)
         for i, test in enumerate(tests):
@@ -193,7 +204,7 @@ try:
         errors.append(json.dumps({{"inputs": {repr(inp[:200])}, "expected": str(_expected)[:200], "output": str(_output)[:200], "error_message": "Wrong Answer"}}))
 except Exception as e:
     results.append(False)
-    errors.append(json.dumps({{"inputs": {repr(inp[:100])}, "error": str(e)[:200], "error_message": "Runtime Error"}}))
+    errors.append(json.dumps({{"inputs": {repr(inp[:100])}, "error": _fmt_exc(e), "error_message": "Runtime Error"}}))
 """)
     else:
         # stdin/stdout tests
@@ -215,7 +226,7 @@ except _sp.TimeoutExpired:
     errors.append(json.dumps({{"inputs": {repr(inp[:100])}, "error_message": "Time Limit Exceeded"}}))
 except Exception as e:
     results.append(False)
-    errors.append(json.dumps({{"inputs": {repr(inp[:100])}, "error": str(e)[:200], "error_message": "Runtime Error"}}))
+    errors.append(json.dumps({{"inputs": {repr(inp[:100])}, "error": _fmt_exc(e), "error_message": "Runtime Error"}}))
 """)
 
     parts.append("""

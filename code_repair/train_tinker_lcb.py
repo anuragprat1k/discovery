@@ -137,38 +137,40 @@ def reward_path_dep(info: dict, is_terminal: bool) -> float:
 REWARD_FNS = {"path_indep": reward_path_indep, "path_dep": reward_path_dep}
 
 def _build_feedback(details: dict, tp: int, tt: int) -> str:
-    """Build feedback with actual error info from sandbox."""
+    """Build feedback with actual error info from sandbox.
+
+    Reads details["errors"] (already parsed by the sandbox) instead of
+    re-parsing details["stdout"] via eval(), which was fragile and silently
+    dropped most error info. Falls back to details["stderr"] when the
+    sandbox crashed at top level (no per-test errors collected).
+    """
     if tp == tt and tt > 0:
         return f"All {tt} tests passed!"
     lines = [f"Your solution failed {tt - tp}/{tt} tests ({tp} passed)."]
 
-    # Parse test errors from sandbox stdout (works for both Modal and SandboxFusion)
-    run_result = details.get("run_result", {})
-    stdout = ""
-    if isinstance(run_result, dict):
-        stdout = run_result.get("stdout", "")
-    if not stdout:
-        stdout = details.get("stdout", "")
-    if stdout:
-        # stdout has JSON summary on line 1, then error dicts on subsequent lines
-        for line in stdout.strip().split("\n")[1:11]:  # show up to 10 failing test details
-            try:
-                err = eval(line) if line.startswith("{") else None  # sandbox uses repr not json
-                if err and isinstance(err, dict):
-                    msg = err.get("error_message", "")
-                    inp = err.get("inputs", "")[:100]
-                    expected = err.get("expected", "")[:100]
-                    output = err.get("output", "")[:100]
-                    if msg == "Wrong Answer":
-                        lines.append(f"- Input: {inp.strip()} → Expected: {expected.strip()}, Got: {output.strip()}")
-                    elif msg:
-                        lines.append(f"- Error: {msg}")
-            except Exception:
-                pass
+    errors = details.get("errors") or []
+    shown = 0
+    for err in errors[:5]:
+        if isinstance(err, dict):
+            msg = err.get("error_message", "")
+            inp = (err.get("inputs") or "")[:120].strip()
+            if msg == "Wrong Answer":
+                expected = (err.get("expected") or "")[:120].strip()
+                output = (err.get("output") or "")[:120].strip()
+                lines.append(f"- Input: {inp} → Expected: {expected}, Got: {output}")
+            elif msg == "Time Limit Exceeded":
+                lines.append(f"- TLE on input: {inp}")
+            else:  # Runtime Error or other
+                detail = (err.get("error") or msg or "")[:200]
+                lines.append(f"- {msg or 'Error'}: {detail}  (input: {inp})")
+            shown += 1
+        elif isinstance(err, str) and err.strip():
+            lines.append(f"- Error: {err[:300]}")
+            shown += 1
 
-    # Fallback: show stderr if no parsed errors
-    if len(lines) == 1:
-        stderr = run_result.get("stderr", "") if isinstance(run_result, dict) else ""
+    # Fallback: nothing parseable in errors → try stderr
+    if shown == 0:
+        stderr = details.get("stderr", "")
         if stderr:
             lines.append(f"- Error: {stderr[:300]}")
 
