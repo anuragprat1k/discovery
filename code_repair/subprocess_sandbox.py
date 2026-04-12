@@ -42,12 +42,19 @@ async def check_correctness(
     # Build test runner script
     script = _build_runner(code, tests, fn_name, timeout)
 
+    # Write runner script to temp file instead of passing via python -c.
+    # The runner can be huge (user code × N tests for stdin) and python -c
+    # hits OS argument length limits (Errno 7: Argument list too long).
+    tmp = tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False)
+    tmp.write(script)
+    tmp.close()
+
     # Run in async subprocess (non-blocking, enables true parallelism)
     total_timeout = (timeout + 2) * len(tests) + 10
     proc = None
     try:
         proc = await asyncio.create_subprocess_exec(
-            sys.executable, "-c", script,
+            sys.executable, tmp.name,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
         )
@@ -80,6 +87,10 @@ async def check_correctness(
                 await proc.wait()
             except ProcessLookupError:
                 pass
+        try:
+            Path(tmp.name).unlink(missing_ok=True)
+        except Exception:
+            pass
 
     # Parse results from stdout — find the JSON summary line
     if stdout:
@@ -210,14 +221,21 @@ except Exception as e:
     errors.append(json.dumps({{"inputs": {repr(inp[:100])}, "error": _fmt_exc(e), "error_message": "Runtime Error"}}))
 """)
     else:
-        # stdin/stdout tests
+        # stdin/stdout tests — write user code to a temp file once, then run it
+        # per test with different stdin. Avoids Errno 7 from python -c "CODE"
+        # when code is long (each test would embed repr(code) in the script).
+        parts.append(f"""
+import tempfile as _tmpmod, subprocess as _sp, os as _os
+_code_file = _tmpmod.NamedTemporaryFile(mode='w', suffix='.py', delete=False)
+_code_file.write({repr(code)})
+_code_file.close()
+""")
         for i, test in enumerate(tests):
             inp = test.get("input", "")
             expected = test.get("output", "")
             parts.append(f"""
 try:
-    import subprocess as _sp
-    _r = _sp.run([sys.executable, "-c", {repr(code)}],
+    _r = _sp.run([sys.executable, _code_file.name],
                  input={repr(inp)}, capture_output=True, text=True, timeout={timeout})
     _output = _r.stdout
     _passed = _output.strip() == {repr(expected)}.strip()
@@ -231,6 +249,7 @@ except Exception as e:
     results.append(False)
     errors.append(json.dumps({{"inputs": {repr(inp[:100])}, "error": _fmt_exc(e), "error_message": "Runtime Error"}}))
 """)
+        parts.append("_os.unlink(_code_file.name)")
 
     parts.append("""
 passed = sum(1 for x in results if x)
