@@ -72,6 +72,10 @@ def parse_args():
     p.add_argument("--save_steps", type=int, default=20)
     p.add_argument("--eval_steps", type=int, default=10)
     p.add_argument("--eval_n_problems", type=int, default=20)
+    p.add_argument("--train_traj_steps", type=int, default=5,
+                   help="Dump full per-episode training trajectories every N steps. 0 = off.")
+    p.add_argument("--train_traj_max_episodes", type=int, default=64,
+                   help="Cap how many episodes are dumped per step (sampled across groups).")
     p.add_argument("--sandbox_timeout", type=int, default=6)
     p.add_argument("--min_tests", type=int, default=5,
                    help="Only use problems with >= this many test cases.")
@@ -324,9 +328,22 @@ def grpo_step(
                         "tests_total": len(ep["task"].tests), "hw_passed": ep["hw_passed"],
                         "old_hw": ep["hw_passed"], "all_passed": False}
                 is_terminal = turn >= args.max_turns
-                ep["per_turn_rewards"].append(reward_fn(info, is_terminal))
+                r = reward_fn(info, is_terminal)
+                ep["per_turn_rewards"].append(r)
                 ep["messages"].append({"role": "assistant", "content": ct})
                 ep["messages"].append({"role": "user", "content": "No code block found. Use ```python```."})
+                ep.setdefault("_traj_turns", []).append({
+                    "turn": turn,
+                    "code": None,
+                    "no_code": True,
+                    "completion_preview": ct[:1000],
+                    "comp_tokens": len(comp_tokens),
+                    "tests_passed": 0,
+                    "tests_total": len(ep["task"].tests),
+                    "all_passed": False,
+                    "feedback": "No code block found. Use ```python```.",
+                    "reward": float(r),
+                })
                 if is_terminal:
                     ep["done"] = True
             else:
@@ -389,14 +406,33 @@ def grpo_step(
                 # Update episode state for next turn
                 ep["prev_passing_set"] = curr_passing_set
 
+                # Capture per-turn data for trajectory dump (regardless of terminal status)
+                turn_record = {
+                    "turn": turn,
+                    "code": code,
+                    "no_code": False,
+                    "completion_preview": ct[:1000],
+                    "comp_tokens": len(collected[j][2]),
+                    "tests_passed": int(tp),
+                    "tests_total": int(tt),
+                    "all_passed": bool(ap),
+                    "newly_passing": int(newly_passing),
+                    "targeted_fixes": int(targeted_fixes),
+                    "reward": float(r),
+                    "feedback": None,  # filled below if non-terminal
+                }
+                ep.setdefault("_traj_turns", []).append(turn_record)
+
                 if ap:
                     n_passed += 1
                     ep["done"] = True
+                    turn_record["feedback"] = f"All {tt} tests passed!"
                 elif turn < args.max_turns:
                     n_failed += 1
                     feedback = _build_feedback(details, tp, tt)
                     ep["messages"].append({"role": "assistant", "content": ct})
                     ep["messages"].append({"role": "user", "content": feedback})
+                    turn_record["feedback"] = feedback
                     # Track which failing test indices were shown in feedback
                     failing_indices = set(idx for idx, p in enumerate(per_test) if not p)
                     ep["feedback_test_indices"] = set(list(failing_indices)[:10])
@@ -404,6 +440,7 @@ def grpo_step(
                 else:
                     n_failed += 1
                     ep["done"] = True
+                    turn_record["feedback"] = _build_feedback(details, tp, tt)
 
         t_sandbox_done = time.time()
         n_done = sum(1 for ep in episodes if ep["done"])
@@ -516,6 +553,29 @@ def grpo_step(
         if group_has_targeted:
             n_groups_with_targeted += 1
 
+    # Build per-episode trajectories for periodic dumping (cheap; just dict copies).
+    train_trajectories = []
+    for ep_idx, ep in enumerate(episodes):
+        # Find which group this episode belongs to and its position within
+        g_idx, ep_in_group = 0, 0
+        for gi, (gs, ge) in enumerate(group_indices):
+            if gs <= ep_idx < ge:
+                g_idx, ep_in_group = gi, ep_idx - gs
+                break
+        train_trajectories.append({
+            "episode_idx": ep_idx,
+            "group_idx": g_idx,
+            "episode_in_group": ep_in_group,
+            "task_problem": ep["task"].problem[:600],
+            "n_tests": len(ep["task"].tests),
+            "all_passed": bool(ep["all_passed"]),
+            "hw_passed": int(ep["hw_passed"]),
+            "total_reward": float(sum(ep["per_turn_rewards"])),
+            "advantage": float(advantages[ep_idx]),
+            "n_turns": len(ep.get("_traj_turns", [])),
+            "turns": ep.get("_traj_turns", []),
+        })
+
     return {
         "mean_reward": float(episode_rewards.mean()),
         "reward_std": float(episode_rewards.std()),
@@ -539,6 +599,7 @@ def grpo_step(
         "sandbox_fail": total_sandbox_fail,
         "sandbox_no_code": total_sandbox_no_code,
         "sandbox_no_code_rate": float(total_sandbox_no_code / max(total_sandbox_pass + total_sandbox_fail + total_sandbox_no_code, 1)),
+        "_train_trajectories": train_trajectories,
     }
 
 
@@ -597,6 +658,30 @@ def main():
         batch = [rng.choice(tasks) for _ in range(args.batch_size)]
 
         metrics = grpo_step(step, batch, sc, tc, tok, reward_fn, args)
+
+        # Pop training trajectories before logging metrics; dump periodically.
+        train_trajs = metrics.pop("_train_trajectories", [])
+        if args.train_traj_steps > 0 and step % args.train_traj_steps == 0 and train_trajs:
+            # Optionally subsample to keep file size bounded
+            if args.train_traj_max_episodes and len(train_trajs) > args.train_traj_max_episodes:
+                # Stratified: take first 2 episodes per group up to cap
+                sampled = []
+                seen_groups = {}
+                for t in train_trajs:
+                    g = t["group_idx"]
+                    if seen_groups.get(g, 0) < 2:
+                        sampled.append(t)
+                        seen_groups[g] = seen_groups.get(g, 0) + 1
+                        if len(sampled) >= args.train_traj_max_episodes:
+                            break
+                train_trajs_to_save = sampled
+            else:
+                train_trajs_to_save = train_trajs
+            traj_path = os.path.join(output_dir, f"train_trajectories_step_{step:04d}.jsonl")
+            with open(traj_path, "w") as f:
+                for traj in train_trajs_to_save:
+                    f.write(json.dumps(traj) + "\n")
+            print(f"  [step {step}] dumped {len(train_trajs_to_save)} train trajectories to {traj_path}", flush=True)
 
         batch_solved = metrics.pop("batch_solved", set())
         new_disc = batch_solved - ever_solved
