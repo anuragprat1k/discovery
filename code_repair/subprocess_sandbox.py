@@ -166,12 +166,15 @@ def _build_runner(code: str, tests: list[dict], fn_name: str | None, timeout: in
         "    _line = _user_frames[-1].lineno if _user_frames else (_frames[-1].lineno if _frames else None)",
         "    return f'{_et}: {_msg}' + (f' @ line {_line}' if _line is not None else '')",
         "",
-        "# User code",
-        code,
-        "",
         "results = []",
         "errors = []",
     ]
+    # User code only goes at top level for functional tests, where the test loop
+    # needs the Solution class in scope. For stdin tests, the user code reads
+    # from stdin (e.g. `int(input())`) and would EOFError immediately if executed
+    # at top level — instead it's run via a subprocess inside each test loop.
+    if fn_name:
+        parts += ["# User code", code, ""]
 
     if fn_name:
         # Functional tests (class method calls)
