@@ -352,7 +352,7 @@ def grpo_step(
         # Run sandbox calls with bounded concurrency
         if sandbox_items:
             async def _run_all_sandbox():
-                sem = asyncio.Semaphore(8)  # cap concurrent subprocesses (2 runs × 8 = 16, fits 64GB cap)
+                sem = asyncio.Semaphore(16)  # cap concurrent subprocesses (2 runs × 16 = 32, fits 64GB with 2GiB RLIMIT)
                 async def _run_one(tests, code):
                     async with sem:
                         return await sandbox_check_correctness(
