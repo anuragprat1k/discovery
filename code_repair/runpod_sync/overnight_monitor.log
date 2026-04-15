@@ -1,0 +1,25 @@
+=== Monitoring started Thu Apr  9 17:12:29 UTC 2026 ===
+
+--- Thu Apr  9 17:12:29 UTC 2026 ---
+path_indep PID: 201 | path_dep PID: 202
+Memory: 43Gi/503Gi
+Load:  7.96, 16.73, 17.10
+>> path_indep:
+>> path_dep:
+
+--- Thu Apr  9 17:22:29 UTC 2026 ---
+path_indep PID: 201 | path_dep PID: 202
+Memory: 58Gi/503Gi
+Load:  26.05, 16.70, 15.61
+>> path_indep:
+wandb: 🚀 View run at https://wandb.ai/anuragprateek/discovery-code-repair/runs/wybc82xl
+[lcb] 20 eval tasks
+[lcb] wandb: https://wandb.ai/anuragprateek/discovery-code-repair/runs/wybc82xl
+  [step 1 t1] fired 256
+  [step 1 t2] fired 182
+>> path_dep:
+wandb: 🚀 View run at https://wandb.ai/anuragprateek/discovery-code-repair/runs/js86xwik
+[lcb] 20 eval tasks
+[lcb] wandb: https://wandb.ai/anuragprateek/discovery-code-repair/runs/js86xwik
+  [step 1 t1] fired 256
+  [step 1 t2] fired 182
