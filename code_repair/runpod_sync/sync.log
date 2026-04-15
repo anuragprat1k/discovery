@@ -1,0 +1,3549 @@
+[Thu Apr  9 17:37:04 EDT 2026] Syncing...
+Transfer starting: 3 files
+./
+lcb_path_dep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/
+
+sent 34 bytes  received 136 bytes  1700000 bytes/sec
+total size is 0  speedup is 0.00
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 102 bytes  received 549 bytes  6510000 bytes/sec
+total size is 328  speedup is 0.50
+rsync logs failed
+[Thu Apr  9 17:37:08 EDT 2026] Sync complete
+[Thu Apr  9 18:07:08 EDT 2026] Syncing...
+Transfer starting: 3 files
+
+sent 16 bytes  received 114 bytes  1300000 bytes/sec
+total size is 0  speedup is 0.00
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 72 bytes  received 2160 bytes  22320000 bytes/sec
+total size is 4566  speedup is 2.05
+rsync logs failed
+[Thu Apr  9 18:07:12 EDT 2026] Sync complete
+[Thu Apr  9 18:37:12 EDT 2026] Syncing...
+Transfer starting: 3 files
+./
+lcb_path_dep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/
+
+sent 34 bytes  received 136 bytes  1700000 bytes/sec
+total size is 0  speedup is 0.00
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 102 bytes  received 1742 bytes  18440000 bytes/sec
+total size is 2630  speedup is 1.43
+rsync logs failed
+[Thu Apr  9 18:37:16 EDT 2026] Sync complete
+[Thu Apr  9 19:07:16 EDT 2026] Syncing...
+Transfer starting: 4 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+
+sent 50 bytes  received 540 bytes  5900000 bytes/sec
+total size is 653  speedup is 1.11
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 84 bytes  received 1463 bytes  15470000 bytes/sec
+total size is 5961  speedup is 3.85
+rsync logs failed
+[Thu Apr  9 19:07:20 EDT 2026] Sync complete
+[Thu Apr  9 19:37:20 EDT 2026] Syncing...
+Transfer starting: 5 files
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 50 bytes  received 604 bytes  6540000 bytes/sec
+total size is 1304  speedup is 1.99
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_indep.log
+
+sent 56 bytes  received 758 bytes  8140000 bytes/sec
+total size is 9062  speedup is 11.13
+rsync logs failed
+[Thu Apr  9 19:37:24 EDT 2026] Sync complete
+[Thu Apr  9 20:07:24 EDT 2026] Syncing...
+Transfer starting: 5 files
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 44 bytes  received 747 bytes  7910000 bytes/sec
+total size is 1945  speedup is 2.46
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_indep.log
+
+sent 80 bytes  received 678 bytes  7580000 bytes/sec
+total size is 12015  speedup is 15.85
+rsync logs failed
+[Thu Apr  9 20:07:29 EDT 2026] Sync complete
+[Thu Apr  9 20:37:29 EDT 2026] Syncing...
+Transfer starting: 5 files
+
+sent 16 bytes  received 204 bytes  2200000 bytes/sec
+total size is 1945  speedup is 8.84
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_indep.log
+
+sent 104 bytes  received 397 bytes  5010000 bytes/sec
+total size is 12286  speedup is 24.52
+rsync logs failed
+[Thu Apr  9 20:37:33 EDT 2026] Sync complete
+[Thu Apr  9 21:07:33 EDT 2026] Syncing...
+Transfer starting: 5 files
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 50 bytes  received 518 bytes  5680000 bytes/sec
+total size is 2594  speedup is 4.57
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_indep.log
+
+sent 110 bytes  received 518 bytes  6280000 bytes/sec
+total size is 15240  speedup is 24.27
+rsync logs failed
+[Thu Apr  9 21:07:37 EDT 2026] Sync complete
+[Thu Apr  9 21:37:37 EDT 2026] Syncing...
+Transfer starting: 5 files
+
+sent 16 bytes  received 204 bytes  2200000 bytes/sec
+total size is 2594  speedup is 11.79
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_indep.log
+
+sent 134 bytes  received 374 bytes  5080000 bytes/sec
+total size is 15510  speedup is 30.53
+rsync logs failed
+[Thu Apr  9 21:37:42 EDT 2026] Sync complete
+[Thu Apr  9 22:07:42 EDT 2026] Syncing...
+Transfer starting: 5 files
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 56 bytes  received 510 bytes  5660000 bytes/sec
+total size is 3229  speedup is 5.70
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_indep.log
+
+sent 134 bytes  received 534 bytes  6680000 bytes/sec
+total size is 18422  speedup is 27.58
+rsync logs failed
+[Thu Apr  9 22:07:46 EDT 2026] Sync complete
+[Thu Apr  9 22:37:46 EDT 2026] Syncing...
+Transfer starting: 5 files
+
+sent 16 bytes  received 204 bytes  2200000 bytes/sec
+total size is 3229  speedup is 14.68
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_indep.log
+
+sent 164 bytes  received 316 bytes  4800000 bytes/sec
+total size is 18691  speedup is 38.94
+rsync logs failed
+[Thu Apr  9 22:37:50 EDT 2026] Sync complete
+[Thu Apr  9 23:07:50 EDT 2026] Syncing...
+Transfer starting: 5 files
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 62 bytes  received 502 bytes  5640000 bytes/sec
+total size is 3857  speedup is 6.84
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_indep.log
+
+sent 164 bytes  received 452 bytes  6160000 bytes/sec
+total size is 21588  speedup is 35.05
+rsync logs failed
+[Thu Apr  9 23:07:54 EDT 2026] Sync complete
+[Thu Apr  9 23:37:54 EDT 2026] Syncing...
+Transfer starting: 5 files
+
+sent 16 bytes  received 204 bytes  2200000 bytes/sec
+total size is 3857  speedup is 17.53
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_indep.log
+
+sent 188 bytes  received 372 bytes  5600000 bytes/sec
+total size is 21857  speedup is 39.03
+rsync logs failed
+[Thu Apr  9 23:37:58 EDT 2026] Sync complete
+[Fri Apr 10 00:07:58 EDT 2026] Syncing...
+Transfer starting: 5 files
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 68 bytes  received 472 bytes  5400000 bytes/sec
+total size is 4487  speedup is 8.31
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_indep.log
+
+sent 188 bytes  received 550 bytes  7380000 bytes/sec
+total size is 24904  speedup is 33.75
+rsync logs failed
+[Fri Apr 10 00:08:02 EDT 2026] Sync complete
+[Fri Apr 10 00:38:02 EDT 2026] Syncing...
+Transfer starting: 5 files
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 74 bytes  received 464 bytes  5380000 bytes/sec
+total size is 5112  speedup is 9.50
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_indep.log
+
+sent 218 bytes  received 502 bytes  7200000 bytes/sec
+total size is 27955  speedup is 38.83
+rsync logs failed
+[Fri Apr 10 00:38:06 EDT 2026] Sync complete
+[Fri Apr 10 01:08:06 EDT 2026] Syncing...
+Transfer starting: 5 files
+
+sent 16 bytes  received 204 bytes  2200000 bytes/sec
+total size is 5112  speedup is 23.24
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_indep.log
+
+sent 242 bytes  received 361 bytes  6030000 bytes/sec
+total size is 28139  speedup is 46.66
+rsync logs failed
+[Fri Apr 10 01:08:11 EDT 2026] Sync complete
+[Fri Apr 10 01:41:32 EDT 2026] Syncing...
+Transfer starting: 5 files
+
+sent 16 bytes  received 204 bytes  2200000 bytes/sec
+total size is 5112  speedup is 23.24
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 306 bytes  received 1083 bytes  13890000 bytes/sec
+total size is 25112  speedup is 18.08
+rsync logs failed
+[Fri Apr 10 01:41:37 EDT 2026] Sync complete
+[Fri Apr 10 02:11:37 EDT 2026] Syncing...
+Transfer starting: 3 files
+./
+lcb_path_dep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/
+
+sent 34 bytes  received 136 bytes  1700000 bytes/sec
+total size is 0  speedup is 0.00
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 282 bytes  received 1703 bytes  19850000 bytes/sec
+total size is 2542  speedup is 1.28
+rsync logs failed
+[Fri Apr 10 02:11:40 EDT 2026] Sync complete
+[Fri Apr 10 02:41:40 EDT 2026] Syncing...
+Transfer starting: 3 files
+
+sent 16 bytes  received 114 bytes  1300000 bytes/sec
+total size is 0  speedup is 0.00
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 84 bytes  received 1085 bytes  11690000 bytes/sec
+total size is 3245  speedup is 2.78
+rsync logs failed
+[Fri Apr 10 02:41:45 EDT 2026] Sync complete
+[Fri Apr 10 03:11:45 EDT 2026] Syncing...
+Transfer starting: 5 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 120 bytes  received 956 bytes  10760000 bytes/sec
+total size is 1259  speedup is 1.17
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 96 bytes  received 1362 bytes  14580000 bytes/sec
+total size is 9354  speedup is 6.42
+rsync logs failed
+[Fri Apr 10 03:11:48 EDT 2026] Sync complete
+[Fri Apr 10 03:41:48 EDT 2026] Syncing...
+Transfer starting: 5 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+
+sent 44 bytes  received 727 bytes  7710000 bytes/sec
+total size is 1890  speedup is 2.45
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 144 bytes  received 984 bytes  11280000 bytes/sec
+total size is 12761  speedup is 11.31
+rsync logs failed
+[Fri Apr 10 03:41:52 EDT 2026] Sync complete
+[Fri Apr 10 04:11:52 EDT 2026] Syncing...
+Transfer starting: 5 files
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 44 bytes  received 729 bytes  7730000 bytes/sec
+total size is 2524  speedup is 3.27
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 180 bytes  received 679 bytes  8590000 bytes/sec
+total size is 16137  speedup is 18.79
+rsync logs failed
+[Fri Apr 10 04:11:55 EDT 2026] Sync complete
+[Fri Apr 10 04:41:56 EDT 2026] Syncing...
+Transfer starting: 5 files
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 50 bytes  received 509 bytes  5590000 bytes/sec
+total size is 3165  speedup is 5.66
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 204 bytes  received 712 bytes  9160000 bytes/sec
+total size is 19272  speedup is 21.04
+rsync logs failed
+[Fri Apr 10 04:41:59 EDT 2026] Sync complete
+[Fri Apr 10 05:11:59 EDT 2026] Syncing...
+Transfer starting: 5 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+
+sent 50 bytes  received 519 bytes  5690000 bytes/sec
+total size is 3815  speedup is 6.70
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 228 bytes  received 786 bytes  10140000 bytes/sec
+total size is 22675  speedup is 22.36
+rsync logs failed
+[Fri Apr 10 05:12:03 EDT 2026] Sync complete
+[Fri Apr 10 05:42:03 EDT 2026] Syncing...
+Transfer starting: 5 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 96 bytes  received 804 bytes  9000000 bytes/sec
+total size is 5093  speedup is 5.66
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 264 bytes  received 727 bytes  9910000 bytes/sec
+total size is 28581  speedup is 28.84
+rsync logs failed
+[Fri Apr 10 05:42:07 EDT 2026] Sync complete
+[Fri Apr 10 06:12:07 EDT 2026] Syncing...
+Transfer starting: 5 files
+
+sent 16 bytes  received 204 bytes  2200000 bytes/sec
+total size is 5093  speedup is 23.15
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 312 bytes  received 529 bytes  8410000 bytes/sec
+total size is 29032  speedup is 34.52
+rsync logs failed
+[Fri Apr 10 06:12:11 EDT 2026] Sync complete
+[Fri Apr 10 06:42:11 EDT 2026] Syncing...
+Transfer starting: 5 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 108 bytes  received 733 bytes  8410000 bytes/sec
+total size is 6285  speedup is 7.47
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 312 bytes  received 951 bytes  12630000 bytes/sec
+total size is 35523  speedup is 28.13
+rsync logs failed
+[Fri Apr 10 06:42:15 EDT 2026] Sync complete
+[Fri Apr 10 07:12:15 EDT 2026] Syncing...
+Transfer starting: 5 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 120 bytes  received 722 bytes  8420000 bytes/sec
+total size is 7559  speedup is 8.98
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 372 bytes  received 775 bytes  11470000 bytes/sec
+total size is 41551  speedup is 36.23
+rsync logs failed
+[Fri Apr 10 07:12:19 EDT 2026] Sync complete
+[Fri Apr 10 07:42:19 EDT 2026] Syncing...
+Transfer starting: 5 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 132 bytes  received 672 bytes  8040000 bytes/sec
+total size is 8767  speedup is 10.90
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 420 bytes  received 896 bytes  13160000 bytes/sec
+total size is 48014  speedup is 36.48
+rsync logs failed
+[Fri Apr 10 07:42:24 EDT 2026] Sync complete
+[Fri Apr 10 08:12:24 EDT 2026] Syncing...
+Transfer starting: 5 files
+
+sent 16 bytes  received 204 bytes  2200000 bytes/sec
+total size is 8767  speedup is 39.85
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 480 bytes  received 723 bytes  12030000 bytes/sec
+total size is 51313  speedup is 42.65
+rsync logs failed
+[Fri Apr 10 08:12:28 EDT 2026] Sync complete
+[Fri Apr 10 08:42:28 EDT 2026] Syncing...
+Transfer starting: 5 files
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 80 bytes  received 416 bytes  4960000 bytes/sec
+total size is 9401  speedup is 18.95
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 504 bytes  received 606 bytes  11100000 bytes/sec
+total size is 51947  speedup is 46.80
+rsync logs failed
+[Fri Apr 10 08:42:32 EDT 2026] Sync complete
+[Fri Apr 10 09:12:32 EDT 2026] Syncing...
+Transfer starting: 5 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 150 bytes  received 628 bytes  7780000 bytes/sec
+total size is 10668  speedup is 13.71
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 510 bytes  received 987 bytes  14970000 bytes/sec
+total size is 58257  speedup is 38.92
+rsync logs failed
+[Fri Apr 10 09:12:35 EDT 2026] Sync complete
+[Fri Apr 10 09:42:35 EDT 2026] Syncing...
+Transfer starting: 5 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+
+sent 86 bytes  received 421 bytes  5070000 bytes/sec
+total size is 11317  speedup is 22.32
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 564 bytes  received 732 bytes  12960000 bytes/sec
+total size is 61667  speedup is 47.58
+rsync logs failed
+[Fri Apr 10 09:42:40 EDT 2026] Sync complete
+[Fri Apr 10 10:12:40 EDT 2026] Syncing...
+Transfer starting: 5 files
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 92 bytes  received 421 bytes  5130000 bytes/sec
+total size is 11955  speedup is 23.30
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 594 bytes  received 712 bytes  13060000 bytes/sec
+total size is 64815  speedup is 49.63
+rsync logs failed
+[Fri Apr 10 10:12:44 EDT 2026] Sync complete
+[Fri Apr 10 10:42:44 EDT 2026] Syncing...
+Transfer starting: 6 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/eval_trajectories_step_0010.jsonl
+
+sent 120 bytes  received 46279 bytes  463990000 bytes/sec
+total size is 345935  speedup is 7.46
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 624 bytes  received 743 bytes  13670000 bytes/sec
+total size is 67795  speedup is 49.59
+rsync logs failed
+[Fri Apr 10 10:42:50 EDT 2026] Sync complete
+[Fri Apr 10 11:12:50 EDT 2026] Syncing...
+Transfer starting: 6 files
+
+sent 16 bytes  received 248 bytes  2640000 bytes/sec
+total size is 345935  speedup is 1310.35
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+
+sent 16 bytes  received 195 bytes  2110000 bytes/sec
+total size is 67795  speedup is 321.30
+rsync logs failed
+[Fri Apr 10 11:12:54 EDT 2026] Sync complete
+[Fri Apr 10 11:42:54 EDT 2026] Syncing...
+Transfer starting: 6 files
+
+sent 16 bytes  received 248 bytes  2640000 bytes/sec
+total size is 345935  speedup is 1310.35
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+
+sent 16 bytes  received 195 bytes  2110000 bytes/sec
+total size is 67795  speedup is 321.30
+rsync logs failed
+[Fri Apr 10 11:42:59 EDT 2026] Sync complete
+[Fri Apr 10 12:12:59 EDT 2026] Syncing...
+Transfer starting: 6 files
+
+sent 16 bytes  received 248 bytes  2640000 bytes/sec
+total size is 345935  speedup is 1310.35
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+
+sent 16 bytes  received 195 bytes  2110000 bytes/sec
+total size is 67795  speedup is 321.30
+rsync logs failed
+[Fri Apr 10 12:13:02 EDT 2026] Sync complete
+[Fri Apr 10 12:43:02 EDT 2026] Syncing...
+Transfer starting: 6 files
+
+sent 16 bytes  received 248 bytes  2640000 bytes/sec
+total size is 345935  speedup is 1310.35
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+
+sent 16 bytes  received 195 bytes  2110000 bytes/sec
+total size is 67795  speedup is 321.30
+rsync logs failed
+[Fri Apr 10 12:43:06 EDT 2026] Sync complete
+[Fri Apr 10 13:13:06 EDT 2026] Syncing...
+Transfer starting: 6 files
+
+sent 16 bytes  received 248 bytes  2640000 bytes/sec
+total size is 345935  speedup is 1310.35
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+
+sent 16 bytes  received 195 bytes  2110000 bytes/sec
+total size is 67795  speedup is 321.30
+rsync logs failed
+[Fri Apr 10 13:13:11 EDT 2026] Sync complete
+[Fri Apr 10 13:43:11 EDT 2026] Syncing...
+Transfer starting: 6 files
+
+sent 16 bytes  received 248 bytes  2640000 bytes/sec
+total size is 345935  speedup is 1310.35
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+
+sent 16 bytes  received 195 bytes  2110000 bytes/sec
+total size is 67795  speedup is 321.30
+rsync logs failed
+[Fri Apr 10 13:43:15 EDT 2026] Sync complete
+[Fri Apr 10 14:13:15 EDT 2026] Syncing...
+Transfer starting: 3 files
+./
+lcb_path_dep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/
+
+sent 34 bytes  received 136 bytes  1700000 bytes/sec
+total size is 0  speedup is 0.00
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 648 bytes  received 1709 bytes  23570000 bytes/sec
+total size is 2541  speedup is 1.08
+rsync logs failed
+[Fri Apr 10 14:13:19 EDT 2026] Sync complete
+[Fri Apr 10 14:43:19 EDT 2026] Syncing...
+Transfer starting: 5 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 186 bytes  received 976 bytes  11620000 bytes/sec
+total size is 1290  speedup is 1.11
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 84 bytes  received 1853 bytes  19370000 bytes/sec
+total size is 9005  speedup is 4.65
+rsync logs failed
+[Fri Apr 10 14:43:23 EDT 2026] Sync complete
+[Fri Apr 10 15:13:23 EDT 2026] Syncing...
+Transfer starting: 5 files
+
+sent 16 bytes  received 204 bytes  2200000 bytes/sec
+total size is 1290  speedup is 5.86
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+
+sent 16 bytes  received 195 bytes  2110000 bytes/sec
+total size is 9005  speedup is 42.68
+rsync logs failed
+[Fri Apr 10 15:13:27 EDT 2026] Sync complete
+[Fri Apr 10 15:43:27 EDT 2026] Syncing...
+Transfer starting: 4 files
+./
+lcb_path_indep_lcbv5_s42/
+
+sent 28 bytes  received 180 bytes  2080000 bytes/sec
+total size is 649  speedup is 3.12
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_indep.log
+
+sent 80 bytes  received 1419 bytes  14990000 bytes/sec
+total size is 8853  speedup is 5.91
+rsync logs failed
+[Fri Apr 10 15:43:31 EDT 2026] Sync complete
+[Fri Apr 10 16:13:31 EDT 2026] Syncing...
+Transfer starting: 5 files
+./
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 90 bytes  received 1136 bytes  12260000 bytes/sec
+total size is 3443  speedup is 2.81
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 144 bytes  received 2992 bytes  31360000 bytes/sec
+total size is 21618  speedup is 6.89
+rsync logs failed
+[Fri Apr 10 16:13:35 EDT 2026] Sync complete
+[Fri Apr 10 16:43:35 EDT 2026] Syncing...
+Transfer starting: 5 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 96 bytes  received 901 bytes  9970000 bytes/sec
+total size is 7952  speedup is 7.98
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 252 bytes  received 1554 bytes  18060000 bytes/sec
+total size is 47370  speedup is 26.23
+rsync logs failed
+[Fri Apr 10 16:43:39 EDT 2026] Sync complete
+[Fri Apr 10 17:13:39 EDT 2026] Syncing...
+Transfer starting: 5 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 132 bytes  received 691 bytes  8230000 bytes/sec
+total size is 11336  speedup is 13.77
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 468 bytes  received 1167 bytes  16350000 bytes/sec
+total size is 66667  speedup is 40.77
+rsync logs failed
+[Fri Apr 10 17:13:43 EDT 2026] Sync complete
+[Fri Apr 10 17:43:43 EDT 2026] Syncing...
+Transfer starting: 5 files
+./
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 186 bytes  received 994 bytes  11800000 bytes/sec
+total size is 1300  speedup is 1.10
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 636 bytes  received 2900 bytes  35360000 bytes/sec
+total size is 9568  speedup is 2.71
+rsync logs failed
+[Fri Apr 10 17:43:47 EDT 2026] Sync complete
+[Fri Apr 10 18:13:47 EDT 2026] Syncing...
+Transfer starting: 5 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 72 bytes  received 1838 bytes  19100000 bytes/sec
+total size is 5109  speedup is 2.67
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 150 bytes  received 1963 bytes  21130000 bytes/sec
+total size is 28645  speedup is 13.56
+rsync logs failed
+[Fri Apr 10 18:13:51 EDT 2026] Sync complete
+[Fri Apr 10 18:43:52 EDT 2026] Syncing...
+Transfer starting: 5 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 108 bytes  received 1250 bytes  13580000 bytes/sec
+total size is 8814  speedup is 6.49
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 312 bytes  received 1765 bytes  20770000 bytes/sec
+total size is 48548  speedup is 23.37
+rsync logs failed
+[Fri Apr 10 18:43:56 EDT 2026] Sync complete
+[Fri Apr 10 19:13:56 EDT 2026] Syncing...
+Transfer starting: 5 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 144 bytes  received 1072 bytes  12160000 bytes/sec
+total size is 12041  speedup is 9.90
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 480 bytes  received 1658 bytes  21380000 bytes/sec
+total size is 64531  speedup is 30.18
+rsync logs failed
+[Fri Apr 10 19:14:00 EDT 2026] Sync complete
+[Fri Apr 10 19:44:00 EDT 2026] Syncing...
+Transfer starting: 6 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/eval_trajectories_step_0010.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 3064 bytes  received 53565 bytes  566290000 bytes/sec
+total size is 416915  speedup is 7.36
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 618 bytes  received 1181 bytes  17990000 bytes/sec
+total size is 70994  speedup is 39.46
+rsync logs failed
+[Fri Apr 10 19:44:05 EDT 2026] Sync complete
+[Fri Apr 10 20:14:05 EDT 2026] Syncing...
+Transfer starting: 7 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/eval_trajectories_step_0010.jsonl
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 208 bytes  received 50903 bytes  511110000 bytes/sec
+total size is 770060  speedup is 15.07
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 678 bytes  received 1525 bytes  22030000 bytes/sec
+total size is 84572  speedup is 38.39
+rsync logs failed
+[Fri Apr 10 20:14:09 EDT 2026] Sync complete
+[Fri Apr 10 20:47:28 EDT 2026] Syncing...
+Transfer starting: 7 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 204 bytes  received 1354 bytes  15580000 bytes/sec
+total size is 774473  speedup is 497.09
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 792 bytes  received 2119 bytes  29110000 bytes/sec
+total size is 107474  speedup is 36.92
+rsync logs failed
+[Fri Apr 10 20:47:32 EDT 2026] Sync complete
+[Fri Apr 10 21:17:37 EDT 2026] Syncing...
+Transfer starting: 7 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 240 bytes  received 1284 bytes  15240000 bytes/sec
+total size is 778260  speedup is 510.67
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 990 bytes  received 2041 bytes  30310000 bytes/sec
+total size is 126907  speedup is 41.87
+rsync logs failed
+[Fri Apr 10 21:17:41 EDT 2026] Sync complete
+[Fri Apr 10 21:48:16 EDT 2026] Syncing...
+Transfer starting: 8 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/eval_trajectories_step_0020.jsonl
+
+sent 168 bytes  received 53498 bytes  536660000 bytes/sec
+total size is 1166736  speedup is 21.74
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 1158 bytes  received 1161 bytes  23190000 bytes/sec
+total size is 133680  speedup is 57.65
+rsync logs failed
+[Fri Apr 10 21:48:20 EDT 2026] Sync complete
+[Fri Apr 10 22:19:13 EDT 2026] Syncing...
+Transfer starting: 9 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/eval_trajectories_step_0020.jsonl
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 316 bytes  received 49146 bytes  494620000 bytes/sec
+total size is 1497882  speedup is 30.28
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 1212 bytes  received 2018 bytes  32300000 bytes/sec
+total size is 150004  speedup is 46.44
+rsync logs failed
+[Fri Apr 10 22:19:17 EDT 2026] Sync complete
+[Sat Apr 11 00:54:11 EDT 2026] Syncing...
+Transfer starting: 11 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/eval_trajectories_step_0030.jsonl
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/eval_trajectories_step_0030.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 362 bytes  received 109056 bytes  1094180000 bytes/sec
+total size is 2263929  speedup is 20.69
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 1350 bytes  received 5297 bytes  66470000 bytes/sec
+total size is 209672  speedup is 31.54
+rsync logs failed
+[Sat Apr 11 00:54:17 EDT 2026] Sync complete
+[Sat Apr 11 01:24:17 EDT 2026] Syncing...
+Transfer starting: 11 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 414 bytes  received 1058 bytes  14720000 bytes/sec
+total size is 2266492  speedup is 1539.74
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 1860 bytes  received 1574 bytes  34340000 bytes/sec
+total size is 222473  speedup is 64.79
+rsync logs failed
+[Sat Apr 11 01:24:20 EDT 2026] Sync complete
+[Sat Apr 11 01:54:20 EDT 2026] Syncing...
+Transfer starting: 11 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 432 bytes  received 995 bytes  14270000 bytes/sec
+total size is 2268419  speedup is 1589.64
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 1974 bytes  received 1187 bytes  31610000 bytes/sec
+total size is 232829  speedup is 73.66
+rsync logs failed
+[Sat Apr 11 01:54:26 EDT 2026] Sync complete
+[Sat Apr 11 02:24:26 EDT 2026] Syncing...
+Transfer starting: 11 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 444 bytes  received 1326 bytes  17700000 bytes/sec
+total size is 2271624  speedup is 1283.40
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2058 bytes  received 1795 bytes  38530000 bytes/sec
+total size is 248820  speedup is 64.58
+rsync logs failed
+[Sat Apr 11 02:24:29 EDT 2026] Sync complete
+[Sat Apr 11 02:54:30 EDT 2026] Syncing...
+Transfer starting: 11 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 474 bytes  received 1291 bytes  17650000 bytes/sec
+total size is 2274815  speedup is 1288.85
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2196 bytes  received 2031 bytes  42270000 bytes/sec
+total size is 264956  speedup is 62.68
+rsync logs failed
+[Sat Apr 11 02:54:34 EDT 2026] Sync complete
+[Sat Apr 11 03:24:34 EDT 2026] Syncing...
+Transfer starting: 13 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/eval_trajectories_step_0040.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/eval_trajectories_step_0040.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 316 bytes  received 110948 bytes  1112640000 bytes/sec
+total size is 3075565  speedup is 27.64
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2340 bytes  received 1293 bytes  36330000 bytes/sec
+total size is 271880  speedup is 74.84
+rsync logs failed
+[Sat Apr 11 03:24:39 EDT 2026] Sync complete
+[Sat Apr 11 03:54:39 EDT 2026] Syncing...
+Transfer starting: 13 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 516 bytes  received 1255 bytes  17710000 bytes/sec
+total size is 3078755  speedup is 1738.43
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2394 bytes  received 1950 bytes  43440000 bytes/sec
+total size is 288554  speedup is 66.43
+rsync logs failed
+[Sat Apr 11 03:54:45 EDT 2026] Sync complete
+[Sat Apr 11 04:24:45 EDT 2026] Syncing...
+Transfer starting: 13 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 546 bytes  received 964 bytes  15100000 bytes/sec
+total size is 3080668  speedup is 2040.18
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2538 bytes  received 1394 bytes  39320000 bytes/sec
+total size is 301320  speedup is 76.63
+rsync logs failed
+[Sat Apr 11 04:24:51 EDT 2026] Sync complete
+[Sat Apr 11 04:54:51 EDT 2026] Syncing...
+Transfer starting: 13 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 558 bytes  received 1174 bytes  17320000 bytes/sec
+total size is 3083239  speedup is 1780.16
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2652 bytes  received 1164 bytes  38160000 bytes/sec
+total size is 311478  speedup is 81.62
+rsync logs failed
+[Sat Apr 11 04:54:55 EDT 2026] Sync complete
+[Sat Apr 11 05:24:55 EDT 2026] Syncing...
+Transfer starting: 13 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 576 bytes  received 1248 bytes  18240000 bytes/sec
+total size is 3085807  speedup is 1691.78
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2736 bytes  received 1471 bytes  42070000 bytes/sec
+total size is 324753  speedup is 77.19
+rsync logs failed
+[Sat Apr 11 05:24:59 EDT 2026] Sync complete
+[Sat Apr 11 05:54:59 EDT 2026] Syncing...
+Transfer starting: 14 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/eval_trajectories_step_0050.jsonl
+
+sent 330 bytes  received 58199 bytes  585290000 bytes/sec
+total size is 3489564  speedup is 59.62
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2850 bytes  received 1067 bytes  39170000 bytes/sec
+total size is 331113  speedup is 84.53
+rsync logs failed
+[Sat Apr 11 05:55:04 EDT 2026] Sync complete
+[Sat Apr 11 06:25:04 EDT 2026] Syncing...
+Transfer starting: 15 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/eval_trajectories_step_0050.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 342 bytes  received 48889 bytes  492310000 bytes/sec
+total size is 3819715  speedup is 77.59
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2904 bytes  received 1091 bytes  39950000 bytes/sec
+total size is 335284  speedup is 83.93
+rsync logs failed
+[Sat Apr 11 06:25:08 EDT 2026] Sync complete
+[Sat Apr 11 06:55:08 EDT 2026] Syncing...
+Transfer starting: 15 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 618 bytes  received 1118 bytes  17360000 bytes/sec
+total size is 3821625  speedup is 2201.40
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2940 bytes  received 1283 bytes  42230000 bytes/sec
+total size is 344964  speedup is 81.69
+rsync logs failed
+[Sat Apr 11 06:55:13 EDT 2026] Sync complete
+[Sat Apr 11 07:25:13 EDT 2026] Syncing...
+Transfer starting: 15 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 636 bytes  received 1347 bytes  19830000 bytes/sec
+total size is 3825433  speedup is 1929.11
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 3024 bytes  received 1948 bytes  49720000 bytes/sec
+total size is 364386  speedup is 73.29
+rsync logs failed
+[Sat Apr 11 07:25:17 EDT 2026] Sync complete
+[Sat Apr 11 07:55:17 EDT 2026] Syncing...
+Transfer starting: 15 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 672 bytes  received 1312 bytes  19840000 bytes/sec
+total size is 3829310  speedup is 1930.09
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 3186 bytes  received 2054 bytes  52400000 bytes/sec
+total size is 383949  speedup is 73.27
+rsync logs failed
+[Sat Apr 11 07:55:21 EDT 2026] Sync complete
+[Sat Apr 11 08:25:21 EDT 2026] Syncing...
+Transfer starting: 15 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 702 bytes  received 1183 bytes  18850000 bytes/sec
+total size is 3831917  speedup is 2032.85
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 3354 bytes  received 1643 bytes  49970000 bytes/sec
+total size is 396750  speedup is 79.40
+rsync logs failed
+[Sat Apr 11 08:25:25 EDT 2026] Sync complete
+[Sat Apr 11 08:55:25 EDT 2026] Syncing...
+Transfer starting: 17 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/eval_trajectories_step_0060.jsonl
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/eval_trajectories_step_0060.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 776 bytes  received 100617 bytes  1013930000 bytes/sec
+total size is 4548231  speedup is 44.86
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 3468 bytes  received 1561 bytes  50290000 bytes/sec
+total size is 409885  speedup is 81.50
+rsync logs failed
+[Sat Apr 11 08:55:29 EDT 2026] Sync complete
+[Sat Apr 11 09:25:29 EDT 2026] Syncing...
+Transfer starting: 17 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 738 bytes  received 1114 bytes  18520000 bytes/sec
+total size is 4550143  speedup is 2456.88
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 3576 bytes  received 1158 bytes  47340000 bytes/sec
+total size is 417464  speedup is 88.18
+rsync logs failed
+[Sat Apr 11 09:25:33 EDT 2026] Sync complete
+[Sat Apr 11 09:55:33 EDT 2026] Syncing...
+Transfer starting: 17 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 756 bytes  received 1579 bytes  23350000 bytes/sec
+total size is 4554681  speedup is 1950.61
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 3648 bytes  received 1998 bytes  56460000 bytes/sec
+total size is 439550  speedup is 77.85
+rsync logs failed
+[Sat Apr 11 09:55:38 EDT 2026] Sync complete
+[Sat Apr 11 10:25:38 EDT 2026] Syncing...
+Transfer starting: 17 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 798 bytes  received 1404 bytes  22020000 bytes/sec
+total size is 4558543  speedup is 2070.18
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 3834 bytes  received 2089 bytes  59230000 bytes/sec
+total size is 459472  speedup is 77.57
+rsync logs failed
+[Sat Apr 11 10:25:42 EDT 2026] Sync complete
+[Sat Apr 11 10:55:42 EDT 2026] Syncing...
+Transfer starting: 19 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/eval_trajectories_step_0070.jsonl
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/eval_trajectories_step_0070.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 884 bytes  received 105090 bytes  1059740000 bytes/sec
+total size is 5290651  speedup is 49.92
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 4008 bytes  received 1294 bytes  53020000 bytes/sec
+total size is 469381  speedup is 88.53
+rsync logs failed
+[Sat Apr 11 10:55:46 EDT 2026] Sync complete
+[Sat Apr 11 12:03:46 EDT 2026] Syncing...
+Transfer starting: 19 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 840 bytes  received 2708 bytes  35480000 bytes/sec
+total size is 5300324  speedup is 1493.89
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 4086 bytes  received 4350 bytes  84360000 bytes/sec
+total size is 518521  speedup is 61.47
+rsync logs failed
+[Sat Apr 11 12:03:51 EDT 2026] Sync complete
+[Sat Apr 11 12:47:20 EDT 2026] Syncing...
+Transfer starting: 20 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/eval_trajectories_step_0080.jsonl
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 958 bytes  received 43789 bytes  447470000 bytes/sec
+total size is 5616503  speedup is 125.52
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 4512 bytes  received 2032 bytes  65440000 bytes/sec
+total size is 535272  speedup is 81.80
+rsync logs failed
+[Sat Apr 11 12:47:23 EDT 2026] Sync complete
+[Sat Apr 11 13:17:23 EDT 2026] Syncing...
+Transfer starting: 21 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/eval_trajectories_step_0080.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 982 bytes  received 54032 bytes  550140000 bytes/sec
+total size is 5994307  speedup is 108.96
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 4656 bytes  received 1711 bytes  63670000 bytes/sec
+total size is 548770  speedup is 86.19
+rsync logs failed
+[Sat Apr 11 13:17:27 EDT 2026] Sync complete
+[Sat Apr 11 13:48:35 EDT 2026] Syncing...
+Transfer starting: 21 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 978 bytes  received 1408 bytes  23860000 bytes/sec
+total size is 5997559  speedup is 2513.64
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 4770 bytes  received 1678 bytes  64480000 bytes/sec
+total size is 565178  speedup is 87.65
+rsync logs failed
+[Sat Apr 11 13:48:39 EDT 2026] Sync complete
+[Sat Apr 11 14:18:39 EDT 2026] Syncing...
+Transfer starting: 21 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 1008 bytes  received 1237 bytes  22450000 bytes/sec
+total size is 6000117  speedup is 2672.66
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 4908 bytes  received 1372 bytes  62800000 bytes/sec
+total size is 577851  speedup is 92.01
+rsync logs failed
+[Sat Apr 11 14:18:44 EDT 2026] Sync complete
+[Sat Apr 11 14:52:05 EDT 2026] Syncing...
+Transfer starting: 22 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/eval_trajectories_step_0090.jsonl
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 1054 bytes  received 47016 bytes  480700000 bytes/sec
+total size is 6333108  speedup is 131.75
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 5022 bytes  received 1467 bytes  64890000 bytes/sec
+total size is 591425  speedup is 91.14
+rsync logs failed
+[Sat Apr 11 14:52:09 EDT 2026] Sync complete
+[Sat Apr 11 15:22:09 EDT 2026] Syncing...
+Transfer starting: 22 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 1044 bytes  received 1533 bytes  25770000 bytes/sec
+total size is 6336297  speedup is 2458.79
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 5136 bytes  received 1611 bytes  67470000 bytes/sec
+total size is 607598  speedup is 90.05
+rsync logs failed
+[Sat Apr 11 15:22:13 EDT 2026] Sync complete
+[Sat Apr 11 15:52:14 EDT 2026] Syncing...
+Transfer starting: 23 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/eval_trajectories_step_0090.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 1102 bytes  received 53488 bytes  545900000 bytes/sec
+total size is 6686175  speedup is 122.48
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 5274 bytes  received 1003 bytes  62770000 bytes/sec
+total size is 614654  speedup is 97.92
+rsync logs failed
+[Sat Apr 11 15:52:23 EDT 2026] Sync complete
+[Sat Apr 11 16:30:06 EDT 2026] Syncing...
+Transfer starting: 23 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 1086 bytes  received 1510 bytes  25960000 bytes/sec
+total size is 6690000  speedup is 2577.04
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 5334 bytes  received 1842 bytes  71760000 bytes/sec
+total size is 633937  speedup is 88.34
+rsync logs failed
+[Sat Apr 11 16:30:10 EDT 2026] Sync complete
+[Sat Apr 11 18:53:35 EDT 2026] Syncing...
+Transfer starting: 24 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/eval_trajectories_step_0100.jsonl
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 1150 bytes  received 49487 bytes  506370000 bytes/sec
+total size is 7044677  speedup is 139.12
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 5496 bytes  received 5348 bytes  108440000 bytes/sec
+total size is 692968  speedup is 63.90
+rsync logs failed
+[Sat Apr 11 18:53:39 EDT 2026] Sync complete
+[Sat Apr 11 19:25:38 EDT 2026] Syncing...
+Transfer starting: 26 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/eval_trajectories_step_0110.jsonl
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/eval_trajectories_step_0100.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 1274 bytes  received 116371 bytes  1176450000 bytes/sec
+total size is 7849485  speedup is 66.72
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 6006 bytes  received 1753 bytes  77590000 bytes/sec
+total size is 703754  speedup is 90.70
+rsync logs failed
+[Sat Apr 11 19:25:42 EDT 2026] Sync complete
+[Sat Apr 11 19:56:55 EDT 2026] Syncing...
+Transfer starting: 26 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 1236 bytes  received 1141 bytes  23770000 bytes/sec
+total size is 7850795  speedup is 3302.82
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 6096 bytes  received 1056 bytes  71520000 bytes/sec
+total size is 710724  speedup is 99.37
+rsync logs failed
+[Sat Apr 11 19:56:59 EDT 2026] Sync complete
+[Sat Apr 11 20:26:59 EDT 2026] Syncing...
+Transfer starting: 32 files
+./
+_broken_1775953073/
+_broken_1775953073/dep/
+_broken_1775953073/dep/eval_trajectories_step_0010.jsonl
+_broken_1775953073/dep/eval_trajectories_step_0020.jsonl
+_broken_1775953073/dep/eval_trajectories_step_0030.jsonl
+_broken_1775953073/dep/eval_trajectories_step_0040.jsonl
+_broken_1775953073/dep/eval_trajectories_step_0050.jsonl
+_broken_1775953073/dep/eval_trajectories_step_0060.jsonl
+_broken_1775953073/dep/eval_trajectories_step_0070.jsonl
+_broken_1775953073/dep/eval_trajectories_step_0080.jsonl
+_broken_1775953073/dep/eval_trajectories_step_0090.jsonl
+_broken_1775953073/dep/eval_trajectories_step_0100.jsonl
+_broken_1775953073/dep/eval_trajectories_step_0110.jsonl
+_broken_1775953073/dep/metrics.jsonl
+_broken_1775953073/indep/
+_broken_1775953073/indep/eval_trajectories_step_0010.jsonl
+_broken_1775953073/indep/eval_trajectories_step_0020.jsonl
+_broken_1775953073/indep/eval_trajectories_step_0030.jsonl
+_broken_1775953073/indep/eval_trajectories_step_0040.jsonl
+_broken_1775953073/indep/eval_trajectories_step_0050.jsonl
+_broken_1775953073/indep/eval_trajectories_step_0060.jsonl
+_broken_1775953073/indep/eval_trajectories_step_0070.jsonl
+_broken_1775953073/indep/eval_trajectories_step_0080.jsonl
+_broken_1775953073/indep/eval_trajectories_step_0090.jsonl
+_broken_1775953073/indep/eval_trajectories_step_0100.jsonl
+_broken_1775953073/indep/metrics.jsonl
+_broken_1775953318/
+_broken_1775953318/dep/
+_broken_1775953318/indep/
+lcb_path_dep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/
+
+sent 576 bytes  received 1112254 bytes  11128300000 bytes/sec
+total size is 7853365  speedup is 7.06
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 6156 bytes  received 1646 bytes  78020000 bytes/sec
+total size is 2402  speedup is 0.31
+rsync logs failed
+[Sat Apr 11 20:27:03 EDT 2026] Sync complete
+[Sat Apr 11 20:57:03 EDT 2026] Syncing...
+Transfer starting: 34 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 1260 bytes  received 1932 bytes  31920000 bytes/sec
+total size is 7855917  speedup is 2461.13
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 84 bytes  received 2815 bytes  28990000 bytes/sec
+total size is 15943  speedup is 5.50
+rsync logs failed
+[Sat Apr 11 20:57:07 EDT 2026] Sync complete
+[Sat Apr 11 21:27:07 EDT 2026] Syncing...
+Transfer starting: 35 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0005.jsonl
+
+sent 112 bytes  received 72778 bytes  728900000 bytes/sec
+total size is 8409803  speedup is 115.38
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 204 bytes  received 1846 bytes  20500000 bytes/sec
+total size is 32338  speedup is 15.77
+rsync logs failed
+[Sat Apr 11 21:27:12 EDT 2026] Sync complete
+[Sat Apr 11 21:57:12 EDT 2026] Syncing...
+Transfer starting: 36 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0005.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 142 bytes  received 76519 bytes  766610000 bytes/sec
+total size is 8991364  speedup is 117.29
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 348 bytes  received 1769 bytes  21170000 bytes/sec
+total size is 48952  speedup is 23.12
+rsync logs failed
+[Sat Apr 11 21:57:16 EDT 2026] Sync complete
+[Sat Apr 11 22:27:17 EDT 2026] Syncing...
+Transfer starting: 38 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0010.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0010.jsonl
+
+sent 200 bytes  received 150432 bytes  1506320000 bytes/sec
+total size is 10134962  speedup is 67.28
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 480 bytes  received 2299 bytes  27790000 bytes/sec
+total size is 68427  speedup is 24.62
+rsync logs failed
+[Sat Apr 11 22:27:21 EDT 2026] Sync complete
+[Sat Apr 11 22:57:21 EDT 2026] Syncing...
+Transfer starting: 40 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/eval_trajectories_step_0010.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/eval_trajectories_step_0010.jsonl
+
+sent 6540 bytes  received 88323 bytes  948630000 bytes/sec
+total size is 10771388  speedup is 113.55
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 648 bytes  received 835 bytes  14830000 bytes/sec
+total size is 69767  speedup is 47.04
+rsync logs failed
+[Sat Apr 11 22:57:27 EDT 2026] Sync complete
+[Sat Apr 11 23:27:27 EDT 2026] Syncing...
+Transfer starting: 40 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 180 bytes  received 1883 bytes  20630000 bytes/sec
+total size is 10774588  speedup is 5222.77
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 660 bytes  received 1933 bytes  25930000 bytes/sec
+total size is 85735  speedup is 33.06
+rsync logs failed
+[Sat Apr 11 23:27:30 EDT 2026] Sync complete
+[Sat Apr 11 23:57:30 EDT 2026] Syncing...
+Transfer starting: 42 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0015.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0015.jsonl
+
+sent 254 bytes  received 136916 bytes  1371700000 bytes/sec
+total size is 11773421  speedup is 85.83
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 804 bytes  received 1955 bytes  27590000 bytes/sec
+total size is 102373  speedup is 37.11
+rsync logs failed
+[Sat Apr 11 23:57:34 EDT 2026] Sync complete
+[Sun Apr 12 00:27:34 EDT 2026] Syncing...
+Transfer starting: 42 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 228 bytes  received 1956 bytes  21840000 bytes/sec
+total size is 11775950  speedup is 5391.92
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 942 bytes  received 1748 bytes  26900000 bytes/sec
+total size is 116169  speedup is 43.19
+rsync logs failed
+[Sun Apr 12 00:27:38 EDT 2026] Sync complete
+[Sun Apr 12 00:57:38 EDT 2026] Syncing...
+Transfer starting: 44 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0020.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0020.jsonl
+
+sent 308 bytes  received 163523 bytes  1638310000 bytes/sec
+total size is 13034049  speedup is 79.56
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 1062 bytes  received 2298 bytes  33600000 bytes/sec
+total size is 135444  speedup is 40.31
+rsync logs failed
+[Sun Apr 12 00:57:43 EDT 2026] Sync complete
+[Sun Apr 12 01:27:43 EDT 2026] Syncing...
+Transfer starting: 46 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/eval_trajectories_step_0020.jsonl
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/eval_trajectories_step_0020.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 6482 bytes  received 86883 bytes  933650000 bytes/sec
+total size is 13655145  speedup is 146.26
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 1224 bytes  received 1486 bytes  27100000 bytes/sec
+total size is 142846  speedup is 52.71
+rsync logs failed
+[Sun Apr 12 01:27:47 EDT 2026] Sync complete
+[Sun Apr 12 01:57:47 EDT 2026] Syncing...
+Transfer starting: 46 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 300 bytes  received 2063 bytes  23630000 bytes/sec
+total size is 13658310  speedup is 5780.07
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 1290 bytes  received 1854 bytes  31440000 bytes/sec
+total size is 159239  speedup is 50.65
+rsync logs failed
+[Sun Apr 12 01:57:52 EDT 2026] Sync complete
+[Sun Apr 12 02:27:52 EDT 2026] Syncing...
+Transfer starting: 48 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0025.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0025.jsonl
+
+sent 374 bytes  received 124988 bytes  1253620000 bytes/sec
+total size is 14555392  speedup is 116.11
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 1428 bytes  received 1943 bytes  33710000 bytes/sec
+total size is 173146  speedup is 51.36
+rsync logs failed
+[Sun Apr 12 02:27:56 EDT 2026] Sync complete
+[Sun Apr 12 02:57:56 EDT 2026] Syncing...
+Transfer starting: 48 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 342 bytes  received 2371 bytes  27130000 bytes/sec
+total size is 14558589  speedup is 5366.23
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 1548 bytes  received 2041 bytes  35890000 bytes/sec
+total size is 191998  speedup is 53.50
+rsync logs failed
+[Sun Apr 12 02:58:00 EDT 2026] Sync complete
+[Sun Apr 12 03:28:00 EDT 2026] Syncing...
+Transfer starting: 51 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0030.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/eval_trajectories_step_0030.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0030.jsonl
+
+sent 3948 bytes  received 190329 bytes  1942770000 bytes/sec
+total size is 15863932  speedup is 81.66
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 1710 bytes  received 1481 bytes  31910000 bytes/sec
+total size is 202364  speedup is 63.42
+rsync logs failed
+[Sun Apr 12 03:28:04 EDT 2026] Sync complete
+[Sun Apr 12 03:58:04 EDT 2026] Syncing...
+Transfer starting: 52 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/eval_trajectories_step_0030.jsonl
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 3400 bytes  received 51361 bytes  547610000 bytes/sec
+total size is 16208366  speedup is 295.98
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 1800 bytes  received 2013 bytes  38130000 bytes/sec
+total size is 218945  speedup is 57.42
+rsync logs failed
+[Sun Apr 12 03:58:09 EDT 2026] Sync complete
+[Sun Apr 12 04:28:09 EDT 2026] Syncing...
+Transfer starting: 53 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0035.jsonl
+
+sent 448 bytes  received 77823 bytes  782710000 bytes/sec
+total size is 16812930  speedup is 214.80
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 1944 bytes  received 1510 bytes  34540000 bytes/sec
+total size is 232278  speedup is 67.25
+rsync logs failed
+[Sun Apr 12 04:28:13 EDT 2026] Sync complete
+[Sun Apr 12 04:58:13 EDT 2026] Syncing...
+Transfer starting: 54 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0035.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 466 bytes  received 80932 bytes  813980000 bytes/sec
+total size is 17404200  speedup is 213.82
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2058 bytes  received 1453 bytes  35110000 bytes/sec
+total size is 242672  speedup is 69.12
+rsync logs failed
+[Sun Apr 12 04:58:18 EDT 2026] Sync complete
+[Sun Apr 12 05:28:18 EDT 2026] Syncing...
+Transfer starting: 55 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0040.jsonl
+
+sent 484 bytes  received 74464 bytes  749480000 bytes/sec
+total size is 17950659  speedup is 239.51
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2142 bytes  received 2460 bytes  46020000 bytes/sec
+total size is 265427  speedup is 57.68
+rsync logs failed
+[Sun Apr 12 05:28:22 EDT 2026] Sync complete
+[Sun Apr 12 05:58:22 EDT 2026] Syncing...
+Transfer starting: 58 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/eval_trajectories_step_0040.jsonl
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0040.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/eval_trajectories_step_0040.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 7434 bytes  received 157647 bytes  1650810000 bytes/sec
+total size is 19075930  speedup is 115.55
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2340 bytes  received 1417 bytes  37570000 bytes/sec
+total size is 272637  speedup is 72.57
+rsync logs failed
+[Sun Apr 12 05:58:27 EDT 2026] Sync complete
+[Sun Apr 12 06:28:27 EDT 2026] Syncing...
+Transfer starting: 58 files
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 266 bytes  received 1930 bytes  21960000 bytes/sec
+total size is 19076579  speedup is 8686.96
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2406 bytes  received 853 bytes  32590000 bytes/sec
+total size is 276518  speedup is 84.85
+rsync logs failed
+[Sun Apr 12 06:28:31 EDT 2026] Sync complete
+[Sun Apr 12 06:58:31 EDT 2026] Syncing...
+Transfer starting: 58 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 516 bytes  received 2432 bytes  29480000 bytes/sec
+total size is 19079126  speedup is 6471.89
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2436 bytes  received 1665 bytes  41010000 bytes/sec
+total size is 289060  speedup is 70.49
+rsync logs failed
+[Sun Apr 12 06:58:35 EDT 2026] Sync complete
+[Sun Apr 12 07:28:35 EDT 2026] Syncing...
+Transfer starting: 59 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0045.jsonl
+
+sent 562 bytes  received 57231 bytes  577930000 bytes/sec
+total size is 19474661  speedup is 336.97
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2544 bytes  received 1322 bytes  38660000 bytes/sec
+total size is 299468  speedup is 77.46
+rsync logs failed
+[Sun Apr 12 07:28:39 EDT 2026] Sync complete
+[Sun Apr 12 07:58:39 EDT 2026] Syncing...
+Transfer starting: 60 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0045.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 580 bytes  received 60683 bytes  612630000 bytes/sec
+total size is 19910020  speedup is 324.99
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2634 bytes  received 1175 bytes  38090000 bytes/sec
+total size is 309206  speedup is 81.18
+rsync logs failed
+[Sun Apr 12 07:58:44 EDT 2026] Sync complete
+[Sun Apr 12 08:28:44 EDT 2026] Syncing...
+Transfer starting: 60 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 570 bytes  received 2513 bytes  30830000 bytes/sec
+total size is 19912574  speedup is 6458.83
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2718 bytes  received 1532 bytes  42500000 bytes/sec
+total size is 322397  speedup is 75.86
+rsync logs failed
+[Sun Apr 12 08:28:48 EDT 2026] Sync complete
+[Sun Apr 12 08:58:48 EDT 2026] Syncing...
+Transfer starting: 62 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/eval_trajectories_step_0050.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0050.jsonl
+
+sent 4088 bytes  received 108570 bytes  1126580000 bytes/sec
+total size is 20700473  speedup is 183.75
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2832 bytes  received 1388 bytes  42200000 bytes/sec
+total size is 332633  speedup is 78.82
+rsync logs failed
+[Sun Apr 12 08:58:52 EDT 2026] Sync complete
+[Sun Apr 12 09:28:52 EDT 2026] Syncing...
+Transfer starting: 64 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/eval_trajectories_step_0050.jsonl
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0050.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 3482 bytes  received 116446 bytes  1199280000 bytes/sec
+total size is 21514472  speedup is 179.39
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2922 bytes  received 1051 bytes  39730000 bytes/sec
+total size is 339566  speedup is 85.47
+rsync logs failed
+[Sun Apr 12 09:28:57 EDT 2026] Sync complete
+[Sun Apr 12 09:58:57 EDT 2026] Syncing...
+Transfer starting: 64 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 618 bytes  received 2423 bytes  30410000 bytes/sec
+total size is 21515752  speedup is 7075.22
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2976 bytes  received 1152 bytes  41280000 bytes/sec
+total size is 346489  speedup is 83.94
+rsync logs failed
+[Sun Apr 12 09:59:01 EDT 2026] Sync complete
+[Sun Apr 12 10:29:01 EDT 2026] Syncing...
+Transfer starting: 64 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 630 bytes  received 2536 bytes  31660000 bytes/sec
+total size is 21517667  speedup is 6796.48
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 3036 bytes  received 1531 bytes  45670000 bytes/sec
+total size is 356735  speedup is 78.11
+rsync logs failed
+[Sun Apr 12 10:29:07 EDT 2026] Sync complete
+[Sun Apr 12 10:59:07 EDT 2026] Syncing...
+Transfer starting: 69 files
+./
+_pre_errno7_fix_1776004604/
+_pre_errno7_fix_1776004604/dep/
+_pre_errno7_fix_1776004604/dep/eval_trajectories_step_0010.jsonl
+_pre_errno7_fix_1776004604/dep/eval_trajectories_step_0020.jsonl
+_pre_errno7_fix_1776004604/dep/eval_trajectories_step_0030.jsonl
+_pre_errno7_fix_1776004604/dep/eval_trajectories_step_0040.jsonl
+_pre_errno7_fix_1776004604/dep/eval_trajectories_step_0050.jsonl
+_pre_errno7_fix_1776004604/dep/metrics.jsonl
+_pre_errno7_fix_1776004604/dep/train_trajectories_step_0005.jsonl
+_pre_errno7_fix_1776004604/dep/train_trajectories_step_0010.jsonl
+_pre_errno7_fix_1776004604/dep/train_trajectories_step_0015.jsonl
+_pre_errno7_fix_1776004604/dep/train_trajectories_step_0020.jsonl
+_pre_errno7_fix_1776004604/dep/train_trajectories_step_0025.jsonl
+_pre_errno7_fix_1776004604/dep/train_trajectories_step_0030.jsonl
+_pre_errno7_fix_1776004604/dep/train_trajectories_step_0035.jsonl
+_pre_errno7_fix_1776004604/dep/train_trajectories_step_0040.jsonl
+_pre_errno7_fix_1776004604/dep/train_trajectories_step_0045.jsonl
+_pre_errno7_fix_1776004604/dep/train_trajectories_step_0050.jsonl
+_pre_errno7_fix_1776004604/indep/
+_pre_errno7_fix_1776004604/indep/eval_trajectories_step_0010.jsonl
+_pre_errno7_fix_1776004604/indep/eval_trajectories_step_0020.jsonl
+_pre_errno7_fix_1776004604/indep/eval_trajectories_step_0030.jsonl
+_pre_errno7_fix_1776004604/indep/eval_trajectories_step_0040.jsonl
+_pre_errno7_fix_1776004604/indep/eval_trajectories_step_0050.jsonl
+_pre_errno7_fix_1776004604/indep/metrics.jsonl
+_pre_errno7_fix_1776004604/indep/train_trajectories_step_0005.jsonl
+_pre_errno7_fix_1776004604/indep/train_trajectories_step_0010.jsonl
+_pre_errno7_fix_1776004604/indep/train_trajectories_step_0015.jsonl
+_pre_errno7_fix_1776004604/indep/train_trajectories_step_0020.jsonl
+_pre_errno7_fix_1776004604/indep/train_trajectories_step_0025.jsonl
+_pre_errno7_fix_1776004604/indep/train_trajectories_step_0030.jsonl
+_pre_errno7_fix_1776004604/indep/train_trajectories_step_0035.jsonl
+_pre_errno7_fix_1776004604/indep/train_trajectories_step_0040.jsonl
+_pre_errno7_fix_1776004604/indep/train_trajectories_step_0045.jsonl
+_pre_errno7_fix_1776004604/indep/train_trajectories_step_0050.jsonl
+_pre_errno7_fix_1776004604/indep/train_trajectories_step_0055.jsonl
+lcb_path_dep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 1094 bytes  received 1908314 bytes  19094080000 bytes/sec
+total size is 21903102  speedup is 11.47
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 3126 bytes  received 2504 bytes  56300000 bytes/sec
+total size is 6243  speedup is 1.11
+rsync logs failed
+[Sun Apr 12 10:59:11 EDT 2026] Sync complete
+[Sun Apr 12 11:29:11 EDT 2026] Syncing...
+Transfer starting: 70 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+
+sent 332 bytes  received 2501 bytes  28330000 bytes/sec
+total size is 21903729  speedup is 7731.63
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 120 bytes  received 1229 bytes  13490000 bytes/sec
+total size is 9588  speedup is 7.11
+rsync logs failed
+[Sun Apr 12 11:29:15 EDT 2026] Sync complete
+[Sun Apr 12 11:59:15 EDT 2026] Syncing...
+Transfer starting: 70 files
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 44 bytes  received 2658 bytes  27020000 bytes/sec
+total size is 21904365  speedup is 8106.72
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 144 bytes  received 1620 bytes  17640000 bytes/sec
+total size is 15845  speedup is 8.98
+rsync logs failed
+[Sun Apr 12 11:59:19 EDT 2026] Sync complete
+[Sun Apr 12 12:29:19 EDT 2026] Syncing...
+Transfer starting: 70 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+
+sent 44 bytes  received 2648 bytes  26920000 bytes/sec
+total size is 21904999  speedup is 8137.07
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 204 bytes  received 557 bytes  7610000 bytes/sec
+total size is 16434  speedup is 21.60
+rsync logs failed
+[Sun Apr 12 12:29:23 EDT 2026] Sync complete
+[Sun Apr 12 12:59:24 EDT 2026] Syncing...
+Transfer starting: 70 files
+
+sent 16 bytes  received 2124 bytes  21400000 bytes/sec
+total size is 21904999  speedup is 10235.98
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 204 bytes  received 685 bytes  8890000 bytes/sec
+total size is 17028  speedup is 19.15
+rsync logs failed
+[Sun Apr 12 12:59:28 EDT 2026] Sync complete
+[Sun Apr 12 13:29:28 EDT 2026] Syncing...
+Transfer starting: 75 files
+./
+_pre_batch8_1776013204/
+_pre_batch8_1776013204/dep/
+_pre_batch8_1776013204/dep/metrics.jsonl
+_pre_batch8_1776013204/indep/
+_pre_batch8_1776013204/indep/metrics.jsonl
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 164 bytes  received 4633 bytes  47970000 bytes/sec
+total size is 21908725  speedup is 4567.17
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 216 bytes  received 3517 bytes  37330000 bytes/sec
+total size is 10957  speedup is 2.94
+rsync logs failed
+[Sun Apr 12 13:29:31 EDT 2026] Sync complete
+[Sun Apr 12 14:01:30 EDT 2026] Syncing...
+Transfer starting: 76 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0005.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 4648 bytes  received 54076 bytes  587240000 bytes/sec
+total size is 22384935  speedup is 381.19
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 156 bytes  received 1357 bytes  15130000 bytes/sec
+total size is 15673  speedup is 10.36
+rsync logs failed
+[Sun Apr 12 14:01:36 EDT 2026] Sync complete
+[Sun Apr 12 14:31:36 EDT 2026] Syncing...
+Transfer starting: 77 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0005.jsonl
+
+sent 4588 bytes  received 58221 bytes  628090000 bytes/sec
+total size is 22889063  speedup is 364.42
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 198 bytes  received 1536 bytes  17340000 bytes/sec
+total size is 21649  speedup is 12.48
+rsync logs failed
+[Sun Apr 12 14:31:40 EDT 2026] Sync complete
+[Sun Apr 12 15:01:40 EDT 2026] Syncing...
+Transfer starting: 78 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0010.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 4720 bytes  received 49696 bytes  544160000 bytes/sec
+total size is 23306810  speedup is 428.31
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 252 bytes  received 1750 bytes  20020000 bytes/sec
+total size is 29685  speedup is 14.83
+rsync logs failed
+[Sun Apr 12 15:01:44 EDT 2026] Sync complete
+[Sun Apr 12 15:31:44 EDT 2026] Syncing...
+Transfer starting: 79 files
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0010.jsonl
+
+sent 4614 bytes  received 44561 bytes  491750000 bytes/sec
+total size is 23675168  speedup is 481.45
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_indep.log
+
+sent 164 bytes  received 501 bytes  6650000 bytes/sec
+total size is 31154  speedup is 46.85
+rsync logs failed
+[Sun Apr 12 15:31:54 EDT 2026] Sync complete
+[Sun Apr 12 16:16:01 EDT 2026] Syncing...
+Transfer starting: 81 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/eval_trajectories_step_0010.jsonl
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/eval_trajectories_step_0010.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 5684 bytes  received 107991 bytes  1136750000 bytes/sec
+total size is 24372732  speedup is 214.41
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 336 bytes  received 889 bytes  12250000 bytes/sec
+total size is 34397  speedup is 28.08
+rsync logs failed
+[Sun Apr 12 16:16:05 EDT 2026] Sync complete
+[Sun Apr 12 16:46:05 EDT 2026] Syncing...
+Transfer starting: 81 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 180 bytes  received 3172 bytes  33520000 bytes/sec
+total size is 24374616  speedup is 7271.66
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 360 bytes  received 1168 bytes  15280000 bytes/sec
+total size is 39111  speedup is 25.60
+rsync logs failed
+[Sun Apr 12 16:46:10 EDT 2026] Sync complete
+[Sun Apr 12 17:16:10 EDT 2026] Syncing...
+Transfer starting: 83 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0015.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0015.jsonl
+
+sent 8648 bytes  received 97255 bytes  1059030000 bytes/sec
+total size is 25261066  speedup is 238.53
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 402 bytes  received 1494 bytes  18960000 bytes/sec
+total size is 46460  speedup is 24.50
+rsync logs failed
+[Sun Apr 12 17:16:16 EDT 2026] Sync complete
+[Sun Apr 12 17:46:16 EDT 2026] Syncing...
+Transfer starting: 83 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 228 bytes  received 3360 bytes  35880000 bytes/sec
+total size is 25264142  speedup is 7041.29
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 468 bytes  received 1364 bytes  18320000 bytes/sec
+total size is 53578  speedup is 29.25
+rsync logs failed
+[Sun Apr 12 17:46:21 EDT 2026] Sync complete
+[Sun Apr 12 18:16:21 EDT 2026] Syncing...
+Transfer starting: 85 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0020.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0020.jsonl
+
+sent 9776 bytes  received 135594 bytes  1453700000 bytes/sec
+total size is 26517194  speedup is 182.41
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 522 bytes  received 1641 bytes  21630000 bytes/sec
+total size is 60682  speedup is 28.05
+rsync logs failed
+[Sun Apr 12 18:16:26 EDT 2026] Sync complete
+[Sun Apr 12 18:46:26 EDT 2026] Syncing...
+Transfer starting: 85 files
+
+sent 16 bytes  received 2610 bytes  26260000 bytes/sec
+total size is 26517194  speedup is 10097.94
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+
+sent 16 bytes  received 195 bytes  2110000 bytes/sec
+total size is 60682  speedup is 287.59
+rsync logs failed
+[Sun Apr 12 18:46:30 EDT 2026] Sync complete
+[Sun Apr 12 19:16:30 EDT 2026] Syncing...
+Transfer starting: 87 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/eval_trajectories_step_0020.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/eval_trajectories_step_0020.jsonl
+
+sent 5394 bytes  received 98072 bytes  1034660000 bytes/sec
+total size is 27136986  speedup is 262.28
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 588 bytes  received 562 bytes  11500000 bytes/sec
+total size is 61110  speedup is 53.14
+rsync logs failed
+[Sun Apr 12 19:16:34 EDT 2026] Sync complete
+[Sun Apr 12 19:46:34 EDT 2026] Syncing...
+Transfer starting: 87 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 276 bytes  received 3481 bytes  37570000 bytes/sec
+total size is 27139521  speedup is 7223.72
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 588 bytes  received 1522 bytes  21100000 bytes/sec
+total size is 66819  speedup is 31.67
+rsync logs failed
+[Sun Apr 12 19:46:38 EDT 2026] Sync complete
+[Sun Apr 12 20:16:38 EDT 2026] Syncing...
+Transfer starting: 87 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 300 bytes  received 3316 bytes  36160000 bytes/sec
+total size is 27141388  speedup is 7505.91
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 636 bytes  received 1082 bytes  17180000 bytes/sec
+total size is 71538  speedup is 41.64
+rsync logs failed
+[Sun Apr 12 20:16:42 EDT 2026] Sync complete
+[Sun Apr 12 20:46:42 EDT 2026] Syncing...
+Transfer starting: 89 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0025.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0025.jsonl
+
+sent 8042 bytes  received 95902 bytes  1039440000 bytes/sec
+total size is 27997685  speedup is 269.35
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 678 bytes  received 1595 bytes  22730000 bytes/sec
+total size is 79969  speedup is 35.18
+rsync logs failed
+[Sun Apr 12 20:46:47 EDT 2026] Sync complete
+[Sun Apr 12 21:26:49 EDT 2026] Syncing...
+Transfer starting: 91 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0030.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0030.jsonl
+
+sent 8720 bytes  received 109019 bytes  1177390000 bytes/sec
+total size is 28970645  speedup is 246.06
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 750 bytes  received 1844 bytes  25940000 bytes/sec
+total size is 89965  speedup is 34.68
+rsync logs failed
+[Sun Apr 12 21:26:54 EDT 2026] Sync complete
+[Sun Apr 12 22:00:03 EDT 2026] Syncing...
+Transfer starting: 91 files
+
+sent 16 bytes  received 2826 bytes  28420000 bytes/sec
+total size is 28970645  speedup is 10193.75
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+
+sent 16 bytes  received 195 bytes  2110000 bytes/sec
+total size is 89965  speedup is 426.37
+rsync logs failed
+[Sun Apr 12 22:00:07 EDT 2026] Sync complete
+[Sun Apr 12 22:30:07 EDT 2026] Syncing...
+Transfer starting: 92 files
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/eval_trajectories_step_0030.jsonl
+
+sent 2786 bytes  received 49031 bytes  518170000 bytes/sec
+total size is 29279917  speedup is 565.06
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_indep.log
+
+sent 428 bytes  received 385 bytes  8130000 bytes/sec
+total size is 90615  speedup is 111.46
+rsync logs failed
+[Sun Apr 12 22:30:12 EDT 2026] Sync complete
+[Sun Apr 12 23:00:12 EDT 2026] Syncing...
+Transfer starting: 93 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/eval_trajectories_step_0030.jsonl
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 3340 bytes  received 61868 bytes  652080000 bytes/sec
+total size is 29663966  speedup is 454.91
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 846 bytes  received 1224 bytes  20700000 bytes/sec
+total size is 96548  speedup is 46.64
+rsync logs failed
+[Sun Apr 12 23:00:16 EDT 2026] Sync complete
+[Sun Apr 12 23:30:16 EDT 2026] Syncing...
+Transfer starting: 94 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0035.jsonl
+
+sent 5092 bytes  received 38166 bytes  432580000 bytes/sec
+total size is 29996449  speedup is 693.43
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 894 bytes  received 1650 bytes  25440000 bytes/sec
+total size is 105048  speedup is 41.29
+rsync logs failed
+[Sun Apr 12 23:30:20 EDT 2026] Sync complete
+[Mon Apr 13 00:00:20 EDT 2026] Syncing...
+Transfer starting: 95 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0035.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 5080 bytes  received 36045 bytes  411250000 bytes/sec
+total size is 30318265  speedup is 737.22
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 966 bytes  received 1209 bytes  21750000 bytes/sec
+total size is 110765  speedup is 50.93
+rsync logs failed
+[Mon Apr 13 00:00:24 EDT 2026] Sync complete
+[Mon Apr 13 00:30:24 EDT 2026] Syncing...
+Transfer starting: 96 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0040.jsonl
+
+sent 4864 bytes  received 41025 bytes  458890000 bytes/sec
+total size is 30654631  speedup is 668.02
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 1020 bytes  received 1188 bytes  22080000 bytes/sec
+total size is 116626  speedup is 52.82
+rsync logs failed
+[Mon Apr 13 00:30:29 EDT 2026] Sync complete
+[Mon Apr 13 01:00:29 EDT 2026] Syncing...
+Transfer starting: 97 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0040.jsonl
+
+sent 4452 bytes  received 37671 bytes  421230000 bytes/sec
+total size is 30969416  speedup is 735.21
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+
+sent 530 bytes  received 683 bytes  12130000 bytes/sec
+total size is 119491  speedup is 98.51
+rsync logs failed
+[Mon Apr 13 01:00:34 EDT 2026] Sync complete
+[Mon Apr 13 01:30:34 EDT 2026] Syncing...
+Transfer starting: 98 files
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/eval_trajectories_step_0040.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 2880 bytes  received 53841 bytes  567210000 bytes/sec
+total size is 31302666  speedup is 551.87
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_indep.log
+
+sent 554 bytes  received 541 bytes  10950000 bytes/sec
+total size is 121418  speedup is 110.88
+rsync logs failed
+[Mon Apr 13 01:31:04 EDT 2026] Sync complete
+[Mon Apr 13 02:01:04 EDT 2026] Syncing...
+Transfer starting: 99 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/eval_trajectories_step_0040.jsonl
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 3370 bytes  received 49873 bytes  532430000 bytes/sec
+total size is 31617610  speedup is 593.84
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 1110 bytes  received 1246 bytes  23560000 bytes/sec
+total size is 127720  speedup is 54.21
+rsync logs failed
+[Mon Apr 13 02:01:09 EDT 2026] Sync complete
+[Mon Apr 13 02:31:09 EDT 2026] Syncing...
+Transfer starting: 101 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0045.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0045.jsonl
+
+sent 7676 bytes  received 100127 bytes  1078030000 bytes/sec
+total size is 32527182  speedup is 301.73
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 1164 bytes  received 1606 bytes  27700000 bytes/sec
+total size is 137221  speedup is 49.54
+rsync logs failed
+[Mon Apr 13 02:31:13 EDT 2026] Sync complete
+[Mon Apr 13 03:01:13 EDT 2026] Syncing...
+Transfer starting: 101 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 552 bytes  received 3937 bytes  44890000 bytes/sec
+total size is 32529047  speedup is 7246.39
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 1248 bytes  received 1011 bytes  22590000 bytes/sec
+total size is 141867  speedup is 62.80
+rsync logs failed
+[Mon Apr 13 03:01:17 EDT 2026] Sync complete
+[Mon Apr 13 03:31:17 EDT 2026] Syncing...
+Transfer starting: 102 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0050.jsonl
+
+sent 4702 bytes  received 76968 bytes  816700000 bytes/sec
+total size is 33216937  speedup is 406.72
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 1284 bytes  received 1076 bytes  23600000 bytes/sec
+total size is 146327  speedup is 62.00
+rsync logs failed
+[Mon Apr 13 03:31:21 EDT 2026] Sync complete
+[Mon Apr 13 04:01:21 EDT 2026] Syncing...
+Transfer starting: 103 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0050.jsonl
+
+sent 4458 bytes  received 75880 bytes  803380000 bytes/sec
+total size is 33914898  speedup is 422.15
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+
+sent 656 bytes  received 738 bytes  13940000 bytes/sec
+total size is 148878  speedup is 106.80
+rsync logs failed
+[Mon Apr 13 04:01:26 EDT 2026] Sync complete
+[Mon Apr 13 04:31:26 EDT 2026] Syncing...
+Transfer starting: 104 files
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/eval_trajectories_step_0050.jsonl
+
+sent 2678 bytes  received 47516 bytes  501940000 bytes/sec
+total size is 34210791  speedup is 681.57
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_indep.log
+
+sent 680 bytes  received 375 bytes  10550000 bytes/sec
+total size is 149385  speedup is 141.60
+rsync logs failed
+[Mon Apr 13 04:31:31 EDT 2026] Sync complete
+[Mon Apr 13 05:01:31 EDT 2026] Syncing...
+Transfer starting: 105 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/eval_trajectories_step_0050.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 3174 bytes  received 49158 bytes  523320000 bytes/sec
+total size is 34529968  speedup is 659.83
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 1344 bytes  received 906 bytes  22500000 bytes/sec
+total size is 152459  speedup is 67.76
+rsync logs failed
+[Mon Apr 13 05:01:36 EDT 2026] Sync complete
+[Mon Apr 13 05:31:36 EDT 2026] Syncing...
+Transfer starting: 105 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 612 bytes  received 3983 bytes  45950000 bytes/sec
+total size is 34532466  speedup is 7515.22
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 1368 bytes  received 1331 bytes  26990000 bytes/sec
+total size is 158276  speedup is 58.64
+rsync logs failed
+[Mon Apr 13 05:31:39 EDT 2026] Sync complete
+[Mon Apr 13 06:01:39 EDT 2026] Syncing...
+Transfer starting: 106 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0055.jsonl
+
+sent 664 bytes  received 55279 bytes  559430000 bytes/sec
+total size is 35038242  speedup is 626.32
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 1422 bytes  received 1440 bytes  28620000 bytes/sec
+total size is 165308  speedup is 57.76
+rsync logs failed
+[Mon Apr 13 06:01:44 EDT 2026] Sync complete
+[Mon Apr 13 06:31:44 EDT 2026] Syncing...
+Transfer starting: 108 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0055.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0060.jsonl
+
+sent 710 bytes  received 93216 bytes  939260000 bytes/sec
+total size is 35845263  speedup is 381.63
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 1482 bytes  received 1460 bytes  29420000 bytes/sec
+total size is 172926  speedup is 58.78
+rsync logs failed
+[Mon Apr 13 06:31:48 EDT 2026] Sync complete
+[Mon Apr 13 07:01:48 EDT 2026] Syncing...
+Transfer starting: 108 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+
+sent 338 bytes  received 3933 bytes  42710000 bytes/sec
+total size is 35847131  speedup is 8393.15
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+
+sent 758 bytes  received 860 bytes  16180000 bytes/sec
+total size is 176884  speedup is 109.32
+rsync logs failed
+[Mon Apr 13 07:01:52 EDT 2026] Sync complete
+[Mon Apr 13 07:31:52 EDT 2026] Syncing...
+Transfer starting: 109 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0060.jsonl
+
+sent 384 bytes  received 46766 bytes  471500000 bytes/sec
+total size is 36233627  speedup is 768.48
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+
+sent 794 bytes  received 520 bytes  13140000 bytes/sec
+total size is 178371  speedup is 135.75
+rsync logs failed
+[Mon Apr 13 07:31:56 EDT 2026] Sync complete
+[Mon Apr 13 08:01:56 EDT 2026] Syncing...
+Transfer starting: 110 files
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/eval_trajectories_step_0060.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 3594 bytes  received 54807 bytes  584010000 bytes/sec
+total size is 36562731  speedup is 626.06
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_indep.log
+
+sent 806 bytes  received 742 bytes  15480000 bytes/sec
+total size is 181608  speedup is 117.32
+rsync logs failed
+[Mon Apr 13 08:02:01 EDT 2026] Sync complete
+[Mon Apr 13 08:32:01 EDT 2026] Syncing...
+Transfer starting: 112 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/eval_trajectories_step_0060.jsonl
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0065.jsonl
+
+sent 3704 bytes  received 92728 bytes  964320000 bytes/sec
+total size is 37243164  speedup is 386.21
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 1620 bytes  received 1376 bytes  29960000 bytes/sec
+total size is 188798  speedup is 63.02
+rsync logs failed
+[Mon Apr 13 08:32:05 EDT 2026] Sync complete
+[Mon Apr 13 09:02:05 EDT 2026] Syncing...
+Transfer starting: 112 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 744 bytes  received 4381 bytes  51250000 bytes/sec
+total size is 37246275  speedup is 7267.56
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 1680 bytes  received 1486 bytes  31660000 bytes/sec
+total size is 196003  speedup is 61.91
+rsync logs failed
+[Mon Apr 13 09:02:10 EDT 2026] Sync complete
+[Mon Apr 13 09:32:10 EDT 2026] Syncing...
+Transfer starting: 114 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0065.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0070.jsonl
+
+sent 824 bytes  received 76861 bytes  776850000 bytes/sec
+total size is 37920249  speedup is 488.13
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 1746 bytes  received 1149 bytes  28950000 bytes/sec
+total size is 202003  speedup is 69.78
+rsync logs failed
+[Mon Apr 13 09:32:15 EDT 2026] Sync complete
+[Mon Apr 13 10:02:15 EDT 2026] Syncing...
+Transfer starting: 114 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+
+sent 392 bytes  received 4014 bytes  44060000 bytes/sec
+total size is 37921500  speedup is 8606.78
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+
+sent 884 bytes  received 697 bytes  15810000 bytes/sec
+total size is 205081  speedup is 129.72
+rsync logs failed
+[Mon Apr 13 10:02:19 EDT 2026] Sync complete
+[Mon Apr 13 10:32:19 EDT 2026] Syncing...
+Transfer starting: 116 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0070.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/eval_trajectories_step_0070.jsonl
+
+sent 3958 bytes  received 89270 bytes  932280000 bytes/sec
+total size is 38614034  speedup is 414.19
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 1824 bytes  received 812 bytes  26360000 bytes/sec
+total size is 207918  speedup is 78.88
+rsync logs failed
+[Mon Apr 13 10:32:23 EDT 2026] Sync complete
+[Mon Apr 13 12:01:52 EDT 2026] Syncing...
+Transfer starting: 118 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/eval_trajectories_step_0070.jsonl
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0075.jsonl
+
+sent 3638 bytes  received 96183 bytes  998210000 bytes/sec
+total size is 39342702  speedup is 394.13
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 1848 bytes  received 1960 bytes  38080000 bytes/sec
+total size is 219421  speedup is 57.62
+rsync logs failed
+[Mon Apr 13 12:01:58 EDT 2026] Sync complete
+[Mon Apr 13 12:31:58 EDT 2026] Syncing...
+Transfer starting: 118 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 852 bytes  received 4452 bytes  53040000 bytes/sec
+total size is 39344591  speedup is 7417.91
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 1944 bytes  received 1157 bytes  31010000 bytes/sec
+total size is 224040  speedup is 72.25
+rsync logs failed
+[Mon Apr 13 12:32:02 EDT 2026] Sync complete
+[Mon Apr 13 13:02:02 EDT 2026] Syncing...
+Transfer starting: 120 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0075.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0080.jsonl
+
+sent 926 bytes  received 139114 bytes  1400400000 bytes/sec
+total size is 40559101  speedup is 289.63
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 1986 bytes  received 1502 bytes  34880000 bytes/sec
+total size is 231198  speedup is 66.28
+rsync logs failed
+[Mon Apr 13 13:02:05 EDT 2026] Sync complete
+[Mon Apr 13 13:32:06 EDT 2026] Syncing...
+Transfer starting: 120 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+
+sent 446 bytes  received 4128 bytes  45740000 bytes/sec
+total size is 40559735  speedup is 8867.45
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+
+sent 1004 bytes  received 647 bytes  16510000 bytes/sec
+total size is 232703  speedup is 140.95
+rsync logs failed
+[Mon Apr 13 13:32:09 EDT 2026] Sync complete
+[Mon Apr 13 14:02:09 EDT 2026] Syncing...
+Transfer starting: 120 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+
+sent 452 bytes  received 4226 bytes  46780000 bytes/sec
+total size is 40560993  speedup is 8670.58
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+
+sent 1022 bytes  received 713 bytes  17350000 bytes/sec
+total size is 235512  speedup is 135.74
+rsync logs failed
+[Mon Apr 13 14:02:13 EDT 2026] Sync complete
+[Mon Apr 13 14:32:13 EDT 2026] Syncing...
+Transfer starting: 120 files
+
+sent 16 bytes  received 3887 bytes  39030000 bytes/sec
+total size is 40560993  speedup is 10392.26
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+
+sent 1046 bytes  received 326 bytes  13720000 bytes/sec
+total size is 235709  speedup is 171.80
+rsync logs failed
+[Mon Apr 13 14:32:16 EDT 2026] Sync complete
+[Mon Apr 13 16:09:56 EDT 2026] Syncing...
+Transfer starting: 122 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0080.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/eval_trajectories_step_0080.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 4196 bytes  received 132204 bytes  1364000000 bytes/sec
+total size is 41597640  speedup is 304.97
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2088 bytes  received 1075 bytes  31630000 bytes/sec
+total size is 240187  speedup is 75.94
+rsync logs failed
+[Mon Apr 13 16:10:01 EDT 2026] Sync complete
+[Mon Apr 13 17:04:10 EDT 2026] Syncing...
+Transfer starting: 122 files
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 476 bytes  received 4269 bytes  47450000 bytes/sec
+total size is 41598269  speedup is 8766.76
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_indep.log
+
+sent 1082 bytes  received 588 bytes  16700000 bytes/sec
+total size is 242037  speedup is 144.93
+rsync logs failed
+[Mon Apr 13 17:04:14 EDT 2026] Sync complete
+[Mon Apr 13 17:42:40 EDT 2026] Syncing...
+Transfer starting: 123 files
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0085.jsonl
+
+sent 510 bytes  received 47177 bytes  476870000 bytes/sec
+total size is 42044304  speedup is 881.67
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_indep.log
+
+sent 1100 bytes  received 605 bytes  17050000 bytes/sec
+total size is 244549  speedup is 143.43
+rsync logs failed
+[Mon Apr 13 17:42:44 EDT 2026] Sync complete
+[Mon Apr 13 18:12:44 EDT 2026] Syncing...
+Transfer starting: 123 files
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 494 bytes  received 4215 bytes  47090000 bytes/sec
+total size is 42044932  speedup is 8928.63
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_indep.log
+
+sent 1118 bytes  received 597 bytes  17150000 bytes/sec
+total size is 246261  speedup is 143.59
+rsync logs failed
+[Mon Apr 13 18:12:48 EDT 2026] Sync complete
+[Mon Apr 13 19:47:59 EDT 2026] Syncing...
+Transfer starting: 124 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/eval_trajectories_step_0080.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 3216 bytes  received 62674 bytes  658900000 bytes/sec
+total size is 42419518  speedup is 643.79
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2178 bytes  received 871 bytes  30490000 bytes/sec
+total size is 249452  speedup is 81.81
+rsync logs failed
+[Mon Apr 13 19:48:06 EDT 2026] Sync complete
+[Mon Apr 13 20:18:06 EDT 2026] Syncing...
+Transfer starting: 124 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+
+sent 470 bytes  received 4241 bytes  47110000 bytes/sec
+total size is 42420148  speedup is 9004.49
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2208 bytes  received 707 bytes  29150000 bytes/sec
+total size is 251860  speedup is 86.40
+rsync logs failed
+[Mon Apr 13 20:18:10 EDT 2026] Sync complete
+[Mon Apr 13 20:48:10 EDT 2026] Syncing...
+Transfer starting: 124 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 972 bytes  received 4409 bytes  53810000 bytes/sec
+total size is 42421381  speedup is 7883.55
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2220 bytes  received 823 bytes  30430000 bytes/sec
+total size is 253781  speedup is 83.40
+rsync logs failed
+[Mon Apr 13 20:48:15 EDT 2026] Sync complete
+[Mon Apr 13 21:24:45 EDT 2026] Syncing...
+Transfer starting: 125 files
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0090.jsonl
+
+sent 546 bytes  received 43911 bytes  444570000 bytes/sec
+total size is 42784201  speedup is 962.37
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2238 bytes  received 686 bytes  29240000 bytes/sec
+total size is 255160  speedup is 87.26
+rsync logs failed
+[Mon Apr 13 21:24:50 EDT 2026] Sync complete
+[Mon Apr 13 22:26:17 EDT 2026] Syncing...
+Transfer starting: 126 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0085.jsonl
+
+sent 504 bytes  received 45326 bytes  458300000 bytes/sec
+total size is 43223793  speedup is 943.13
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+
+sent 1088 bytes  received 812 bytes  19000000 bytes/sec
+total size is 259224  speedup is 136.43
+rsync logs failed
+[Mon Apr 13 22:26:21 EDT 2026] Sync complete
+[Mon Apr 13 23:14:44 EDT 2026] Syncing...
+Transfer starting: 127 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/eval_trajectories_step_0090.jsonl
+
+sent 3516 bytes  received 52509 bytes  560250000 bytes/sec
+total size is 43531670  speedup is 777.00
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2292 bytes  received 809 bytes  31010000 bytes/sec
+total size is 262439  speedup is 84.63
+rsync logs failed
+[Mon Apr 13 23:14:48 EDT 2026] Sync complete
+[Tue Apr 14 00:02:20 EDT 2026] Syncing...
+Transfer starting: 127 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 1008 bytes  received 4734 bytes  57420000 bytes/sec
+total size is 43533538  speedup is 7581.60
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2316 bytes  received 1158 bytes  34740000 bytes/sec
+total size is 268048  speedup is 77.16
+rsync logs failed
+[Tue Apr 14 00:02:24 EDT 2026] Sync complete
+[Tue Apr 14 01:04:36 EDT 2026] Syncing...
+Transfer starting: 128 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0090.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 1054 bytes  received 48042 bytes  490960000 bytes/sec
+total size is 43922423  speedup is 894.62
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2364 bytes  received 1105 bytes  34690000 bytes/sec
+total size is 272783  speedup is 78.63
+rsync logs failed
+[Tue Apr 14 01:04:40 EDT 2026] Sync complete
+[Tue Apr 14 01:34:40 EDT 2026] Syncing...
+Transfer starting: 129 files
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0095.jsonl
+
+sent 570 bytes  received 53328 bytes  538980000 bytes/sec
+total size is 44380243  speedup is 823.41
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_indep.log
+
+sent 1238 bytes  received 496 bytes  17340000 bytes/sec
+total size is 274394  speedup is 158.24
+rsync logs failed
+[Tue Apr 14 01:34:44 EDT 2026] Sync complete
+[Tue Apr 14 02:04:44 EDT 2026] Syncing...
+Transfer starting: 129 files
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 548 bytes  received 4646 bytes  51940000 bytes/sec
+total size is 44382116  speedup is 8544.88
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_indep.log
+
+sent 1250 bytes  received 800 bytes  20500000 bytes/sec
+total size is 278181  speedup is 135.70
+rsync logs failed
+[Tue Apr 14 02:04:50 EDT 2026] Sync complete
+[Tue Apr 14 02:34:50 EDT 2026] Syncing...
+Transfer starting: 130 files
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0100.jsonl
+
+sent 594 bytes  received 49615 bytes  502090000 bytes/sec
+total size is 44838360  speedup is 893.03
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_indep.log
+
+sent 1280 bytes  received 748 bytes  20280000 bytes/sec
+total size is 281241  speedup is 138.68
+rsync logs failed
+[Tue Apr 14 02:34:55 EDT 2026] Sync complete
+[Tue Apr 14 03:04:55 EDT 2026] Syncing...
+Transfer starting: 131 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/eval_trajectories_step_0090.jsonl
+
+sent 2882 bytes  received 53591 bytes  564730000 bytes/sec
+total size is 45181020  speedup is 800.05
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+
+sent 1184 bytes  received 378 bytes  15620000 bytes/sec
+total size is 281747  speedup is 180.38
+rsync logs failed
+[Tue Apr 14 03:04:59 EDT 2026] Sync complete
+[Tue Apr 14 03:34:59 EDT 2026] Syncing...
+Transfer starting: 131 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+
+sent 524 bytes  received 4466 bytes  49900000 bytes/sec
+total size is 45181662  speedup is 9054.44
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+
+sent 1190 bytes  received 445 bytes  16350000 bytes/sec
+total size is 282969  speedup is 173.07
+rsync logs failed
+[Tue Apr 14 03:35:03 EDT 2026] Sync complete
+[Tue Apr 14 04:05:03 EDT 2026] Syncing...
+Transfer starting: 131 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+
+sent 530 bytes  received 4573 bytes  51030000 bytes/sec
+total size is 45182908  speedup is 8854.18
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+
+sent 1196 bytes  received 737 bytes  19330000 bytes/sec
+total size is 285843  speedup is 147.88
+rsync logs failed
+[Tue Apr 14 04:05:07 EDT 2026] Sync complete
+[Tue Apr 14 04:35:07 EDT 2026] Syncing...
+Transfer starting: 132 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/eval_trajectories_step_0100.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 5338 bytes  received 56383 bytes  617210000 bytes/sec
+total size is 45545582  speedup is 737.93
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2520 bytes  received 777 bytes  32970000 bytes/sec
+total size is 289022  speedup is 87.66
+rsync logs failed
+[Tue Apr 14 04:35:12 EDT 2026] Sync complete
+[Tue Apr 14 05:05:12 EDT 2026] Syncing...
+Transfer starting: 133 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0095.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 1132 bytes  received 48144 bytes  492760000 bytes/sec
+total size is 45937121  speedup is 932.24
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2544 bytes  received 829 bytes  33730000 bytes/sec
+total size is 292033  speedup is 86.58
+rsync logs failed
+[Tue Apr 14 05:05:16 EDT 2026] Sync complete
+[Tue Apr 14 05:35:16 EDT 2026] Syncing...
+Transfer starting: 133 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 1116 bytes  received 4880 bytes  59960000 bytes/sec
+total size is 45938403  speedup is 7661.51
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2568 bytes  received 898 bytes  34660000 bytes/sec
+total size is 295183  speedup is 85.17
+rsync logs failed
+[Tue Apr 14 05:35:22 EDT 2026] Sync complete
+[Tue Apr 14 06:05:22 EDT 2026] Syncing...
+Transfer starting: 133 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 1128 bytes  received 5050 bytes  61780000 bytes/sec
+total size is 45940904  speedup is 7436.21
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2598 bytes  received 1140 bytes  37380000 bytes/sec
+total size is 300598  speedup is 80.42
+rsync logs failed
+[Tue Apr 14 06:05:26 EDT 2026] Sync complete
+[Tue Apr 14 06:35:26 EDT 2026] Syncing...
+Transfer starting: 135 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0100.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0105.jsonl
+
+sent 1208 bytes  received 114442 bytes  1156500000 bytes/sec
+total size is 46989058  speedup is 406.30
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2646 bytes  received 1033 bytes  36790000 bytes/sec
+total size is 304803  speedup is 82.85
+rsync logs failed
+[Tue Apr 14 06:35:30 EDT 2026] Sync complete
+[Tue Apr 14 07:05:30 EDT 2026] Syncing...
+Transfer starting: 135 files
+
+sent 16 bytes  received 4429 bytes  44450000 bytes/sec
+total size is 46989058  speedup is 10571.21
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_indep.log
+
+sent 1382 bytes  received 475 bytes  18570000 bytes/sec
+total size is 305246  speedup is 164.38
+rsync logs failed
+[Tue Apr 14 07:05:35 EDT 2026] Sync complete
+[Tue Apr 14 07:35:35 EDT 2026] Syncing...
+Transfer starting: 135 files
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 608 bytes  received 4752 bytes  53600000 bytes/sec
+total size is 46990323  speedup is 8766.85
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_indep.log
+
+sent 1388 bytes  received 680 bytes  20680000 bytes/sec
+total size is 307729  speedup is 148.81
+rsync logs failed
+[Tue Apr 14 07:35:39 EDT 2026] Sync complete
+[Tue Apr 14 08:05:39 EDT 2026] Syncing...
+Transfer starting: 135 files
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 620 bytes  received 4620 bytes  52400000 bytes/sec
+total size is 46990952  speedup is 8967.74
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_indep.log
+
+sent 1412 bytes  received 514 bytes  19260000 bytes/sec
+total size is 309428  speedup is 160.66
+rsync logs failed
+[Tue Apr 14 08:05:43 EDT 2026] Sync complete
+[Tue Apr 14 08:35:43 EDT 2026] Syncing...
+Transfer starting: 137 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/eval_trajectories_step_0100.jsonl
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0110.jsonl
+
+sent 4184 bytes  received 121897 bytes  1260810000 bytes/sec
+total size is 47897601  speedup is 379.90
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2718 bytes  received 820 bytes  35380000 bytes/sec
+total size is 312224  speedup is 88.25
+rsync logs failed
+[Tue Apr 14 08:35:47 EDT 2026] Sync complete
+[Tue Apr 14 09:05:47 EDT 2026] Syncing...
+Transfer starting: 137 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+
+sent 578 bytes  received 4809 bytes  53870000 bytes/sec
+total size is 47898227  speedup is 8891.45
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+
+sent 1322 bytes  received 1592 bytes  29140000 bytes/sec
+total size is 324816  speedup is 111.47
+rsync logs failed
+[Tue Apr 14 09:05:51 EDT 2026] Sync complete
+[Tue Apr 14 10:12:09 EDT 2026] Syncing...
+Transfer starting: 138 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/eval_trajectories_step_0110.jsonl
+
+sent 612 bytes  received 48236 bytes  488480000 bytes/sec
+total size is 48191887  speedup is 986.57
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2850 bytes  received 1016 bytes  38660000 bytes/sec
+total size is 328418  speedup is 84.95
+rsync logs failed
+[Tue Apr 14 10:12:13 EDT 2026] Sync complete
+[Tue Apr 14 10:42:13 EDT 2026] Syncing...
+Transfer starting: 139 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0105.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 1234 bytes  received 62899 bytes  641330000 bytes/sec
+total size is 48712744  speedup is 759.56
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2880 bytes  received 1350 bytes  42300000 bytes/sec
+total size is 333974  speedup is 78.95
+rsync logs failed
+[Tue Apr 14 10:42:17 EDT 2026] Sync complete
+[Tue Apr 14 11:12:17 EDT 2026] Syncing...
+Transfer starting: 140 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0115.jsonl
+
+sent 1258 bytes  received 33493 bytes  347510000 bytes/sec
+total size is 48969678  speedup is 1409.16
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2928 bytes  received 1407 bytes  43350000 bytes/sec
+total size is 341043  speedup is 78.67
+rsync logs failed
+[Tue Apr 14 11:12:21 EDT 2026] Sync complete
+[Tue Apr 14 11:42:21 EDT 2026] Syncing...
+Transfer starting: 140 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 1260 bytes  received 5139 bytes  63990000 bytes/sec
+total size is 48971540  speedup is 7653.00
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 2994 bytes  received 1065 bytes  40590000 bytes/sec
+total size is 345778  speedup is 85.19
+rsync logs failed
+[Tue Apr 14 11:42:25 EDT 2026] Sync complete
+[Tue Apr 14 13:19:35 EDT 2026] Syncing...
+Transfer starting: 143 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/eval_trajectories_step_0110.jsonl
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0110.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0120.jsonl
+
+sent 3948 bytes  received 216529 bytes  2204770000 bytes/sec
+total size is 50584284  speedup is 229.43
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 3030 bytes  received 1480 bytes  45100000 bytes/sec
+total size is 352983  speedup is 78.27
+rsync logs failed
+[Tue Apr 14 13:19:40 EDT 2026] Sync complete
+[Tue Apr 14 13:49:40 EDT 2026] Syncing...
+Transfer starting: 144 files
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/eval_trajectories_step_0120.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 1324 bytes  received 53775 bytes  550990000 bytes/sec
+total size is 50897926  speedup is 923.75
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 3090 bytes  received 1096 bytes  41860000 bytes/sec
+total size is 357607  speedup is 85.43
+rsync logs failed
+[Tue Apr 14 13:49:44 EDT 2026] Sync complete
+[Tue Apr 14 14:23:36 EDT 2026] Syncing...
+Transfer starting: 145 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0115.jsonl
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+
+sent 1342 bytes  received 31322 bytes  326640000 bytes/sec
+total size is 51126181  speedup is 1565.21
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 3132 bytes  received 1396 bytes  45280000 bytes/sec
+total size is 364934  speedup is 80.59
+rsync logs failed
+[Tue Apr 14 14:23:41 EDT 2026] Sync complete
+[Tue Apr 14 15:44:27 EDT 2026] Syncing...
+Transfer starting: 147 files
+lcb_path_dep_lcbv5_s42/
+lcb_path_dep_lcbv5_s42/metrics.jsonl
+lcb_path_dep_lcbv5_s42/train_trajectories_step_0120.jsonl
+lcb_path_indep_lcbv5_s42/
+lcb_path_indep_lcbv5_s42/metrics.jsonl
+lcb_path_indep_lcbv5_s42/train_trajectories_step_0125.jsonl
+
+sent 1400 bytes  received 148612 bytes  1500120000 bytes/sec
+total size is 52345010  speedup is 348.94
+rsync: link_stat "/workspace/overnight_monitor.log" failed: No such file or directory (2)
+Transfer starting: 2 files
+train_path_dep.log
+train_path_indep.log
+
+sent 3198 bytes  received 2581 bytes  57790000 bytes/sec
+total size is 379610  speedup is 65.69
+rsync logs failed
+[Tue Apr 14 15:44:31 EDT 2026] Sync complete
+[Tue Apr 14 16:16:59 EDT 2026] Syncing...
+ssh: connect to host 91.199.227.82 port 34417: Network is unreachable
+rsync(59555): error: unexpected end of file
+rsync(59555): error: io_read_nonblocking
+rsync(59555): error: io_read_buf
+rsync(59555): error: io_read_int
+rsync(59555): warning: child 59556 exited with status 255
+rsync checkpoints failed
+ssh: connect to host 91.199.227.82 port 34417: Network is unreachable
+rsync(59557): error: unexpected end of file
+rsync(59557): error: io_read_nonblocking
+rsync(59557): error: io_read_buf
+rsync(59557): error: io_read_int
+rsync(59557): warning: child 59558 exited with status 255
+rsync logs failed
+[Tue Apr 14 16:16:59 EDT 2026] Sync complete
+[Tue Apr 14 22:18:15 EDT 2026] Syncing...
+ssh: connect to host 91.199.227.82 port 34417: Network is unreachable
+rsync(66531): error: unexpected end of file
+rsync(66531): error: io_read_nonblocking
+rsync(66531): error: io_read_buf
+rsync(66531): error: io_read_int
+rsync(66531): warning: child 66532 exited with status 255
+rsync checkpoints failed
+ssh: connect to host 91.199.227.82 port 34417: Network is unreachable
+rsync(66533): error: unexpected end of file
+rsync(66533): error: io_read_nonblocking
+rsync(66533): error: io_read_buf
+rsync(66533): error: io_read_int
+rsync(66533): warning: child 66534 exited with status 255
+rsync logs failed
+[Tue Apr 14 22:18:15 EDT 2026] Sync complete

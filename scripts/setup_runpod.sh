@@ -34,14 +34,22 @@ echo "=== Installing Python dependencies ==="
 pip install --quiet vllm trl peft datasets accelerate wandb python-dotenv matplotlib tqdm
 
 # --- Clone / update repo ---
-if [ ! -d "discovery" ]; then
+if [ -d "discovery/.git" ]; then
+    echo "=== Updating existing repository ==="
+    cd discovery
+    git fetch origin
+    git checkout "$BRANCH"
+    git pull origin "$BRANCH" || true
+else
+    # Remove stale directory if it exists but isn't a git repo
+    [ -d "discovery" ] && { cp discovery/.env /tmp/discovery_env_backup 2>/dev/null || true; rm -rf discovery; }
     echo "=== Cloning repository ==="
     git clone https://github.com/anuragprat1k/discovery.git
+    cd discovery
+    git checkout "$BRANCH"
+    # Restore .env if we backed it up
+    [ -f /tmp/discovery_env_backup ] && { cp /tmp/discovery_env_backup .env; rm /tmp/discovery_env_backup; }
 fi
-cd discovery
-git fetch origin
-git checkout "$BRANCH"
-git pull origin "$BRANCH" || true
 
 # --- .env ---
 if [ ! -f ".env" ] && [ -n "${WANDB_API_KEY:-}" ]; then
