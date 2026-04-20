@@ -202,6 +202,60 @@ Verified: `import vllm, trl, bitsandbytes, datasets` → OK
 
 ---
 
+### 2026-03-11 — E3: DAPO Techniques (Binary + Clip-Higher + Dynamic Sampling + Token-Level Normalization)
+
+**Objective**: Test whether three DAPO algorithmic improvements (applied to binary reward) improve training trajectory compared to vanilla binary (E1).
+
+**DAPO techniques implemented**:
+1. **Clip-Higher**: Asymmetric advantage scaling — positive advantages multiplied by ε_high/ε_low = 0.5/0.2 = 2.5x. Approximates asymmetric PPO clipping [1-0.2, 1+0.5]. Loss function switched from `importance_sampling` to `ppo`.
+2. **Dynamic sampling**: Skip groups where all rollouts agree (all correct or all wrong). Already existed in base code; explicitly documented as DAPO technique.
+3. **Token-level loss normalization**: Per-token advantages scaled by n_active_samples/total_completion_tokens so each token contributes equally regardless of completion length.
+
+**Training**: `python train_tinker.py --reward binary --dapo --max_steps 200 --batch_size 8 --group_size 8`
+- Model: Qwen/Qwen3-8B via Tinker API
+- Training killed at step 162 (checkpoints at 50, 100, 150 saved)
+- Run ID: `58d233e3-78d4-59d7-a5f5-bcb890da2176:train:0`
+
+**Training metrics (20-step rolling averages)**:
+| Steps | Avg Reward | Avg Loss | Avg Skip Rate |
+|-------|-----------|----------|---------------|
+| 1-20 | 0.534 | 31.8 | 5.0/8 (63%) |
+| 21-40 | 0.438 | 25.1 | 5.3/8 (66%) |
+| 41-60 | 0.390 | 20.7 | 5.1/8 (64%) |
+| 61-80 | 0.330 | 19.5 | 4.9/8 (61%) |
+| 81-100 | 0.348 | 20.3 | 5.0/8 (63%) |
+| 101-120 | 0.193 | 20.6 | 5.3/8 (66%) |
+| 121-140 | 0.199 | 19.6 | 5.2/8 (65%) |
+| 141-160 | 0.141 | 15.3 | 5.9/8 (74%) |
+
+**Eval results** (partial — 57-69 of 100 problems evaluated per step, 24 samples each):
+
+| Run | Step | pass@1 | pass@4 | pass@16 |
+|-----|------|--------|--------|---------|
+| E1 binary (baseline) | 0 | 0.0547 | 0.1687 | 0.3224 |
+| E1 binary | 50 | 0.0560 | 0.1733 | 0.3326 |
+| E1 binary | 100 | 0.0586 | 0.1816 | 0.3534 |
+| E1 binary | 150 | 0.0724 | 0.2175 | 0.3890 |
+| E1 binary | 200 | 0.0652 | 0.1966 | 0.3534 |
+| **E3 DAPO** | **50** | **0.2566** | **0.4220** | **0.5496** |
+| **E3 DAPO** | **100** | **0.1411** | **0.2631** | **0.4155** |
+| **E3 DAPO** | **150** | **0.0632** | **0.1119** | **0.1702** |
+
+**Analysis — Why DAPO collapsed**:
+
+The DAPO run shows a clear "fast rise, faster collapse" pattern:
+1. **Step 50 was strong**: pass@1=0.257 vs E1's 0.056 — a 4.6x improvement. The aggressive Clip-Higher scaling (2.5x on positive advantages) initially accelerated learning.
+2. **Collapse after step 50**: All metrics declined monotonically. By step 150, pass@1 dropped below the step-0 baseline (0.063 vs 0.055), and pass@16 dropped to 0.170 vs baseline 0.322.
+3. **Root causes**:
+   - **Clip-Higher too aggressive**: The 2.5x scaling on positive advantages caused the model to over-exploit initially-correct reasoning patterns, losing generalization. This is the classic "exploitation over exploration" failure mode.
+   - **PPO loss + high advantages**: Switching from importance_sampling to PPO clipping, combined with inflated advantages, created large policy updates that destabilized training.
+   - **High skip rate masked the problem**: With 60-75% of groups skipped (dynamic sampling), the model trained on very few samples per step, amplifying variance in gradient direction.
+   - **Loss values abnormally high**: Loss in the 15-35 range (vs typical ~1-2 for standard GRPO) indicates the importance ratios diverged significantly from 1, meaning the policy drifted far from the sampling policy between checkpoint refreshes.
+
+**Conclusion**: DAPO techniques with default hyperparameters (ε_low=0.2, ε_high=0.5) are destructive for this model/task combination. The Clip-Higher ratio of 2.5x is likely too aggressive for a small-batch (8 problems × 8 rollouts) setup. Future work could try: (a) lower ε_high (e.g., 0.3 for a 1.5x ratio), (b) more frequent sampling client refreshes, (c) applying only dynamic sampling + token-level normalization without Clip-Higher.
+
+---
+
 ### 2026-03-10 — Phase 3: Step-0 Baseline Eval
 
 - Wall clock: ~57 min (200 problems × 64 samples, vllm, Qwen3-4B-Instruct-2507)

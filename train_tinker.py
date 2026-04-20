@@ -92,11 +92,23 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--loss_fn", type=str, default="importance_sampling",
                         choices=["importance_sampling", "ppo", "cispo"],
                         help="Tinker loss function for policy gradient.")
+    parser.add_argument("--dapo", action="store_true",
+                        help="Enable DAPO techniques: Clip-Higher, dynamic sampling, token-level normalization.")
+    parser.add_argument("--dapo_eps_low", type=float, default=0.2,
+                        help="DAPO Clip-Higher: lower clipping bound.")
+    parser.add_argument("--dapo_eps_high", type=float, default=0.5,
+                        help="DAPO Clip-Higher: upper clipping bound.")
     parser.add_argument("--no_wandb", action="store_true",
                         help="Disable Weights & Biases logging.")
     parser.add_argument("--wandb_project", type=str, default="discovery",
                         help="W&B project name.")
-    return parser.parse_args()
+    args = parser.parse_args()
+
+    # DAPO uses PPO loss for Clip-Higher
+    if args.dapo and args.loss_fn == "importance_sampling":
+        args.loss_fn = "ppo"
+
+    return args
 
 
 # ---------------------------------------------------------------------------
@@ -257,6 +269,7 @@ def grpo_step(
     n_problems = len(batch_df)
     advantages = np.zeros_like(rewards)
     groups_skipped = 0
+    dapo = getattr(args, "dapo", False)
 
     for i in range(n_problems):
         start = i * args.group_size
@@ -267,10 +280,18 @@ def grpo_step(
 
         if group_std < 1e-8:
             # All rewards identical — no gradient signal
+            # DAPO dynamic sampling: skip groups where all rollouts agree
             advantages[start:end] = 0.0
             groups_skipped += 1
         else:
             advantages[start:end] = (group_rewards - group_mean) / (group_std + 1e-8)
+
+    # DAPO Clip-Higher: scale positive advantages by ε_high/ε_low ratio
+    # to approximate asymmetric clipping [1-ε_low, 1+ε_high]
+    if dapo:
+        clip_ratio = args.dapo_eps_high / args.dapo_eps_low  # 2.5 by default
+        positive_mask = advantages > 0
+        advantages[positive_mask] *= clip_ratio
 
     # --- 4. Build Datum objects for forward_backward ---
     # For samples without logprobs from sampling (shouldn't happen normally),
@@ -287,6 +308,17 @@ def grpo_step(
             logprob_futures[idx] = sampling_client.compute_logprobs(
                 tinker.ModelInput.from_ints(full_tokens)
             )
+
+    # DAPO token-level normalization: compute total completion tokens across
+    # all non-skipped samples so we can normalize per-token advantages
+    total_completion_tokens = 0
+    n_active_samples = 0
+    if dapo:
+        for idx, comp in enumerate(all_completions):
+            if abs(advantages[idx]) < 1e-8:
+                continue
+            total_completion_tokens += len(list(comp["completion_tokens"]))
+            n_active_samples += 1
 
     data = []
     for idx, comp in enumerate(all_completions):
@@ -314,8 +346,16 @@ def grpo_step(
 
         # advantages: 0 for prompt positions, actual value for completion
         adv_value = float(advantages[idx])
+        if dapo and total_completion_tokens > 0:
+            # Token-level normalization: normalize by total tokens in batch
+            # rather than per-sample. Each token gets advantage scaled by
+            # (n_active_samples / total_completion_tokens) so shorter and
+            # longer completions contribute proportionally to their length.
+            per_token_adv = adv_value * n_active_samples / total_completion_tokens
+        else:
+            per_token_adv = adv_value
         token_advantages = tinker.TensorData(
-            data=[0.0] * n_prompt + [adv_value] * n_completion,
+            data=[0.0] * n_prompt + [per_token_adv] * n_completion,
             dtype="float32",
         )
 
@@ -408,13 +448,16 @@ def grpo_step(
 
 def main() -> None:
     args = parse_args()
-    output_dir = args.output_dir or f"checkpoints/tinker_{args.reward}"
+    suffix = f"tinker_{args.reward}_dapo" if args.dapo else f"tinker_{args.reward}"
+    output_dir = args.output_dir or f"checkpoints/{suffix}"
     os.makedirs(output_dir, exist_ok=True)
 
     log_file = args.log_file or os.path.join(output_dir, "training_log.jsonl")
 
     print(f"[tinker] === GRPO Training with Tinker API ===")
     print(f"[tinker] Reward       : {args.reward}")
+    if args.dapo:
+        print(f"[tinker] DAPO         : enabled (eps_low={args.dapo_eps_low}, eps_high={args.dapo_eps_high})")
     print(f"[tinker] Model        : {args.model}")
     print(f"[tinker] LoRA rank    : {args.lora_rank}")
     print(f"[tinker] LR           : {args.lr}")
@@ -434,9 +477,12 @@ def main() -> None:
     # W&B logging
     use_wandb = _WANDB_AVAILABLE and not args.no_wandb
     if use_wandb:
+        run_name = f"tinker_grpo_{args.reward}"
+        if args.dapo:
+            run_name += "_dapo"
         wandb.init(
             project=args.wandb_project,
-            name=f"tinker_grpo_{args.reward}",
+            name=run_name,
             config={
                 "reward": args.reward,
                 "model": args.model,
@@ -450,6 +496,9 @@ def main() -> None:
                 "max_completion_tokens": args.max_completion_tokens,
                 "temperature": args.temperature,
                 "backend": "tinker",
+                "dapo": args.dapo,
+                "dapo_eps_low": args.dapo_eps_low if args.dapo else None,
+                "dapo_eps_high": args.dapo_eps_high if args.dapo else None,
             },
         )
         print(f"[tinker] W&B run: {wandb.run.url}")
