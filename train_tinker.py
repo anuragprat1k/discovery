@@ -46,7 +46,11 @@ except ImportError as exc:
     sys.exit(1)
 
 try:
-    from rewards.reward_fns import compute_score_binary, compute_score_partial_credit
+    from rewards.reward_fns import (
+        compute_score_binary,
+        compute_score_partial_credit,
+        compute_score_rubric_sync,
+    )
 except ImportError as exc:
     print(
         f"[train_tinker.py] ERROR: Could not import reward functions.\n"
@@ -68,10 +72,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--reward",
         required=True,
-        choices=["binary", "dense"],
-        help="Reward function: 'binary' for sparse 0/1, 'dense' for partial-credit.",
+        choices=["binary", "dense", "rubric"],
+        help="Reward function: 'binary' for sparse 0/1, 'dense' for partial-credit, 'rubric' for LLM judge.",
     )
     parser.add_argument("--model", type=str, default="Qwen/Qwen3-8B")
+    parser.add_argument("--judge_model", type=str, default="Qwen/Qwen3-30B-A3B-Instruct-2507",
+                        help="Model to use as LLM judge (only with --reward rubric).")
     parser.add_argument("--max_steps", type=int, default=200)
     parser.add_argument("--group_size", type=int, default=8,
                         help="Number of completions per problem (G in GRPO).")
@@ -104,7 +110,7 @@ def parse_args() -> argparse.Namespace:
 # ---------------------------------------------------------------------------
 
 def init_tinker_clients(args):
-    """Initialize Tinker ServiceClient, TrainingClient, and SamplingClient."""
+    """Initialize Tinker ServiceClient, TrainingClient, SamplingClient, and optionally a judge client."""
     print(f"[tinker] Connecting to Tinker API ...")
     service = ServiceClient()
 
@@ -121,8 +127,22 @@ def init_tinker_clients(args):
 
     tokenizer = training_client.get_tokenizer()
 
+    # Create judge client for rubric reward
+    judge_client = None
+    judge_tokenizer = None
+    if args.reward == "rubric":
+        print(f"[tinker] Creating judge sampling client: model={args.judge_model}")
+        judge_client = service.create_sampling_client(base_model=args.judge_model)
+        if args.judge_model == args.model:
+            judge_tokenizer = tokenizer
+        else:
+            from transformers import AutoTokenizer
+            judge_tokenizer = AutoTokenizer.from_pretrained(
+                args.judge_model, trust_remote_code=True
+            )
+
     print(f"[tinker] Clients initialized successfully.")
-    return training_client, sampling_client, tokenizer
+    return training_client, sampling_client, tokenizer, judge_client, judge_tokenizer
 
 
 # ---------------------------------------------------------------------------
@@ -157,11 +177,14 @@ def load_dataset(data_path: str) -> pd.DataFrame:
 # ---------------------------------------------------------------------------
 
 def make_reward_fn(reward_type: str):
-    """Return the appropriate reward function."""
+    """Return the appropriate reward function (for non-rubric types)."""
     if reward_type == "binary":
         return compute_score_binary
-    else:
+    elif reward_type == "dense":
         return compute_score_partial_credit
+    else:
+        # Rubric is handled separately in grpo_step since it needs judge_client
+        return None
 
 
 # ---------------------------------------------------------------------------
@@ -176,6 +199,8 @@ def grpo_step(
     tokenizer,
     reward_fn,
     args,
+    judge_client=None,
+    judge_tokenizer=None,
 ) -> dict:
     """Execute one GRPO training step.
 
@@ -246,7 +271,24 @@ def grpo_step(
 
     # --- 2. Compute rewards ---
     completion_texts = [c["completion_text"] for c in all_completions]
-    if args.reward == "binary":
+    if args.reward == "rubric":
+        # Collect problem texts for the rubric prompt
+        problems = []
+        for _, row in batch_df.iterrows():
+            prompt_messages = row["prompt"]
+            if isinstance(prompt_messages, str):
+                prompt_messages = json.loads(prompt_messages)
+            problem_text = prompt_messages[-1]["content"] if len(prompt_messages) > 0 else ""
+            problems.extend([problem_text] * args.group_size)
+        rewards = compute_score_rubric_sync(
+            completion_texts,
+            ground_truth=ground_truths,
+            solution=solutions,
+            problem=problems,
+            judge_client=judge_client,
+            tokenizer=judge_tokenizer,
+        )
+    elif args.reward == "binary":
         rewards = reward_fn(completion_texts, ground_truth=ground_truths)
     else:
         rewards = reward_fn(completion_texts, ground_truth=ground_truths, solution=solutions)
@@ -415,6 +457,8 @@ def main() -> None:
 
     print(f"[tinker] === GRPO Training with Tinker API ===")
     print(f"[tinker] Reward       : {args.reward}")
+    if args.reward == "rubric":
+        print(f"[tinker] Judge model  : {args.judge_model}")
     print(f"[tinker] Model        : {args.model}")
     print(f"[tinker] LoRA rank    : {args.lora_rank}")
     print(f"[tinker] LR           : {args.lr}")
@@ -427,7 +471,7 @@ def main() -> None:
     print(f"[tinker] Log file     : {log_file}")
 
     # Initialize
-    training_client, sampling_client, tokenizer = init_tinker_clients(args)
+    training_client, sampling_client, tokenizer, judge_client, judge_tokenizer = init_tinker_clients(args)
     dataset = load_dataset(args.data_path)
     reward_fn = make_reward_fn(args.reward)
 
@@ -474,6 +518,8 @@ def main() -> None:
             tokenizer=tokenizer,
             reward_fn=reward_fn,
             args=args,
+            judge_client=judge_client,
+            judge_tokenizer=judge_tokenizer,
         )
         all_metrics.append(metrics)
 
